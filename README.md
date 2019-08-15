@@ -19,3 +19,6 @@ samples, guidance on mobile development, and a full API reference.
 The Dart Linter package defines lint rules that identify and report on "lints" found in Dart code.
 The linter gives you feedback to help you catch potential errors and keep your code in line with the published Dart Style Guide.
 Lints are configured in an `analysis_options.yaml` file.
+
+## Firebase Realtime Database
+Store and sync data with our NoSQL cloud database. Data is synced across all clients in realtime, and remains available when the app goes offline.
