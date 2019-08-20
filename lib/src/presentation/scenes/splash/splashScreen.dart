@@ -28,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } else {
       // LoginScreen
+      //TODO implement navigation to Login screen https://trello.com/c/ZmIQoZ0A/38-navigation-to-login-from-splash
     }
   }
 
