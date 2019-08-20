@@ -19,6 +19,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # Dependency for RXDart
+  rxdart: ^0.22.1+1
+
   # Dependency for the Firebase Core Flutter SDK
   firebase_core: ^0.4.0+8
 
