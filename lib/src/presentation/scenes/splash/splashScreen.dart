@@ -21,6 +21,12 @@ class _SplashScreenState extends State<SplashScreen> {
     _splashBloc.loadSplash();
   }
 
+  @override
+  void dispose() {
+    _splashBloc.closeStream;
+    super.dispose();
+  }
+
   void handleTimeout(SplashScreenState splashState) {
     print('handleTimeout: ${splashState.showHome}');
     if (splashState.showHome == true && splashState.showLogin == false) {

@@ -6,6 +6,7 @@ import 'splashScreenState.dart';
 class SplashScreenBloc {
   BehaviorSubject<SplashScreenState> _splashStateSubject;
   Observable<SplashScreenState> get splashStateObservable => _splashStateSubject.stream;
+  Future<dynamic> get closeStream => _splashStateSubject.close();
   UserRepository _repository;
 
   SplashScreenBloc() {
