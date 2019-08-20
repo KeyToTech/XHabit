@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class LoginUi extends StatefulWidget {
-  LoginUi({Key key, this.title}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  LoginScreen({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _LoginUiState createState() => _LoginUiState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginUiState extends State<LoginUi> {
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
