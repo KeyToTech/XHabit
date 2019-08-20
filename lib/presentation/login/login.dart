@@ -45,21 +45,25 @@ class _LoginUiState extends State<LoginUi> {
       ),
     );
 
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              textViewEmail,
-              const SizedBox(height: 16.0),
-              textViewPassword,
-              const SizedBox(height: 32.0),
-              loginButton
-            ],
-          ),
-        ),
+    final redirectLabel = FlatButton(
+        child:
+            Text("Already have an account?", style: TextStyle(fontSize: 16)));
+
+    final sizeBox = const SizedBox(height: 16.0);
+
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.only(left: 24, right: 24),
+        children: <Widget>[
+          textViewEmail,
+          sizeBox,
+          textViewPassword,
+          const SizedBox(height: 32.0),
+          loginButton,
+          sizeBox,
+          redirectLabel
+        ],
       ),
     );
   }
