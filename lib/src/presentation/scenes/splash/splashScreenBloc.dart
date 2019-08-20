@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/src/data/userRepository.dart';
+
 import 'splashScreenState.dart';
-import 'userRepository.dart';
 
 class SplashScreenBloc {
   BehaviorSubject<SplashScreenState> _splashStateSubject;
