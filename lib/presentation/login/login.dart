@@ -30,20 +30,23 @@ class _LoginUiState extends State<LoginUi> {
           labelText: 'Password', border: OutlineInputBorder()),
     );
 
-    final loginButton = Material(
-      shadowColor: Colors.lightBlueAccent.shade100,
-      elevation: 3.0,
-      borderRadius: BorderRadius.circular(30),
-      child: MaterialButton(
-        minWidth: 400.0,
-        height: 42.0,
-        child: Text(
-          "Sign in",
-          style: TextStyle(fontSize: 16),
-        ),
-        color: Colors.redAccent,
-      ),
-    );
+    final loginButton = Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Material(
+          shadowColor: Colors.lightBlueAccent.shade100,
+          elevation: 3.0,
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(30),
+          child: MaterialButton(
+            minWidth: 400.0,
+            height: 42.0,
+            child: Text(
+              "Sign in",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            onPressed: () {},
+          ),
+        ));
 
     final redirectLabel = FlatButton(
         child:
@@ -59,9 +62,8 @@ class _LoginUiState extends State<LoginUi> {
           textViewEmail,
           sizeBox,
           textViewPassword,
-          const SizedBox(height: 32.0),
-          loginButton,
           sizeBox,
+          loginButton,
           redirectLabel
         ],
       ),
