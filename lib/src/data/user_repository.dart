@@ -1,4 +1,4 @@
-import 'package:xhabits/src/domain/splashScreenUseCase.dart';
+import 'package:xhabits/src/domain/splash_screen_use_case.dart';
 
 class UserRepository implements SplashScreenUseCase {
   @override
