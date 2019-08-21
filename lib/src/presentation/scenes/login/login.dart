@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
           sizeBox,
           button,
           FlatButton(
-              child: Text("Already have an account?",
+              child: Text("Don't have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
         ],
       ),
