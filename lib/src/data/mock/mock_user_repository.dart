@@ -1,11 +1,9 @@
+import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/src/domain/check_user_is_signed_use_case.dart';
 
-import 'package:xhabits/src/domain/splash_screen_use_case.dart';
-
-class MockUserRepository implements SplashScreenUseCase {
+class MockUserRepository implements CheckUserIsSignedInUseCase {
   @override
-  bool isUserSignedIn() {
-    // TODO: implement isUserSignedIn
-    return true;
+  Observable<bool> isUserSignedIn() {
+    return Observable.just(true);
   }
-
 }
