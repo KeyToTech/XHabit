@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
-import 'package:xhabits/src/presentation/scenes/login/login.dart';
+import 'package:xhabits/src/presentation/scenes/login/login_screen.dart';
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
 
