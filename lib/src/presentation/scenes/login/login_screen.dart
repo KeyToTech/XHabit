@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_block.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -6,6 +7,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  LoginBlock _loginBlock = new LoginBlock();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
