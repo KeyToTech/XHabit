@@ -16,7 +16,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    // emailController.addListener();
+    emailController.addListener(onChangeText);
+  }
+
+  void onChangeText() {
+    String email = emailController.text;
+    String password = passwordController.text;
+    if (email != "") {
+      _loginBloc.validate(email, password);
+    }
   }
 
   @override
@@ -44,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
           sizeBox,
           button,
           FlatButton(
-              child: Text("Dont have an account? Sign up",
+              child: Text("Don't have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
         ],
       ),
@@ -69,6 +77,18 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ));
 
+  Widget errorMessage(bool isValid, String message) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          isValid ? "" : message,
+          style: TextStyle(color: Colors.red),
+        ),
+      ],
+    );
+  }
+
   Widget formFields(BuildContext context, LoginState loginState) {
     return Column(children: <Widget>[
       TextFormField(
@@ -76,12 +96,16 @@ class _LoginScreenState extends State<LoginScreen> {
             labelText: 'Email', border: OutlineInputBorder()),
         controller: emailController,
       ),
+      errorMessage(loginState.validationsState.emailValidation.isValid,
+          loginState.validationsState.emailValidation.errorMessage),
       const SizedBox(height: 16.0),
       TextFormField(
         decoration: const InputDecoration(
             labelText: 'Password', border: OutlineInputBorder()),
         controller: passwordController,
       ),
+      errorMessage(loginState.validationsState.passwordValidation.isValid,
+          loginState.validationsState.passwordValidation.errorMessage),
     ]);
   }
 
