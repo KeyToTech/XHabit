@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
-
+import 'package:xhabits/src/presentation/scenes/login/login.dart';
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState(SplashScreenBloc(
-      MockUserRepository()
-  ));
+  _SplashScreenState createState() =>
+      _SplashScreenState(SplashScreenBloc(MockUserRepository()));
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final SplashScreenBloc _splashBloc;
+  final _splashBloc;
 
   _SplashScreenState(this._splashBloc);
 
@@ -34,13 +33,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void handleTimeout(SplashScreenState splashState) {
     print('handleTimeout: ${splashState.showHome}');
+    StatefulWidget nextScreen;
     if (splashState.showHome == true && splashState.showLogin == false) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      nextScreen = HomeScreen();
     } else {
-      // LoginScreen
-      //TODO implement navigation to Login screen https://trello.com/c/ZmIQoZ0A/38-navigation-to-login-from-splash
+      nextScreen = LoginScreen();
     }
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => nextScreen));
   }
 
   @override

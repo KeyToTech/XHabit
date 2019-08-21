@@ -9,10 +9,9 @@ class LoginResultState {
 }
 
 class LoginState {
-  final LoginValidationsState validationsState;
+  // final LoginValidationsState validationsState;
   final bool signInButtonEnabled;
   final LoginResultState loginResultState;
 
-  LoginState(
-      this.validationsState, this.signInButtonEnabled, this.loginResultState);
+  LoginState(this.signInButtonEnabled, this.loginResultState);
 }
