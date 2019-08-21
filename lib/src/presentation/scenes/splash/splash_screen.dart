@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/login/login.dart';
 import 'splash_screen_bloc.dart';
@@ -6,11 +7,14 @@ import 'splash_screen_state.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  _SplashScreenState createState() =>
+      _SplashScreenState(SplashScreenBloc(MockUserRepository()));
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  final _splashBloc = SplashScreenBloc();
+  final _splashBloc;
+
+  _SplashScreenState(this._splashBloc);
 
   @override
   void initState() {
