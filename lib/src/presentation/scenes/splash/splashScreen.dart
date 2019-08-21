@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
-
+import 'package:xhabits/src/presentation/scenes/login/login.dart';
 import 'splashScreenBloc.dart';
 import 'splashScreenState.dart';
 
@@ -33,8 +33,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
     } else {
-      // LoginScreen
-      //TODO implement navigation to Login screen https://trello.com/c/ZmIQoZ0A/38-navigation-to-login-from-splash
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
   }
 
