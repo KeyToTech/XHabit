@@ -17,14 +17,11 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
 
     emailController.addListener(onChangeText);
+    passwordController.addListener(onChangeText);
   }
 
   void onChangeText() {
-    String email = emailController.text;
-    String password = passwordController.text;
-    if (email != "") {
-      _loginBloc.validate(email, password);
-    }
+    _loginBloc.validate(emailController.text, passwordController.text);
   }
 
   @override
@@ -78,35 +75,35 @@ class _LoginScreenState extends State<LoginScreen> {
       ));
 
   Widget errorMessage(bool isValid, String message) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          isValid ? "" : message,
-          style: TextStyle(color: Colors.red),
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.only(top: 5.0),
+      child: Text(
+        isValid ? "" : message,
+        style: TextStyle(color: Colors.red),
+      ),
     );
   }
 
   Widget formFields(BuildContext context, LoginState loginState) {
-    return Column(children: <Widget>[
-      TextFormField(
-        decoration: const InputDecoration(
-            labelText: 'Email', border: OutlineInputBorder()),
-        controller: emailController,
-      ),
-      errorMessage(loginState.validationsState.emailValidation.isValid,
-          loginState.validationsState.emailValidation.errorMessage),
-      const SizedBox(height: 16.0),
-      TextFormField(
-        decoration: const InputDecoration(
-            labelText: 'Password', border: OutlineInputBorder()),
-        controller: passwordController,
-      ),
-      errorMessage(loginState.validationsState.passwordValidation.isValid,
-          loginState.validationsState.passwordValidation.errorMessage),
-    ]);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            decoration: const InputDecoration(
+                labelText: 'Email', border: OutlineInputBorder()),
+            controller: emailController,
+          ),
+          errorMessage(loginState.validationsState.emailValidation.isValid,
+              loginState.validationsState.emailValidation.errorMessage),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            decoration: const InputDecoration(
+                labelText: 'Password', border: OutlineInputBorder()),
+            controller: passwordController,
+          ),
+          errorMessage(loginState.validationsState.passwordValidation.isValid,
+              loginState.validationsState.passwordValidation.errorMessage),
+        ]);
   }
 
   @override

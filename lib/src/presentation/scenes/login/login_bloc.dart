@@ -21,10 +21,16 @@ class LoginBloc {
     this._emailValidation = EmailValidation();
     this._passwordValidation = PasswordValidation();
   }
+
   void validate(String email, String password) {
-    ValidationResult emailValid = this._emailValidation.validate(email);
-    ValidationResult passwordValid =
-        this._passwordValidation.validate(password);
+    ValidationResult emailValid = _defaultTextInputState;
+    ValidationResult passwordValid = _defaultTextInputState;
+
+    if (!email.isEmpty) emailValid = this._emailValidation.validate(email);
+    if (!password.isEmpty) {
+      passwordValid = this._passwordValidation.validate(password);
+    }
+
     this._loginStateSubject.sink.add(LoginState(
         LoginValidationsState(emailValid, passwordValid),
         emailValid.isValid && passwordValid.isValid,
