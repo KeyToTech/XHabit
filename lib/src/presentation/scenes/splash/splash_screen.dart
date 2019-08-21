@@ -29,13 +29,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void handleTimeout(SplashScreenState splashState) {
     print('handleTimeout: ${splashState.showHome}');
+    StatefulWidget nextScreen;
     if (splashState.showHome == true && splashState.showLogin == false) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      nextScreen = HomeScreen();
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      nextScreen = LoginScreen();
     }
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => nextScreen));
   }
 
   @override
