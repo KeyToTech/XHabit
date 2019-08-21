@@ -9,6 +9,15 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc _loginBloc = new LoginBloc();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // emailController.addListener();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
-          formFields,
+          formFields(context, loginState),
           sizeBox,
           button,
           FlatButton(
@@ -60,20 +69,26 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ));
 
-  Widget formFields = Column(children: <Widget>[
-    TextFormField(
-      decoration: const InputDecoration(
-          labelText: 'Email', border: OutlineInputBorder()),
-    ),
-    const SizedBox(height: 16.0),
-    TextFormField(
-      decoration: const InputDecoration(
-          labelText: 'Password', border: OutlineInputBorder()),
-    ),
-  ]);
+  Widget formFields(BuildContext context, LoginState loginState) {
+    return Column(children: <Widget>[
+      TextFormField(
+        decoration: const InputDecoration(
+            labelText: 'Email', border: OutlineInputBorder()),
+        controller: emailController,
+      ),
+      const SizedBox(height: 16.0),
+      TextFormField(
+        decoration: const InputDecoration(
+            labelText: 'Password', border: OutlineInputBorder()),
+        controller: passwordController,
+      ),
+    ]);
+  }
 
   @override
   void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 }
