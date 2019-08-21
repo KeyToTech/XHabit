@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'login_bloc.dart';
+import 'login_state.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -6,16 +8,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  LoginBloc _loginBloc = new LoginBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text("Sign in"),
         ),
-        body: buildUi(context));
+        body: StreamBuilder(
+            stream: _loginBloc.loginStateObservable,
+            builder: (context, AsyncSnapshot<LoginState> snapshot) {
+              final loginState = snapshot.data;
+              return buildUi(context, loginState);
+            }));
   }
 
-  Widget buildUi(BuildContext context) {
+  Widget buildUi(BuildContext context, LoginState loginState) {
     final sizeBox = const SizedBox(height: 16.0);
     return Center(
       child: ListView(
@@ -26,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
           sizeBox,
           button,
           FlatButton(
-              child: Text("Don't have an account? Sign up",
+              child: Text("Dont have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
         ],
       ),
