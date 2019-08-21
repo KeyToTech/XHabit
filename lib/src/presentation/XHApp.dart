@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'scenes/splash/splashScreen.dart';
+import 'scenes/splash/splash_screen.dart';
 
 class XHApp extends StatelessWidget {
   @override

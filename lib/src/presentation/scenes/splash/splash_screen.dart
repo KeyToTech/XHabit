@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/login/login.dart';
-import 'splashScreenBloc.dart';
-import 'splashScreenState.dart';
+import 'splash_screen_bloc.dart';
+import 'splash_screen_state.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
