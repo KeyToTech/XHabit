@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/presentation/widgets/text_field/text_field.dart'
-    as prefix0;
+import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/button/button.dart';
 import 'package:xhabits/src/presentation/widgets/text_error/text_error.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
@@ -14,11 +13,21 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc _loginBloc = new LoginBloc();
 
+  final _emailTextEditingController = TextEditingController();
+  final _passwordTextEditingController = TextEditingController();
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
+    _emailTextEditingController.addListener(textChange);
+    _passwordTextEditingController.addListener(textChange);
+  }
+
+  void textChange() {
+    _loginBloc.validate(
+        _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
   void _showToast(BuildContext contex) {
@@ -49,15 +58,14 @@ class _LoginScreenState extends State<LoginScreen> {
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
-          prefix0.TextField(
-              title: "Email", obscureText: false, bloc: _loginBloc),
+          new XHTextField("Email", _emailTextEditingController, false).field(),
           TextError(
               isValid: loginState.validationsState.emailValidation.isValid,
               message:
                   loginState.validationsState.emailValidation.errorMessage),
           const SizedBox(height: 16.0),
-          prefix0.TextField(
-              title: "Password", obscureText: true, bloc: _loginBloc),
+          new XHTextField("Password", _passwordTextEditingController, true)
+              .field(),
           TextError(
               isValid: loginState.validationsState.passwordValidation.isValid,
               message:
