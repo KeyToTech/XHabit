@@ -14,26 +14,41 @@ class LoginBloc {
   final _defaultTextInputState = ValidationResult(true, null);
 
   LoginBloc() {
-    this._loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
+    _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
         false,
-        LoginResultState(false, null, false)));
-    this._emailValidation = EmailValidation();
-    this._passwordValidation = PasswordValidation();
+        LoginResultState(false)));
+    _emailValidation = EmailValidation();
+    _passwordValidation = PasswordValidation();
   }
 
   void validate(String email, String password) {
     ValidationResult emailValid = _defaultTextInputState;
     ValidationResult passwordValid = _defaultTextInputState;
-
-    if (!email.isEmpty) emailValid = this._emailValidation.validate(email);
-    if (!password.isEmpty) {
-      passwordValid = this._passwordValidation.validate(password);
+    bool isEmptyEmail = email.isEmpty;
+    bool isEmptyPassword = password.isEmpty;
+    if (!isEmptyEmail) {
+      emailValid = _emailValidation.validate(email);
+    }
+    if (!isEmptyPassword) {
+      passwordValid = _passwordValidation.validate(password);
     }
 
-    this._loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(emailValid, passwordValid),
-        emailValid.isValid && passwordValid.isValid,
-        LoginResultState(false, null, false)));
+    if (!isEmptyEmail || !isEmptyPassword) {
+      _loginStateSubject.sink.add(LoginState(
+          LoginValidationsState(emailValid, passwordValid),
+          emailValid.isValid &&
+              !isEmptyEmail &&
+              passwordValid.isValid &&
+              !isEmptyPassword,
+          LoginResultState(false)));
+    }
+  }
+
+  void login() {
+    _loginStateSubject.sink.add(LoginState(
+        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+        true,
+        LoginResultState(true)));
   }
 }
