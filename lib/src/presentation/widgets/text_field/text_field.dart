@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'text_field_params.dart';
-import 'package:xhabits/src/presentation/scenes/auth/login/login_bloc.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 
 class TextField extends StatefulWidget {
-  TextField({Key key, this.title, this.obscureText, this.bloc})
-      : super(key: key);
+  TextField({
+    Key key,
+    this.title,
+    this.obscureText,
+    this.bloc,
+  }) : super(key: key);
 
   final String title;
   final bool obscureText;

@@ -2,7 +2,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
-import 'login_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class LoginBloc {
   BehaviorSubject<LoginState> _loginStateSubject;
@@ -10,6 +10,8 @@ class LoginBloc {
 
   EmailValidation _emailValidation;
   PasswordValidation _passwordValidation;
+  String email;
+  String password;
 
   final _defaultTextInputState = ValidationResult(true, null);
 
@@ -22,24 +24,28 @@ class LoginBloc {
     _passwordValidation = PasswordValidation();
   }
 
-  void validate(String email, String type) {
-    ValidationResult emailValid = _defaultTextInputState;
-    ValidationResult passwordValid = _defaultTextInputState;
-    bool isEmptyEmail = email.isEmpty;
-    // bool isEmptyPassword = password.isEmpty;
-    if (!isEmptyEmail) {
-      emailValid = _emailValidation.validate(email);
-    }
-    // if (!isEmptyPassword) {
-    //   passwordValid = _passwordValidation.validate(password);
-    // }
+  void validate(String text, String type) {
+    ValidationResult emailValid;
+    ValidationResult passwordValid;
 
-    if (!isEmptyEmail) {
-      _loginStateSubject.sink.add(LoginState(
-          LoginValidationsState(emailValid, passwordValid),
-          emailValid.isValid && !isEmptyEmail && passwordValid.isValid,
-          LoginResultState(false)));
+    emailValid = _defaultTextInputState;
+    passwordValid = _defaultTextInputState;
+
+    switch (type) {
+      case "Email":
+        emailValid = _emailValidation.validate(text);
+        email = text;
+        break;
+      case "Password":
+        passwordValid = _passwordValidation.validate(text);
+        password = text;
+        break;
     }
+
+    _loginStateSubject.sink.add(LoginState(
+        LoginValidationsState(emailValid, passwordValid),
+        emailValid.isValid && text.isNotEmpty && passwordValid.isValid,
+        LoginResultState(false)));
   }
 
   void login() {

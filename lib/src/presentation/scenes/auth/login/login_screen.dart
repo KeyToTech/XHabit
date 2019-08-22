@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/widgets/text_field/text_field.dart'
     as prefix0;
-import 'login_bloc.dart';
-import 'login_state.dart';
-import 'package:xhabits/src/presentation/widgets/text_field/text_field_params.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -109,11 +108,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
         Widget>[
       prefix0.TextField(title: "Email", obscureText: false, bloc: _loginBloc),
-      // TextFormField(
-      //   decoration: const InputDecoration(
-      //       labelText: 'Email', border: OutlineInputBorder()),
-      //   controller: emailController,
-      // ),
       errorMessage(loginState.validationsState.emailValidation.isValid,
           loginState.validationsState.emailValidation.errorMessage),
       const SizedBox(height: 16.0),
