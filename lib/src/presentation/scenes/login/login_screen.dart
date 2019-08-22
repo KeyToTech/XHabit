@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           formFields(context, loginState),
           sizeBox,
-          button,
+          button(context, loginState),
           FlatButton(
               child: Text("Don't have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
@@ -56,23 +56,25 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget button = Padding(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Material(
-        shadowColor: Colors.lightBlueAccent.shade100,
-        elevation: 3.0,
-        color: Colors.blue,
-        borderRadius: BorderRadius.circular(30),
-        child: MaterialButton(
-          minWidth: 400.0,
-          height: 42.0,
-          child: Text(
-            "Sign in",
-            style: TextStyle(fontSize: 16, color: Colors.white),
+  Widget button(BuildContext context, LoginState loginState) {
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: 16.0),
+        child: Material(
+          shadowColor: Colors.lightBlueAccent.shade100,
+          elevation: 3.0,
+          color: loginState.signInButtonEnabled ? Colors.blue : Colors.grey,
+          borderRadius: BorderRadius.circular(30),
+          child: MaterialButton(
+            minWidth: 400.0,
+            height: 42.0,
+            child: Text(
+              "Sign in",
+              style: TextStyle(fontSize: 16, color: Colors.white),
+            ),
+            onPressed: () {},
           ),
-          onPressed: () {},
-        ),
-      ));
+        ));
+  }
 
   Widget errorMessage(bool isValid, String message) {
     return Padding(
@@ -100,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: const InputDecoration(
                 labelText: 'Password', border: OutlineInputBorder()),
             controller: passwordController,
+            obscureText: true,
           ),
           errorMessage(loginState.validationsState.passwordValidation.isValid,
               loginState.validationsState.passwordValidation.errorMessage),
