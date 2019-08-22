@@ -7,9 +7,25 @@ class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
+  Observable<User> signUp(String email, String password) {
+    Future<User> getSignedUpUser() async {
+      AuthResult authResult = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return User(authResult.user.uid, authResult.user.email);
+    }
+
+    return Observable.fromFuture(getSignedUpUser());
+  }
+
+  @override
   Observable<User> signIn(String email, String password) {
-    // TODO: implement signIn https://trello.com/c/FUrFa7XS/28-firebase-login
-    return null;
+    Future<User> getSignedInUser() async {
+      AuthResult authResult = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return User(authResult.user.uid, authResult.user.email);
+    }
+
+    return Observable.fromFuture(getSignedInUser());
   }
 
   @override
