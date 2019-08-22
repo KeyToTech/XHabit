@@ -9,6 +9,20 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc _loginBloc = new LoginBloc();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    emailController.addListener(onChangeText);
+    passwordController.addListener(onChangeText);
+  }
+
+  void onChangeText() {
+    _loginBloc.validate(emailController.text, passwordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +45,11 @@ class _LoginScreenState extends State<LoginScreen> {
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
-          formFields,
+          formFields(context, loginState),
           sizeBox,
           button,
           FlatButton(
-              child: Text("Dont have an account? Sign up",
+              child: Text("Don't have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
         ],
       ),
@@ -60,20 +74,42 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ));
 
-  Widget formFields = Column(children: <Widget>[
-    TextFormField(
-      decoration: const InputDecoration(
-          labelText: 'Email', border: OutlineInputBorder()),
-    ),
-    const SizedBox(height: 16.0),
-    TextFormField(
-      decoration: const InputDecoration(
-          labelText: 'Password', border: OutlineInputBorder()),
-    ),
-  ]);
+  Widget errorMessage(bool isValid, String message) {
+    return Padding(
+      padding: EdgeInsets.only(top: 5.0),
+      child: Text(
+        isValid ? "" : message,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+  }
+
+  Widget formFields(BuildContext context, LoginState loginState) {
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextFormField(
+            decoration: const InputDecoration(
+                labelText: 'Email', border: OutlineInputBorder()),
+            controller: emailController,
+          ),
+          errorMessage(loginState.validationsState.emailValidation.isValid,
+              loginState.validationsState.emailValidation.errorMessage),
+          const SizedBox(height: 16.0),
+          TextFormField(
+            decoration: const InputDecoration(
+                labelText: 'Password', border: OutlineInputBorder()),
+            controller: passwordController,
+          ),
+          errorMessage(loginState.validationsState.passwordValidation.isValid,
+              loginState.validationsState.passwordValidation.errorMessage),
+        ]);
+  }
 
   @override
   void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 }
