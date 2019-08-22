@@ -43,6 +43,7 @@ class _TextFieldState extends State<TextField> {
 
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
   }
 }
