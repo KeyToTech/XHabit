@@ -9,6 +9,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   LoginBloc _loginBloc = new LoginBloc();
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -16,17 +18,29 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
 
-    emailController.addListener(onChangeText);
-    passwordController.addListener(onChangeText);
+    emailController.addListener(_onChangeText);
+    passwordController.addListener(_onChangeText);
   }
 
-  void onChangeText() {
+  void _onChangeText() {
     _loginBloc.validate(emailController.text, passwordController.text);
+  }
+
+  void _onSubmit(BuildContext contex) {
+    _showToast(contex);
+    _loginBloc.login();
+  }
+
+  void _showToast(BuildContext contex) {
+    final snackBar =
+        SnackBar(content: Text('Logged    ${emailController.text}'));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Sign in"),
         ),
@@ -71,7 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
               "Sign in",
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
-            onPressed: () {},
+            onPressed: loginState.signInButtonEnabled
+                ? () => _onSubmit(context)
+                : null,
           ),
         ));
   }

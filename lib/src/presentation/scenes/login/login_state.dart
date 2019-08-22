@@ -9,10 +9,8 @@ class LoginValidationsState {
 
 class LoginResultState {
   final bool loggedIn;
-  final String loginError;
-  final bool loading;
 
-  LoginResultState(this.loggedIn, this.loginError, this.loading);
+  LoginResultState(this.loggedIn);
 }
 
 class LoginState {
