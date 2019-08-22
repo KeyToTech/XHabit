@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/widgets/text_field/text_field.dart'
     as prefix0;
 import 'package:xhabits/src/presentation/widgets/button/button.dart';
+import 'package:xhabits/src/presentation/widgets/text_error/text_error.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
@@ -18,11 +19,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void _onSubmit(BuildContext contex) {
-    _showToast(contex);
-    _loginBloc.login();
   }
 
   void _showToast(BuildContext contex) {
@@ -55,13 +51,17 @@ class _LoginScreenState extends State<LoginScreen> {
         children: <Widget>[
           prefix0.TextField(
               title: "Email", obscureText: false, bloc: _loginBloc),
-          errorMessage(loginState.validationsState.emailValidation.isValid,
-              loginState.validationsState.emailValidation.errorMessage),
+          TextError(
+              isValid: loginState.validationsState.emailValidation.isValid,
+              message:
+                  loginState.validationsState.emailValidation.errorMessage),
           const SizedBox(height: 16.0),
           prefix0.TextField(
               title: "Password", obscureText: true, bloc: _loginBloc),
-          errorMessage(loginState.validationsState.passwordValidation.isValid,
-              loginState.validationsState.passwordValidation.errorMessage),
+          TextError(
+              isValid: loginState.validationsState.passwordValidation.isValid,
+              message:
+                  loginState.validationsState.passwordValidation.errorMessage),
           sizeBox,
           Button(
             title: 'Sign in',
@@ -70,19 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           FlatButton(
               child: Text("Don't have an account? Sign up",
-                  style: TextStyle(fontSize: 16))),
-          Text(loginState.loginResultState.loggedIn ? "The best" : "")
+                  style: TextStyle(fontSize: 16)))
         ],
-      ),
-    );
-  }
-
-  Widget errorMessage(bool isValid, String message) {
-    return Padding(
-      padding: EdgeInsets.only(top: 5.0),
-      child: Text(
-        isValid ? "" : message,
-        style: TextStyle(color: Colors.red),
       ),
     );
   }
