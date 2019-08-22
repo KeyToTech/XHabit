@@ -22,25 +22,22 @@ class LoginBloc {
     _passwordValidation = PasswordValidation();
   }
 
-  void validate(String email, String password) {
+  void validate(String email, String type) {
     ValidationResult emailValid = _defaultTextInputState;
     ValidationResult passwordValid = _defaultTextInputState;
     bool isEmptyEmail = email.isEmpty;
-    bool isEmptyPassword = password.isEmpty;
+    // bool isEmptyPassword = password.isEmpty;
     if (!isEmptyEmail) {
       emailValid = _emailValidation.validate(email);
     }
-    if (!isEmptyPassword) {
-      passwordValid = _passwordValidation.validate(password);
-    }
+    // if (!isEmptyPassword) {
+    //   passwordValid = _passwordValidation.validate(password);
+    // }
 
-    if (!isEmptyEmail || !isEmptyPassword) {
+    if (!isEmptyEmail) {
       _loginStateSubject.sink.add(LoginState(
           LoginValidationsState(emailValid, passwordValid),
-          emailValid.isValid &&
-              !isEmptyEmail &&
-              passwordValid.isValid &&
-              !isEmptyPassword,
+          emailValid.isValid && !isEmptyEmail && passwordValid.isValid,
           LoginResultState(false)));
     }
   }

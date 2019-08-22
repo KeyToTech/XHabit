@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/widgets/text_field/text_field.dart'
+    as prefix0;
 import 'login_bloc.dart';
 import 'login_state.dart';
+import 'package:xhabits/src/presentation/widgets/text_field/text_field_params.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -103,26 +106,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget formFields(BuildContext context, LoginState loginState) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          TextFormField(
-            decoration: const InputDecoration(
-                labelText: 'Email', border: OutlineInputBorder()),
-            controller: emailController,
-          ),
-          errorMessage(loginState.validationsState.emailValidation.isValid,
-              loginState.validationsState.emailValidation.errorMessage),
-          const SizedBox(height: 16.0),
-          TextFormField(
-            decoration: const InputDecoration(
-                labelText: 'Password', border: OutlineInputBorder()),
-            controller: passwordController,
-            obscureText: true,
-          ),
-          errorMessage(loginState.validationsState.passwordValidation.isValid,
-              loginState.validationsState.passwordValidation.errorMessage),
-        ]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+        Widget>[
+      prefix0.TextField(title: "Email", obscureText: false, bloc: _loginBloc),
+      // TextFormField(
+      //   decoration: const InputDecoration(
+      //       labelText: 'Email', border: OutlineInputBorder()),
+      //   controller: emailController,
+      // ),
+      errorMessage(loginState.validationsState.emailValidation.isValid,
+          loginState.validationsState.emailValidation.errorMessage),
+      const SizedBox(height: 16.0),
+      prefix0.TextField(title: "Password", obscureText: true, bloc: _loginBloc),
+      errorMessage(loginState.validationsState.passwordValidation.isValid,
+          loginState.validationsState.passwordValidation.errorMessage),
+    ]);
   }
 
   @override

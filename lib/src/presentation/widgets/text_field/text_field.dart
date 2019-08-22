@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
+import 'text_field_params.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_bloc.dart';
 
 class TextField extends StatefulWidget {
+  TextField({Key key, this.title, this.obscureText, this.bloc})
+      : super(key: key);
+
+  final String title;
+  final bool obscureText;
+  final LoginBloc bloc;
+
   @override
   _TextFieldState createState() => _TextFieldState();
 }
 
 class _TextFieldState extends State<TextField> {
-  final bool obscureText;
-  final String label;
-
-  _TextFieldState(this.obscureText, this.label);
+  final controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    controller.addListener(_onChangeText);
+  }
+
+  void _onChangeText() {
+    if (!controller.text.isEmpty)
+      widget.bloc.validate(controller.text, widget.title);
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      decoration:
-          InputDecoration(labelText: label, border: OutlineInputBorder()),
-      obscureText: obscureText,
+      decoration: InputDecoration(
+          labelText: widget.title, border: OutlineInputBorder()),
+      obscureText: widget.obscureText,
+      controller: controller,
     );
   }
 
