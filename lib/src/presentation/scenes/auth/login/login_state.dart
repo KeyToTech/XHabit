@@ -1,10 +1,12 @@
 import 'package:xhabits/src/domain/validation/validation.dart';
 
 class LoginValidationsState {
+  final ValidationResult usernameValidation;
   final ValidationResult emailValidation;
   final ValidationResult passwordValidation;
 
-  LoginValidationsState(this.emailValidation, this.passwordValidation);
+  LoginValidationsState(
+      this.usernameValidation, this.emailValidation, this.passwordValidation);
 }
 
 class LoginResultState {

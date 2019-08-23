@@ -17,7 +17,8 @@ class LoginBloc {
 
   LoginBloc() {
     _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
-        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+        LoginValidationsState(_defaultTextInputState, _defaultTextInputState,
+            _defaultTextInputState),
         false,
         LoginResultState(false)));
     _emailValidation = EmailValidation();
@@ -38,8 +39,35 @@ class LoginBloc {
     }
 
     _loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(emailValid, passwordValid),
+        LoginValidationsState(
+            _defaultTextInputState, emailValid, passwordValid),
         emailValid.isValid &&
+            isNotEmptyEmail &&
+            isNotEmptyPassword &&
+            passwordValid.isValid,
+        LoginResultState(false)));
+  }
+
+  void registerValidate(String username, String email, String password) {
+    ValidationResult usernameValid = _defaultTextInputState;
+    ValidationResult emailValid = _defaultTextInputState;
+    ValidationResult passwordValid = _defaultTextInputState;
+    bool isNotEmptyUserName = username.isNotEmpty;
+    bool isNotEmptyEmail = email.isNotEmpty;
+    bool isNotEmptyPassword = password.isNotEmpty;
+
+    if (isNotEmptyUserName) {}
+    if (isNotEmptyEmail) {
+      emailValid = _emailValidation.validate(email);
+    }
+    if (isNotEmptyPassword) {
+      passwordValid = _passwordValidation.validate(password);
+    }
+
+    _loginStateSubject.sink.add(LoginState(
+        LoginValidationsState(usernameValid, emailValid, passwordValid),
+        emailValid.isValid &&
+            isNotEmptyUserName &&
             isNotEmptyEmail &&
             isNotEmptyPassword &&
             passwordValid.isValid,
@@ -48,7 +76,8 @@ class LoginBloc {
 
   void login() {
     _loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+        LoginValidationsState(_defaultTextInputState, _defaultTextInputState,
+            _defaultTextInputState),
         true,
         LoginResultState(true)));
   }
