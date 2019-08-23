@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
-import 'package:xhabits/src/presentation/widgets/button/button.dart';
+import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/text_error/text_error.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
@@ -29,6 +29,8 @@ class _LoginScreenState extends State<LoginScreen> {
     _loginBloc.validate(
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
+
+  void _onSubmit(BuildContext contex) {}
 
   void _showToast(BuildContext contex) {
     // final snackBar =
@@ -71,11 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
               message:
                   loginState.validationsState.passwordValidation.errorMessage),
           sizeBox,
-          Button(
-            title: 'Sign in',
-            state: loginState,
-            bloc: _loginBloc,
-          ),
+          new XHButton("Sign in", loginState.signInButtonEnabled)
+              .materialButton(),
           FlatButton(
               child: Text("Don't have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
