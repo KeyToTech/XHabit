@@ -10,7 +10,7 @@ class XHApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: LoginScreen(),
+        home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           RegisterScreen.routeName: (BuildContext context) =>
               RegisterScreen(title: 'Sign Up'),
