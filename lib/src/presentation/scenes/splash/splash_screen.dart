@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/mock/mock_auth.dart';
+import 'package:xhabits/src/data/mock/mock_home_screen.dart';
 import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/simple_check_user_is_signed_in_use_case.dart';
@@ -15,7 +16,7 @@ class SplashScreen extends StatefulWidget {
       _SplashScreenState(
           SplashScreenBloc(
               SimpleCheckUserIsSignedInUseCase(
-                FirebaseAuthService()
+                MockAuth()
             )
           )
       );
