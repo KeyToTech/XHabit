@@ -24,27 +24,25 @@ class LoginBloc {
     _passwordValidation = PasswordValidation();
   }
 
-  void validate(String text, String type) {
-    ValidationResult emailValid;
-    ValidationResult passwordValid;
+  void validate(String email, String password) {
+    ValidationResult emailValid = _defaultTextInputState;
+    ValidationResult passwordValid = _defaultTextInputState;
+    bool isNotEmptyEmail = email.isNotEmpty;
+    bool isNotEmptyPassword = password.isNotEmpty;
 
-    emailValid = _defaultTextInputState;
-    passwordValid = _defaultTextInputState;
-
-    switch (type) {
-      case "Email":
-        emailValid = _emailValidation.validate(text);
-        email = text;
-        break;
-      case "Password":
-        passwordValid = _passwordValidation.validate(text);
-        password = text;
-        break;
+    if (isNotEmptyEmail) {
+      emailValid = _emailValidation.validate(email);
+    }
+    if (isNotEmptyPassword) {
+      passwordValid = _passwordValidation.validate(password);
     }
 
     _loginStateSubject.sink.add(LoginState(
         LoginValidationsState(emailValid, passwordValid),
-        emailValid.isValid && text.isNotEmpty && passwordValid.isValid,
+        emailValid.isValid &&
+            isNotEmptyEmail &&
+            isNotEmptyPassword &&
+            passwordValid.isValid,
         LoginResultState(false)));
   }
 
