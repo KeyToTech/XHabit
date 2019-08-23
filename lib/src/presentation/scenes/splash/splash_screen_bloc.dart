@@ -5,7 +5,8 @@ import 'splash_screen_state.dart';
 
 class SplashScreenBloc {
   BehaviorSubject<SplashScreenState> _splashStateSubject;
-  Observable<SplashScreenState> get splashStateObservable => _splashStateSubject.stream;
+  Observable<SplashScreenState> get splashStateObservable =>
+      _splashStateSubject.stream;
   Future<dynamic> get closeStream => _splashStateSubject.close();
   CheckUserIsSignedInUseCase _useCase;
 
@@ -19,10 +20,9 @@ class SplashScreenBloc {
   }
 
   void handleSignInCheck(bool isSignedIn) {
-    if(isSignedIn) {
+    if (isSignedIn) {
       _splashStateSubject.sink.add(SplashScreenState(false, true));
-    }
-    else {
+    } else {
       _splashStateSubject.sink.add(SplashScreenState(true, false));
     }
   }
