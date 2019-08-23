@@ -75,12 +75,23 @@ class _LoginScreenState extends State<LoginScreen> {
               .messageError(),
           new XHButton("Sign in", loginState.signInButtonEnabled)
               .materialButton(),
-          FlatButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RegisterScreen.routeName);
-              },
-              child: Text("Don't have an account? Sign up",
-                  style: TextStyle(fontSize: 16)))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Don't have an account?"),
+              const SizedBox(width: 8.0),
+              InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, RegisterScreen.routeName);
+                },
+                child: Text('Sign up',
+                    style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline)),
+              )
+            ],
+          )
         ],
       ),
     );

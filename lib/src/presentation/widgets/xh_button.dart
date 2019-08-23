@@ -10,7 +10,7 @@ class XHButton {
     return Padding(
         padding: EdgeInsets.symmetric(vertical: 16.0),
         child: Material(
-          shadowColor: Colors.lightBlueAccent.shade100,
+          shadowColor: buttonEnabled ? Colors.blue : Colors.grey,
           elevation: 3.0,
           color: buttonEnabled ? Colors.blue : Colors.grey,
           borderRadius: BorderRadius.circular(30),
