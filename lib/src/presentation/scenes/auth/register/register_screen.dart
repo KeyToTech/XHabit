@@ -6,6 +6,10 @@ import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class RegisterScreen extends StatefulWidget {
+  static final String routeName = "/register";
+  final String title;
+
+  RegisterScreen({Key key, this.title}) : super(key: key);
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }

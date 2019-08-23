@@ -4,6 +4,7 @@ import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/register/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -75,6 +76,9 @@ class _LoginScreenState extends State<LoginScreen> {
           new XHButton("Sign in", loginState.signInButtonEnabled)
               .materialButton(),
           FlatButton(
+              onPressed: () {
+                Navigator.pushNamed(context, RegisterScreen.routeName);
+              },
               child: Text("Don't have an account? Sign up",
                   style: TextStyle(fontSize: 16)))
         ],
