@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'scenes/splash/splash_screen.dart';
 import 'scenes/auth/login/login_screen.dart';
+import 'scenes/auth/register/register_screen.dart';
 
 class XHApp extends StatelessWidget {
   @override
@@ -9,5 +10,5 @@ class XHApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginScreen());
+      home: RegisterScreen());
 }
