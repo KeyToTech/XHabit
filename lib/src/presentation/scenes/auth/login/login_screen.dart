@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
-import 'package:xhabits/src/presentation/widgets/text_error/text_error.dart';
+import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
@@ -54,25 +54,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildUi(BuildContext context, LoginState loginState) {
-    final sizeBox = const SizedBox(height: 16.0);
     return Center(
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
           new XHTextField("Email", _emailTextEditingController, false).field(),
-          TextError(
-              isValid: loginState.validationsState.emailValidation.isValid,
-              message:
-                  loginState.validationsState.emailValidation.errorMessage),
+          new XHErrorMessage(loginState.validationsState.emailValidation.isValid
+                  ? ""
+                  : loginState.validationsState.emailValidation.errorMessage)
+              .messageError(),
           const SizedBox(height: 16.0),
           new XHTextField("Password", _passwordTextEditingController, true)
               .field(),
-          TextError(
-              isValid: loginState.validationsState.passwordValidation.isValid,
-              message:
-                  loginState.validationsState.passwordValidation.errorMessage),
-          sizeBox,
+          new XHErrorMessage(loginState
+                      .validationsState.passwordValidation.isValid
+                  ? ""
+                  : loginState.validationsState.passwordValidation.errorMessage)
+              .messageError(),
           new XHButton("Sign in", loginState.signInButtonEnabled)
               .materialButton(),
           FlatButton(
