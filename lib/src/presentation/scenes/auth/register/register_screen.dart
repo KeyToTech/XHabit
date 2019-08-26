@@ -38,60 +38,58 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _onSubmit(BuildContext contex) {
-    _showToast(contex);
+  void _onSubmit() {
+    _showToast();
   }
 
-  void _showToast(BuildContext contex) {
+  void _showToast() {
     final snackBar = SnackBar(
         content: Text('Logged    ${_emailTextEditingController.text}'));
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Sign up'),
-        ),
-        body: StreamBuilder(
-            stream: _authBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<AuthState> snapshot) {
-              final authState = snapshot.data;
-              return buildUi(context, authState);
-            }));
-  }
-
-  Widget buildUi(BuildContext context, AuthState authState) {
-    return Center(
-      child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.only(left: 24, right: 24),
-        children: <Widget>[
-          XHTextField('User name', _usernameTextEditingController, false)
-              .field(),
-          XHErrorMessage(authState.validationsState.usernameValidation.isValid
-                  ? ''
-                  : authState.validationsState.usernameValidation.errorMessage)
-              .messageError(),
-          XHTextField('Email', _emailTextEditingController, false).field(),
-          XHErrorMessage(authState.validationsState.emailValidation.isValid
-                  ? ''
-                  : authState.validationsState.emailValidation.errorMessage)
-              .messageError(),
-          XHTextField('Password', _passwordTextEditingController, true).field(),
-          XHErrorMessage(authState.validationsState.passwordValidation.isValid
-                  ? ''
-                  : authState.validationsState.passwordValidation.errorMessage)
-              .messageError(),
-          XHButton('Sign up', authState.signInButtonEnabled, () {
-            _onSubmit(context);
-          }).materialButton(),
-        ],
+  Widget build(BuildContext context) => Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Sign up'),
       ),
-    );
-  }
+      body: StreamBuilder(
+          stream: _authBloc.loginStateObservable,
+          builder: (context, AsyncSnapshot<AuthState> snapshot) {
+            final authState = snapshot.data;
+            return buildUi(context, authState);
+          }));
+
+  Widget buildUi(BuildContext context, AuthState authState) => Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24, right: 24),
+          children: <Widget>[
+            XHTextField('User name', _usernameTextEditingController, false)
+                .field(),
+            XHErrorMessage(authState.validationsState.usernameValidation.isValid
+                    ? ''
+                    : authState
+                        .validationsState.usernameValidation.errorMessage)
+                .messageError(),
+            XHTextField('Email', _emailTextEditingController, false).field(),
+            XHErrorMessage(authState.validationsState.emailValidation.isValid
+                    ? ''
+                    : authState.validationsState.emailValidation.errorMessage)
+                .messageError(),
+            XHTextField('Password', _passwordTextEditingController, true)
+                .field(),
+            XHErrorMessage(authState.validationsState.passwordValidation.isValid
+                    ? ''
+                    : authState
+                        .validationsState.passwordValidation.errorMessage)
+                .messageError(),
+            XHButton('Sign up', authState.signInButtonEnabled, _onSubmit)
+                .materialButton(),
+          ],
+        ),
+      );
 
   @override
   void dispose() {
