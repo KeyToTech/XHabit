@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginBloc _loginBloc = new LoginBloc();
+  AuthBloc _authBloc = new AuthBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void textChange() {
-    _loginBloc.validate(
+    _authBloc.loginValidate(
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
@@ -47,33 +47,33 @@ class _LoginScreenState extends State<LoginScreen> {
           title: Text("Sign in"),
         ),
         body: StreamBuilder(
-            stream: _loginBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<LoginState> snapshot) {
-              final loginState = snapshot.data;
-              return buildUi(context, loginState);
+            stream: _authBloc.loginStateObservable,
+            builder: (context, AsyncSnapshot<AuthState> snapshot) {
+              final authState = snapshot.data;
+              return buildUi(context, authState);
             }));
   }
 
-  Widget buildUi(BuildContext context, LoginState loginState) {
+  Widget buildUi(BuildContext context, AuthState authState) {
     return Center(
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
           new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(loginState.validationsState.emailValidation.isValid
+          new XHErrorMessage(authState.validationsState.emailValidation.isValid
                   ? ""
-                  : loginState.validationsState.emailValidation.errorMessage)
+                  : authState.validationsState.emailValidation.errorMessage)
               .messageError(),
           const SizedBox(height: 16.0),
           new XHTextField("Password", _passwordTextEditingController, true)
               .field(),
-          new XHErrorMessage(loginState
+          new XHErrorMessage(authState
                       .validationsState.passwordValidation.isValid
                   ? ""
-                  : loginState.validationsState.passwordValidation.errorMessage)
+                  : authState.validationsState.passwordValidation.errorMessage)
               .messageError(),
-          new XHButton("Sign in", loginState.signInButtonEnabled)
+          new XHButton("Sign in", authState.signInButtonEnabled)
               .materialButton(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -99,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _emailTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
     super.dispose();
   }
 }

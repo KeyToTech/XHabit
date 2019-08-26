@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
-import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class RegisterScreen extends StatefulWidget {
   static final String routeName = "/register";
@@ -15,7 +15,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  LoginBloc _loginBloc = new LoginBloc();
+  AuthBloc _authBloc = new AuthBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -26,12 +26,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
+    _usernameTextEditingController.addListener(textChange);
     _emailTextEditingController.addListener(textChange);
     _passwordTextEditingController.addListener(textChange);
   }
 
   void textChange() {
-    _loginBloc.validate(
+    _authBloc.registerValidate(_usernameTextEditingController.text,
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
@@ -51,39 +52,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
           title: Text("Sign up"),
         ),
         body: StreamBuilder(
-            stream: _loginBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<LoginState> snapshot) {
-              final loginState = snapshot.data;
-              return buildUi(context, loginState);
+            stream: _authBloc.loginStateObservable,
+            builder: (context, AsyncSnapshot<AuthState> snapshot) {
+              final authState = snapshot.data;
+              return buildUi(context, authState);
             }));
   }
 
-  Widget buildUi(BuildContext context, LoginState loginState) {
+  Widget buildUi(BuildContext context, AuthState authState) {
     return Center(
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
-          new XHTextField("User name", _emailTextEditingController, false)
+          new XHTextField("User name", _usernameTextEditingController, false)
               .field(),
-          new XHErrorMessage(loginState.validationsState.emailValidation.isValid
+          new XHErrorMessage(authState
+                      .validationsState.usernameValidation.isValid
                   ? ""
-                  : loginState.validationsState.emailValidation.errorMessage)
+                  : authState.validationsState.usernameValidation.errorMessage)
               .messageError(),
           new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(loginState.validationsState.emailValidation.isValid
+          new XHErrorMessage(authState.validationsState.emailValidation.isValid
                   ? ""
-                  : loginState.validationsState.emailValidation.errorMessage)
+                  : authState.validationsState.emailValidation.errorMessage)
               .messageError(),
           new XHTextField("Password", _passwordTextEditingController, true)
               .field(),
-          new XHErrorMessage(loginState
+          new XHErrorMessage(authState
                       .validationsState.passwordValidation.isValid
                   ? ""
-                  : loginState.validationsState.passwordValidation.errorMessage)
+                  : authState.validationsState.passwordValidation.errorMessage)
               .messageError(),
-          new XHButton("Sign up", loginState.signInButtonEnabled)
-              .materialButton()
+          new XHButton("Sign up", authState.signInButtonEnabled)
+              .materialButton(),
         ],
       ),
     );
@@ -91,6 +93,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
+    _emailTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
+    _usernameTextEditingController.dispose();
     super.dispose();
   }
 }
