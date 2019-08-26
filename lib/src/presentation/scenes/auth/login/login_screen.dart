@@ -68,24 +68,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   final authState = snapshot.data;
                   return buildButton(context, authState);
                 },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Don't have an account?"),
+                  const SizedBox(width: 8.0),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, RegisterScreen.routeName);
+                    },
+                    child: Text('Sign up',
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline)),
+                  )
+                ],
               )
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   children: <Widget>[
-              //     Text("Don't have an account?"),
-              //     const SizedBox(width: 8.0),
-              //     InkWell(
-              //       onTap: () {
-              //         Navigator.pushNamed(context, RegisterScreen.routeName);
-              //       },
-              //       child: Text('Sign up',
-              //           style: TextStyle(
-              //               color: Colors.blue,
-              //               fontWeight: FontWeight.bold,
-              //               decoration: TextDecoration.underline)),
-              //     )
-              //   ],
-              // )
             ],
           ),
         ));
@@ -97,19 +97,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget buildForm(BuildContext context, SignInValidationsState signInState) {
-    return Column(children: <Widget>[
-      XHTextField('Email', _emailTextEditingController, false).field(),
-      XHErrorMessage(signInState.emailValidation.isValid
-              ? ''
-              : signInState.emailValidation.errorMessage)
-          .messageError(),
-      const SizedBox(height: 16.0),
-      XHTextField('Password', _passwordTextEditingController, true).field(),
-      XHErrorMessage(signInState.passwordValidation.isValid
-              ? ''
-              : signInState.passwordValidation.errorMessage)
-          .messageError(),
-    ]);
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          XHTextField('Email', _emailTextEditingController, false).field(),
+          XHErrorMessage(signInState.emailValidation.isValid
+                  ? ''
+                  : signInState.emailValidation.errorMessage)
+              .messageError(),
+          const SizedBox(height: 16.0),
+          XHTextField('Password', _passwordTextEditingController, true).field(),
+          XHErrorMessage(signInState.passwordValidation.isValid
+                  ? ''
+                  : signInState.passwordValidation.errorMessage)
+              .messageError(),
+        ]);
   }
 
   @override

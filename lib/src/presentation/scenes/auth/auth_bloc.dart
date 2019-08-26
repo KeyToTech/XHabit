@@ -79,5 +79,16 @@ class AuthBloc {
 
     _registerStateSubject.sink
         .add(SignUpValidationsState(usernameValid, emailValid, passwordValid));
+
+    if (emailValid.isValid &&
+        passwordValid.isValid &&
+        isNotEmptyEmail &&
+        isNotEmptyPassword &&
+        usernameValid.isValid &&
+        isNotEmptyUserName) {
+      _authStateSubject.sink.add(AuthState(true, false));
+    } else {
+      _authStateSubject.sink.add(AuthState(false, false));
+    }
   }
 }
