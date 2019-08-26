@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginBloc _loginBloc = new LoginBloc();
+  final AuthBloc _authBloc = AuthBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -27,16 +27,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void textChange() {
-    _loginBloc.validate(
+    _authBloc.loginValidate(
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _onSubmit(BuildContext contex) {}
+  void _onSubmit(BuildContext contex) {
+    _showToast(contex);
+  }
 
   void _showToast(BuildContext contex) {
-    // final snackBar =
-    //     SnackBar(content: Text('Logged    ${emailController.text}'));
-    // _scaffoldKey.currentState.showSnackBar(snackBar);
+    final snackBar = SnackBar(
+        content: Text('Logged    ${_emailTextEditingController.text}'));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -44,37 +46,36 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Sign in"),
+          title: Text('Sign in'),
         ),
         body: StreamBuilder(
-            stream: _loginBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<LoginState> snapshot) {
-              final loginState = snapshot.data;
-              return buildUi(context, loginState);
+            stream: _authBloc.loginStateObservable,
+            builder: (context, AsyncSnapshot<AuthState> snapshot) {
+              final authState = snapshot.data;
+              return buildUi(context, authState);
             }));
   }
 
-  Widget buildUi(BuildContext context, LoginState loginState) {
+  Widget buildUi(BuildContext context, AuthState authState) {
     return Center(
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
-          new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(loginState.validationsState.emailValidation.isValid
-                  ? ""
-                  : loginState.validationsState.emailValidation.errorMessage)
+          XHTextField('Email', _emailTextEditingController, false).field(),
+          XHErrorMessage(authState.validationsState.emailValidation.isValid
+                  ? ''
+                  : authState.validationsState.emailValidation.errorMessage)
               .messageError(),
           const SizedBox(height: 16.0),
-          new XHTextField("Password", _passwordTextEditingController, true)
-              .field(),
-          new XHErrorMessage(loginState
-                      .validationsState.passwordValidation.isValid
-                  ? ""
-                  : loginState.validationsState.passwordValidation.errorMessage)
+          XHTextField('Password', _passwordTextEditingController, true).field(),
+          XHErrorMessage(authState.validationsState.passwordValidation.isValid
+                  ? ''
+                  : authState.validationsState.passwordValidation.errorMessage)
               .messageError(),
-          new XHButton("Sign in", loginState.signInButtonEnabled)
-              .materialButton(),
+          XHButton('Sign in', authState.signInButtonEnabled, () {
+            _onSubmit(context);
+          }).materialButton(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -99,6 +100,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _emailTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
     super.dispose();
   }
 }

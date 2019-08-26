@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class XHButton {
   final String text;
   final bool buttonEnabled;
+  final void Function() submit;
 
-  XHButton(this.text, this.buttonEnabled);
+  XHButton(this.text, this.buttonEnabled, this.submit);
 
   Widget materialButton() {
     return Padding(
@@ -21,7 +22,11 @@ class XHButton {
               text,
               style: TextStyle(fontSize: 16, color: Colors.white),
             ),
-            onPressed: () {},
+            onPressed: buttonEnabled
+                ? () {
+                    submit();
+                  }
+                : null,
           ),
         ));
   }
