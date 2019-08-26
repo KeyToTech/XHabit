@@ -15,7 +15,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  LoginBloc _loginBloc = new LoginBloc();
+  AuthBloc _authBloc = new AuthBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -32,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void textChange() {
-    _loginBloc.registerValidate(_usernameTextEditingController.text,
+    _authBloc.registerValidate(_usernameTextEditingController.text,
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
@@ -52,7 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           title: Text("Sign up"),
         ),
         body: StreamBuilder(
-            stream: _loginBloc.loginStateObservable,
+            stream: _authBloc.loginStateObservable,
             builder: (context, AsyncSnapshot<LoginState> snapshot) {
               final loginState = snapshot.data;
               return buildUi(context, loginState);
@@ -96,6 +96,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
+    _emailTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
+    _usernameTextEditingController.dispose();
     super.dispose();
   }
 }

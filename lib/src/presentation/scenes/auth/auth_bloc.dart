@@ -4,7 +4,7 @@ import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 
-class LoginBloc {
+class AuthBloc {
   BehaviorSubject<LoginState> _loginStateSubject;
   Observable<LoginState> get loginStateObservable => _loginStateSubject.stream;
 
@@ -15,7 +15,7 @@ class LoginBloc {
 
   final _defaultTextInputState = ValidationResult(true, null);
 
-  LoginBloc() {
+  AuthBloc() {
     _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),

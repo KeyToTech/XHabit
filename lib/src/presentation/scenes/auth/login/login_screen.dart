@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  LoginBloc _loginBloc = new LoginBloc();
+  AuthBloc _authBloc = new AuthBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void textChange() {
-    _loginBloc.validate(
+    _authBloc.validate(
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           title: Text("Sign in"),
         ),
         body: StreamBuilder(
-            stream: _loginBloc.loginStateObservable,
+            stream: _authBloc.loginStateObservable,
             builder: (context, AsyncSnapshot<LoginState> snapshot) {
               final loginState = snapshot.data;
               return buildUi(context, loginState);
@@ -99,6 +99,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _emailTextEditingController.dispose();
+    _passwordTextEditingController.dispose();
     super.dispose();
   }
 }
