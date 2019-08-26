@@ -6,23 +6,32 @@ import 'package:xhabits/src/domain/validation/username_validation.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class AuthBloc {
-  BehaviorSubject<AuthState> _loginStateSubject;
-  Observable<AuthState> get loginStateObservable => _loginStateSubject.stream;
+  BehaviorSubject<SignInValidationsState> _loginStateSubject;
+  BehaviorSubject<SignUpValidationsState> _registerStateSubject;
+  BehaviorSubject<AuthState> _authStateSubject;
+  Observable<SignInValidationsState> get loginStateObservable =>
+      _loginStateSubject.stream;
+  Observable<SignUpValidationsState> get registerStateObservable =>
+      _registerStateSubject.stream;
+  Observable<AuthState> get authStateObservable => _authStateSubject.stream;
 
-  EmailValidation _emailValidation = new EmailValidation();
-  PasswordValidation _passwordValidation = new PasswordValidation();
-  UserNameValidation _userNameValidation = new UserNameValidation();
+  EmailValidation _emailValidation;
+  PasswordValidation _passwordValidation;
+  UserNameValidation _userNameValidation;
 
   final _defaultTextInputState = ValidationResult(true, null);
 
   AuthBloc() {
-    _loginStateSubject = BehaviorSubject<AuthState>.seeded(AuthState(
-        AuthValidationsState(_defaultTextInputState, _defaultTextInputState,
-            _defaultTextInputState),
-        false,
-        AuthResultState(false)));
+    _loginStateSubject = BehaviorSubject<SignInValidationsState>.seeded(
+        SignInValidationsState(_defaultTextInputState, _defaultTextInputState));
+    _registerStateSubject = BehaviorSubject<SignUpValidationsState>.seeded(
+        SignUpValidationsState(_defaultTextInputState, _defaultTextInputState,
+            _defaultTextInputState));
+    _authStateSubject =
+        BehaviorSubject<AuthState>.seeded(AuthState(false, false));
     _emailValidation = EmailValidation();
     _passwordValidation = PasswordValidation();
+    _userNameValidation = UserNameValidation();
   }
 
   void loginValidate(String email, String password) {
@@ -38,13 +47,16 @@ class AuthBloc {
       passwordValid = _passwordValidation.validate(password);
     }
 
-    _loginStateSubject.sink.add(AuthState(
-        AuthValidationsState(_defaultTextInputState, emailValid, passwordValid),
-        emailValid.isValid &&
-            isNotEmptyEmail &&
-            isNotEmptyPassword &&
-            passwordValid.isValid,
-        AuthResultState(false)));
+    _loginStateSubject.sink
+        .add(SignInValidationsState(emailValid, passwordValid));
+    if (emailValid.isValid &&
+        passwordValid.isValid &&
+        isNotEmptyEmail &&
+        isNotEmptyPassword) {
+      _authStateSubject.sink.add(AuthState(true, false));
+    } else {
+      _authStateSubject.sink.add(AuthState(false, false));
+    }
   }
 
   void registerValidate(String username, String email, String password) {
@@ -65,21 +77,7 @@ class AuthBloc {
       passwordValid = _passwordValidation.validate(password);
     }
 
-    _loginStateSubject.sink.add(AuthState(
-        AuthValidationsState(usernameValid, emailValid, passwordValid),
-        emailValid.isValid &&
-            isNotEmptyUserName &&
-            isNotEmptyEmail &&
-            isNotEmptyPassword &&
-            passwordValid.isValid,
-        AuthResultState(false)));
-  }
-
-  void login() {
-    _loginStateSubject.sink.add(AuthState(
-        AuthValidationsState(_defaultTextInputState, _defaultTextInputState,
-            _defaultTextInputState),
-        true,
-        AuthResultState(true)));
+    _registerStateSubject.sink
+        .add(SignUpValidationsState(usernameValid, emailValid, passwordValid));
   }
 }

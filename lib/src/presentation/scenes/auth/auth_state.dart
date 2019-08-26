@@ -1,25 +1,27 @@
 import 'package:xhabits/src/domain/validation/validation.dart';
 
-class AuthValidationsState {
+class SignInValidationsState {
+  final ValidationResult emailValidation;
+  final ValidationResult passwordValidation;
+
+  SignInValidationsState(this.emailValidation, this.passwordValidation);
+}
+
+class SignUpValidationsState {
   final ValidationResult usernameValidation;
   final ValidationResult emailValidation;
   final ValidationResult passwordValidation;
 
-  AuthValidationsState(
+  SignUpValidationsState(
       this.usernameValidation, this.emailValidation, this.passwordValidation);
 }
 
-class AuthResultState {
+class AuthState {
+  final bool signInButtonEnabled;
   final bool loggedIn;
 
-  AuthResultState(this.loggedIn);
-}
-
-class AuthState {
-  final AuthValidationsState validationsState;
-  final bool signInButtonEnabled;
-  final AuthResultState loginResultState;
-
   AuthState(
-      this.validationsState, this.signInButtonEnabled, this.loginResultState);
+    this.signInButtonEnabled,
+    this.loggedIn,
+  );
 }

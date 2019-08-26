@@ -5,6 +5,9 @@ import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_screen.dart';
+import 'package:xhabits/src/domain/validation/email_validation.dart';
+import 'package:xhabits/src/domain/validation/password_validation.dart';
+import 'package:xhabits/src/domain/validation/username_validation.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,7 +15,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AuthBloc _authBloc = new AuthBloc();
+  final AuthBloc _authBloc = AuthBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -44,57 +47,69 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("Sign in"),
+          title: Text('Sign in'),
         ),
-        body: StreamBuilder(
-            stream: _authBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<AuthState> snapshot) {
-              final authState = snapshot.data;
-              return buildUi(context, authState);
-            }));
+        body: Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.only(left: 24, right: 24),
+            children: <Widget>[
+              StreamBuilder<SignInValidationsState>(
+                stream: _authBloc.loginStateObservable,
+                builder:
+                    (context, AsyncSnapshot<SignInValidationsState> snapshot) {
+                  final signInState = snapshot.data;
+                  return buildForm(context, signInState);
+                },
+              ),
+              StreamBuilder<AuthState>(
+                stream: _authBloc.authStateObservable,
+                builder: (context, AsyncSnapshot<AuthState> snapshot) {
+                  final authState = snapshot.data;
+                  return buildButton(context, authState);
+                },
+              )
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: <Widget>[
+              //     Text("Don't have an account?"),
+              //     const SizedBox(width: 8.0),
+              //     InkWell(
+              //       onTap: () {
+              //         Navigator.pushNamed(context, RegisterScreen.routeName);
+              //       },
+              //       child: Text('Sign up',
+              //           style: TextStyle(
+              //               color: Colors.blue,
+              //               fontWeight: FontWeight.bold,
+              //               decoration: TextDecoration.underline)),
+              //     )
+              //   ],
+              // )
+            ],
+          ),
+        ));
   }
 
-  Widget buildUi(BuildContext context, AuthState authState) {
-    return Center(
-      child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.only(left: 24, right: 24),
-        children: <Widget>[
-          new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(authState.validationsState.emailValidation.isValid
-                  ? ""
-                  : authState.validationsState.emailValidation.errorMessage)
-              .messageError(),
-          const SizedBox(height: 16.0),
-          new XHTextField("Password", _passwordTextEditingController, true)
-              .field(),
-          new XHErrorMessage(authState
-                      .validationsState.passwordValidation.isValid
-                  ? ""
-                  : authState.validationsState.passwordValidation.errorMessage)
-              .messageError(),
-          new XHButton("Sign in", authState.signInButtonEnabled)
-              .materialButton(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text("Don't have an account?"),
-              const SizedBox(width: 8.0),
-              InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, RegisterScreen.routeName);
-                },
-                child: Text('Sign up',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline)),
-              )
-            ],
-          )
-        ],
-      ),
-    );
+  Widget buildButton(BuildContext context, AuthState authState) {
+    XHButton xhButton = XHButton('Sign in', authState.signInButtonEnabled);
+    return xhButton.materialButton();
+  }
+
+  Widget buildForm(BuildContext context, SignInValidationsState signInState) {
+    return Column(children: <Widget>[
+      XHTextField('Email', _emailTextEditingController, false).field(),
+      XHErrorMessage(signInState.emailValidation.isValid
+              ? ''
+              : signInState.emailValidation.errorMessage)
+          .messageError(),
+      const SizedBox(height: 16.0),
+      XHTextField('Password', _passwordTextEditingController, true).field(),
+      XHErrorMessage(signInState.passwordValidation.isValid
+              ? ''
+              : signInState.passwordValidation.errorMessage)
+          .messageError(),
+    ]);
   }
 
   @override
