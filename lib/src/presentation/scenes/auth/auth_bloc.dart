@@ -2,11 +2,11 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
-import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class AuthBloc {
-  BehaviorSubject<LoginState> _loginStateSubject;
-  Observable<LoginState> get loginStateObservable => _loginStateSubject.stream;
+  BehaviorSubject<AuthState> _loginStateSubject;
+  Observable<AuthState> get loginStateObservable => _loginStateSubject.stream;
 
   EmailValidation _emailValidation;
   PasswordValidation _passwordValidation;
@@ -16,11 +16,11 @@ class AuthBloc {
   final _defaultTextInputState = ValidationResult(true, null);
 
   AuthBloc() {
-    _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
-        LoginValidationsState(_defaultTextInputState, _defaultTextInputState,
+    _loginStateSubject = BehaviorSubject<AuthState>.seeded(AuthState(
+        AuthValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
         false,
-        LoginResultState(false)));
+        AuthResultState(false)));
     _emailValidation = EmailValidation();
     _passwordValidation = PasswordValidation();
   }
@@ -38,14 +38,13 @@ class AuthBloc {
       passwordValid = _passwordValidation.validate(password);
     }
 
-    _loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(
-            _defaultTextInputState, emailValid, passwordValid),
+    _loginStateSubject.sink.add(AuthState(
+        AuthValidationsState(_defaultTextInputState, emailValid, passwordValid),
         emailValid.isValid &&
             isNotEmptyEmail &&
             isNotEmptyPassword &&
             passwordValid.isValid,
-        LoginResultState(false)));
+        AuthResultState(false)));
   }
 
   void registerValidate(String username, String email, String password) {
@@ -64,21 +63,21 @@ class AuthBloc {
       passwordValid = _passwordValidation.validate(password);
     }
 
-    _loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(usernameValid, emailValid, passwordValid),
+    _loginStateSubject.sink.add(AuthState(
+        AuthValidationsState(usernameValid, emailValid, passwordValid),
         emailValid.isValid &&
             isNotEmptyUserName &&
             isNotEmptyEmail &&
             isNotEmptyPassword &&
             passwordValid.isValid,
-        LoginResultState(false)));
+        AuthResultState(false)));
   }
 
   void login() {
-    _loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(_defaultTextInputState, _defaultTextInputState,
+    _loginStateSubject.sink.add(AuthState(
+        AuthValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
         true,
-        LoginResultState(true)));
+        AuthResultState(true)));
   }
 }

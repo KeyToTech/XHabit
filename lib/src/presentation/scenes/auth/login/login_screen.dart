@@ -3,7 +3,7 @@ import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
-import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -48,32 +48,32 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         body: StreamBuilder(
             stream: _authBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<LoginState> snapshot) {
-              final loginState = snapshot.data;
-              return buildUi(context, loginState);
+            builder: (context, AsyncSnapshot<AuthState> snapshot) {
+              final authState = snapshot.data;
+              return buildUi(context, authState);
             }));
   }
 
-  Widget buildUi(BuildContext context, LoginState loginState) {
+  Widget buildUi(BuildContext context, AuthState authState) {
     return Center(
       child: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.only(left: 24, right: 24),
         children: <Widget>[
           new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(loginState.validationsState.emailValidation.isValid
+          new XHErrorMessage(authState.validationsState.emailValidation.isValid
                   ? ""
-                  : loginState.validationsState.emailValidation.errorMessage)
+                  : authState.validationsState.emailValidation.errorMessage)
               .messageError(),
           const SizedBox(height: 16.0),
           new XHTextField("Password", _passwordTextEditingController, true)
               .field(),
-          new XHErrorMessage(loginState
+          new XHErrorMessage(authState
                       .validationsState.passwordValidation.isValid
                   ? ""
-                  : loginState.validationsState.passwordValidation.errorMessage)
+                  : authState.validationsState.passwordValidation.errorMessage)
               .messageError(),
-          new XHButton("Sign in", loginState.signInButtonEnabled)
+          new XHButton("Sign in", authState.signInButtonEnabled)
               .materialButton(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

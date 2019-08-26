@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -53,13 +53,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         body: StreamBuilder(
             stream: _authBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<LoginState> snapshot) {
-              final loginState = snapshot.data;
-              return buildUi(context, loginState);
+            builder: (context, AsyncSnapshot<AuthState> snapshot) {
+              final authState = snapshot.data;
+              return buildUi(context, authState);
             }));
   }
 
-  Widget buildUi(BuildContext context, LoginState registerState) {
+  Widget buildUi(BuildContext context, AuthState authState) {
     return Center(
       child: ListView(
         shrinkWrap: true,
@@ -67,27 +67,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
         children: <Widget>[
           new XHTextField("User name", _usernameTextEditingController, false)
               .field(),
-          new XHErrorMessage(
-                  registerState.validationsState.usernameValidation.isValid
-                      ? ""
-                      : registerState
-                          .validationsState.usernameValidation.errorMessage)
+          new XHErrorMessage(authState
+                      .validationsState.usernameValidation.isValid
+                  ? ""
+                  : authState.validationsState.usernameValidation.errorMessage)
               .messageError(),
           new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(registerState
-                      .validationsState.emailValidation.isValid
+          new XHErrorMessage(authState.validationsState.emailValidation.isValid
                   ? ""
-                  : registerState.validationsState.emailValidation.errorMessage)
+                  : authState.validationsState.emailValidation.errorMessage)
               .messageError(),
           new XHTextField("Password", _passwordTextEditingController, true)
               .field(),
-          new XHErrorMessage(
-                  registerState.validationsState.passwordValidation.isValid
-                      ? ""
-                      : registerState
-                          .validationsState.passwordValidation.errorMessage)
+          new XHErrorMessage(authState
+                      .validationsState.passwordValidation.isValid
+                  ? ""
+                  : authState.validationsState.passwordValidation.errorMessage)
               .messageError(),
-          new XHButton("Sign up", registerState.signInButtonEnabled)
+          new XHButton("Sign up", authState.signInButtonEnabled)
               .materialButton(),
         ],
       ),
