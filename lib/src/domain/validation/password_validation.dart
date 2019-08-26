@@ -3,7 +3,6 @@ import 'validation.dart';
 class PasswordValidation implements Validation {
   @override
   ValidationResult validate(String text) {
-    print("password");
     ValidationResult validationResult;
     if (text.length > 4) {
       validationResult = ValidationResult(true, null);

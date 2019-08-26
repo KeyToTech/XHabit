@@ -27,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void textChange() {
-    _authBloc.validate(
+    _authBloc.loginValidate(
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 

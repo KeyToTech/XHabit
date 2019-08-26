@@ -2,16 +2,16 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
+import 'package:xhabits/src/domain/validation/username_validation.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
 
 class AuthBloc {
   BehaviorSubject<AuthState> _loginStateSubject;
   Observable<AuthState> get loginStateObservable => _loginStateSubject.stream;
 
-  EmailValidation _emailValidation;
-  PasswordValidation _passwordValidation;
-  String email;
-  String password;
+  EmailValidation _emailValidation = new EmailValidation();
+  PasswordValidation _passwordValidation = new PasswordValidation();
+  UserNameValidation _userNameValidation = new UserNameValidation();
 
   final _defaultTextInputState = ValidationResult(true, null);
 
@@ -25,7 +25,7 @@ class AuthBloc {
     _passwordValidation = PasswordValidation();
   }
 
-  void validate(String email, String password) {
+  void loginValidate(String email, String password) {
     ValidationResult emailValid = _defaultTextInputState;
     ValidationResult passwordValid = _defaultTextInputState;
     bool isNotEmptyEmail = email.isNotEmpty;
@@ -55,7 +55,9 @@ class AuthBloc {
     bool isNotEmptyEmail = email.isNotEmpty;
     bool isNotEmptyPassword = password.isNotEmpty;
 
-    if (isNotEmptyUserName) {}
+    if (isNotEmptyUserName) {
+      usernameValid = _userNameValidation.validate(username);
+    }
     if (isNotEmptyEmail) {
       emailValid = _emailValidation.validate(email);
     }
