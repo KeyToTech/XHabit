@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -32,7 +33,19 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSubmit() {
+    _loginBloc.loginStateObservable.listen(handleRedirect);
+    _loginBloc.submit(
+        _emailTextEditingController.text, _passwordTextEditingController.text);
     _showToast();
+  }
+
+  void handleRedirect(LoginState loginState) {
+    print('loggedIn ${loginState.loggedIn}');
+    StatefulWidget nextScreen;
+    if (loginState.loggedIn) {
+      nextScreen = HomeScreen();
+    }
+    Navigator.pushNamed(context, RegisterScreen.routeName);
   }
 
   void _showToast() {

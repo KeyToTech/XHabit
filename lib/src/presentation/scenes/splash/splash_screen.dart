@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/mock/mock_auth.dart';
 import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/data/user_repository.dart';
@@ -23,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     _splashBloc.splashStateObservable
         .delay(Duration(seconds: 3))
         .listen(handleTimeout);
@@ -38,7 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void handleTimeout(SplashScreenState splashState) {
     print('handleTimeout: ${splashState.showHome}');
     StatefulWidget nextScreen;
-    if (splashState.showHome == true && splashState.showLogin == false) {
+    // splashState.showHome == true && splashState.showLogin == false
+    if (false) {
       nextScreen = HomeScreen();
     } else {
       nextScreen = LoginScreen();

@@ -2,7 +2,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
+import 'package:xhabits/src/domain/login/login_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
+import 'package:xhabits/src/data/entities/user.dart';
 
 class LoginBloc {
   BehaviorSubject<LoginState> _loginStateSubject;
@@ -46,5 +48,24 @@ class LoginBloc {
             ? true
             : false,
         false));
+  }
+
+  void submit(String email, String password) {
+    LoginUseCase(email, password).login().listen(handleLogin);
+  }
+
+  void handleLogin(User user) {
+     print(user.email);
+    if (user == null) {
+      _loginStateSubject.sink.add(LoginState(
+          LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+          false,
+          false));
+    } else {
+      _loginStateSubject.sink.add(LoginState(
+          LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+          false,
+          true));
+    }
   }
 }
