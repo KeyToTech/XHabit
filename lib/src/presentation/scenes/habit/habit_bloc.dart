@@ -16,9 +16,9 @@ class HabitBloc {
 
   void initHabits() {
     _habitStateSubject.sink.add(HabitState(_useCase.habitTitle(),
-        _useCase.checkedDays(), _useCase.weekDays(), _useCase.progress()));
+        _useCase.checkedDays(), _useCase.progress()));
   }
 
-  bool dayIsChecked(int index) =>
-      _useCase.checkedDays().contains(_useCase.weekDays()[index]);
+  bool dayIsChecked(DateTime date) =>
+      _useCase.isChecked(date);
 }

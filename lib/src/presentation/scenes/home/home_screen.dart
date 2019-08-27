@@ -1,26 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/data/mock/mock_habit.dart';
-import 'package:xhabits/src/domain/simple_habit_data_use_case.dart';
+import 'package:xhabits/src/data/home_repository.dart';
+import 'package:xhabits/src/domain/simple_home_screen_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit.dart';
-import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
-import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
+import 'package:xhabits/src/presentation/scenes/home/habit_screen_state.dart';
+import 'package:xhabits/src/presentation/scenes/home/home_screen_block.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() =>
-      _HomeScreenState(HabitBloc(SimpleHabitDataUseCase(MockHabitData())));
+  _HomeScreenState createState() => _HomeScreenState(
+      HomeScreenBlock(SimpleHomeScreenUseCase(HomeRepository())));
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Habit> _habits = [Habit(), Habit(), Habit()];
+  final HomeScreenBlock _homeScreenBlock;
 
-  final HabitBloc _habitBloc;
-
-  _HomeScreenState(this._habitBloc);
+  _HomeScreenState(this._homeScreenBlock);
 
   @override
   void initState() {
-    _habitBloc.initHabits();
+    _homeScreenBlock.init();
     super.initState();
   }
 
@@ -46,51 +44,48 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   Widget body() => Container(
-        color: Colors.grey[300],
-        child: Column(
-          children: <Widget>[
-            _calendarItems(),
-            _habitItems(),
-          ],
-        ),
-      );
+      color: Colors.grey[300],
+      child: StreamBuilder<HomeScreenResource>(
+          stream: _homeScreenBlock.homeScreenStateObservable,
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return CircularProgressIndicator();
+            } else {
+              final List<DateTime> days = snapshot.data.weekDays;
 
-  Widget _calendarItems() => StreamBuilder<HabitState>(
-      stream: _habitBloc.habitStateObservable,
-      builder: (context, snapshot) {
-        if (snapshot.data == null) return CircularProgressIndicator();
-
-        final List<DateTime> days = snapshot.data.weekDays;
-
-        return Container(
-          height: 50.0,
-          padding: EdgeInsets.only(left: 210.0, right: 8.0, top: 9.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: days.length,
-                  itemBuilder: (context, index) => Container(
-                    child: Column(
-                      children: <Widget>[
-                        Text(days[index].weekday.toString()),
-                        Text(days[index].day.toString())
-                      ],
-                    ),
-                    margin: EdgeInsets.symmetric(horizontal: 12),
+              return Column(children: <Widget>[
+                Container(
+                  height: 50.0,
+                  padding: EdgeInsets.only(left: 210.0, right: 8.0, top: 9.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: days.length,
+                          itemBuilder: (context, index) => Container(
+                            child: Column(
+                              children: <Widget>[
+                                Text(days[index].weekday.toString()),
+                                Text(days[index].day.toString())
+                              ],
+                            ),
+                            margin: EdgeInsets.symmetric(horizontal: 12),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      });
+                _habitsList([HabitRow(days), HabitRow(days), HabitRow(days)]),
+              ]);
+            }
+          }));
 
-  Widget _habitItems() => Expanded(
+  Widget _habitsList(List<HabitRow> habits) => Expanded(
         child: ListView.builder(
-          itemCount: _habits.length,
-          itemBuilder: (BuildContext context, int index) => _habits[index],
+          itemCount: habits.length,
+          itemBuilder: (BuildContext context, int index) => habits[index],
         ),
       );
 }

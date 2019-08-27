@@ -5,16 +5,21 @@ import 'package:xhabits/src/domain/simple_habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
-class Habit extends StatefulWidget {
+class HabitRow extends StatefulWidget {
+  final List<DateTime> _weekDays;
+
+  const HabitRow(this._weekDays);
+
   @override
-  _HabitState createState() =>
-      _HabitState(HabitBloc(SimpleHabitDataUseCase(MockHabitData())));
+  _HabitRowState createState() => _HabitRowState(
+      HabitBloc(SimpleHabitDataUseCase(MockHabitData())), _weekDays);
 }
 
-class _HabitState extends State<Habit> {
+class _HabitRowState extends State<HabitRow> {
   final HabitBloc _habitBloc;
+  final List<DateTime> _weekDays;
 
-  _HabitState(this._habitBloc);
+  _HabitRowState(this._habitBloc, this._weekDays);
 
   @override
   void initState() {
@@ -41,7 +46,7 @@ class _HabitState extends State<Habit> {
           children: <Widget>[
             _progressCircle(habitState.progress),
             _habitTitle(habitState.habitTitle),
-            _marks(habitState.weekDays.length),
+            _marks(_weekDays),
           ],
         ),
       );
@@ -82,17 +87,17 @@ class _HabitState extends State<Habit> {
         ),
       );
 
-  Widget _marks(int count) => Container(
+  Widget _marks(List<DateTime> days) => Container(
         width: 190.0,
         child: Row(
           children: <Widget>[
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: count,
+                itemCount: days.length,
                 itemBuilder: (context, index) => Container(
                   margin: EdgeInsets.symmetric(horizontal: 7.6),
-                  child: _habitBloc.dayIsChecked(index)
+                  child: _habitBloc.dayIsChecked(days[index])
                       ? Icon(Icons.check, color: Colors.green)
                       : Icon(Icons.close),
                 ),

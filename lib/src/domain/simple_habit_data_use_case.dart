@@ -13,8 +13,8 @@ class SimpleHabitDataUseCase implements HabitDataUseCase {
   String habitTitle() => _habitData.title;
 
   @override
-  List<DateTime> weekDays() => _habitData.weekDays;
+  double progress() => 60.0;
 
   @override
-  double progress() => 60.0;
+  bool isChecked(DateTime dateTime) => checkedDays().contains(dateTime);
 }
