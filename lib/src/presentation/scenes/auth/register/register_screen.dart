@@ -5,11 +5,13 @@ import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
 
+@immutable
 class RegisterScreen extends StatefulWidget {
   static final String routeName = '/register';
   final String title;
 
-  RegisterScreen({Key key, this.title}) : super(key: key);
+  const RegisterScreen({Key key, this.title}) : super(key: key);
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }
@@ -36,48 +38,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _onSubmit(BuildContext contex) {}
+  void _onSubmit() {
+    _showToast();
+  }
 
-  void _showToast(BuildContext contex) {
-    // final snackBar =
-    //     SnackBar(content: Text('Logged    ${emailController.text}'));
-    // _scaffoldKey.currentState.showSnackBar(snackBar);
+  void _showToast() {
+    final snackBar = SnackBar(
+        content: Text('Logged    ${_emailTextEditingController.text}'));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Sign up'),
+  Widget build(BuildContext context) => Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Sign up'),
+      ),
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24, right: 24),
+          children: <Widget>[
+            StreamBuilder<SignUpValidationsState>(
+              stream: _authBloc.registerStateObservable,
+              builder:
+                  (context, AsyncSnapshot<SignUpValidationsState> snapshot) {
+                final signUpState = snapshot.data;
+                return buildForm(context, signUpState);
+              },
+            ),
+            StreamBuilder<AuthState>(
+              stream: _authBloc.authStateObservable,
+              builder: (context, AsyncSnapshot<AuthState> snapshot) {
+                final authState = snapshot.data;
+                return buildButton(context, authState);
+              },
+            )
+          ],
         ),
-        body: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 24, right: 24),
-            children: <Widget>[
-              StreamBuilder<SignUpValidationsState>(
-                stream: _authBloc.registerStateObservable,
-                builder:
-                    (context, AsyncSnapshot<SignUpValidationsState> snapshot) {
-                  final signUpState = snapshot.data;
-                  return buildForm(context, signUpState);
-                },
-              ),
-              StreamBuilder<AuthState>(
-                stream: _authBloc.authStateObservable,
-                builder: (context, AsyncSnapshot<AuthState> snapshot) {
-                  final authState = snapshot.data;
-                  return buildButton(context, authState);
-                },
-              )
-            ],
-          ),
-        ));
-  }
+      ));
 
   Widget buildButton(BuildContext context, AuthState authState) {
-    XHButton xhButton = XHButton('Sign up', authState.signInButtonEnabled);
+    XHButton xhButton =
+        XHButton('Sign up', authState.signInButtonEnabled, _onSubmit);
     return xhButton.materialButton();
   }
 

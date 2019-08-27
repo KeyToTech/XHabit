@@ -34,65 +34,66 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _onSubmit(BuildContext contex) {}
+  void _onSubmit() {
+    _showToast();
+  }
 
-  void _showToast(BuildContext contex) {
-    // final snackBar =
-    //     SnackBar(content: Text('Logged    ${emailController.text}'));
-    // _scaffoldKey.currentState.showSnackBar(snackBar);
+  void _showToast() {
+    final snackBar = SnackBar(
+        content: Text('Logged    ${_emailTextEditingController.text}'));
+    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Sign in'),
+  Widget build(BuildContext context) => Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text('Sign in'),
+      ),
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24, right: 24),
+          children: <Widget>[
+            StreamBuilder<SignInValidationsState>(
+              stream: _authBloc.loginStateObservable,
+              builder:
+                  (context, AsyncSnapshot<SignInValidationsState> snapshot) {
+                final signInState = snapshot.data;
+                return buildForm(context, signInState);
+              },
+            ),
+            StreamBuilder<AuthState>(
+              stream: _authBloc.authStateObservable,
+              builder: (context, AsyncSnapshot<AuthState> snapshot) {
+                final authState = snapshot.data;
+                return buildButton(context, authState);
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Don't have an account?"),
+                const SizedBox(width: 8.0),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, RegisterScreen.routeName);
+                  },
+                  child: Text('Sign up',
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline)),
+                )
+              ],
+            )
+          ],
         ),
-        body: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.only(left: 24, right: 24),
-            children: <Widget>[
-              StreamBuilder<SignInValidationsState>(
-                stream: _authBloc.loginStateObservable,
-                builder:
-                    (context, AsyncSnapshot<SignInValidationsState> snapshot) {
-                  final signInState = snapshot.data;
-                  return buildForm(context, signInState);
-                },
-              ),
-              StreamBuilder<AuthState>(
-                stream: _authBloc.authStateObservable,
-                builder: (context, AsyncSnapshot<AuthState> snapshot) {
-                  final authState = snapshot.data;
-                  return buildButton(context, authState);
-                },
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Don't have an account?"),
-                  const SizedBox(width: 8.0),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(context, RegisterScreen.routeName);
-                    },
-                    child: Text('Sign up',
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.bold,
-                            decoration: TextDecoration.underline)),
-                  )
-                ],
-              )
-            ],
-          ),
-        ));
-  }
+      ));
 
   Widget buildButton(BuildContext context, AuthState authState) {
-    XHButton xhButton = XHButton('Sign in', authState.signInButtonEnabled);
+    XHButton xhButton =
+        XHButton('Sign in', authState.signInButtonEnabled, _onSubmit);
     return xhButton.materialButton();
   }
 
@@ -119,5 +120,9 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailTextEditingController.dispose();
     _passwordTextEditingController.dispose();
     super.dispose();
+  }
+
+  void navigateToRegisterScreen() {
+    Navigator.pushNamed(context, RegisterScreen.routeName);
   }
 }
