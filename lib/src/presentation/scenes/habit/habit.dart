@@ -39,59 +39,65 @@ class _HabitState extends State<Habit> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: 7.0),
-              child: AnimatedCircularChart(
-                holeRadius: 3.0,
-                size: Size.fromRadius(15.0),
-                initialChartData: <CircularStackEntry>[
-                  CircularStackEntry(
-                    <CircularSegmentEntry>[
-                      CircularSegmentEntry(
-                        60.0,
-                        Colors.green,
-                      ),
-                      CircularSegmentEntry(
-                        40.0,
-                        Colors.grey[300],
-                      ),
-                    ],
-                    rankKey: 'progress',
-                  ),
-                ],
-                chartType: CircularChartType.Radial,
-                percentageValues: true,
-              ),
+            _progressCircle(habitState.progress),
+            _habitTitle(habitState.habitTitle),
+            _marks(habitState.weekDays.length),
+          ],
+        ),
+      );
+
+  Widget _progressCircle(double progress) => Container(
+        margin: EdgeInsets.only(right: 7.0),
+        child: AnimatedCircularChart(
+          holeRadius: 3.0,
+          size: Size.fromRadius(15.0),
+          initialChartData: <CircularStackEntry>[
+            CircularStackEntry(
+              <CircularSegmentEntry>[
+                CircularSegmentEntry(
+                  60.0,
+                  Colors.green,
+                ),
+                CircularSegmentEntry(
+                  40.0,
+                  Colors.grey[300],
+                ),
+              ],
+              rankKey: 'progress',
             ),
+          ],
+          chartType: CircularChartType.Radial,
+          percentageValues: true,
+        ),
+      );
+
+  Widget _habitTitle(String title) => Expanded(
+        child: Container(
+          margin: EdgeInsets.only(right: 50.0),
+          child: Text(
+            title,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
+          ),
+        ),
+      );
+
+  Widget _marks(int count) => Container(
+        width: 190.0,
+        child: Row(
+          children: <Widget>[
             Expanded(
-              child: Container(
-                margin: EdgeInsets.only(right: 50.0),
-                child: Text(
-                  habitState.habitTitle,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: count,
+                itemBuilder: (context, index) => Container(
+                  margin: EdgeInsets.symmetric(horizontal: 7.6),
+                  child: _habitBloc.dayIsChecked(index)
+                      ? Icon(Icons.check, color: Colors.green)
+                      : Icon(Icons.close),
                 ),
               ),
             ),
-            Container(
-              width: 190.0,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: habitState.weekDays.length,
-                      itemBuilder: (context, index) => Container(
-                        margin: EdgeInsets.symmetric(horizontal: 7.6),
-                        child: _habitBloc.dayIsChecked(index)
-                            ? Icon(Icons.check, color: Colors.green)
-                            : Icon(Icons.close),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
           ],
         ),
       );

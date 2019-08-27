@@ -14,4 +14,7 @@ class SimpleHabitDataUseCase implements HabitDataUseCase {
 
   @override
   List<DateTime> weekDays() => _habitData.weekDays;
+
+  @override
+  double progress() => 60.0;
 }
