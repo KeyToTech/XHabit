@@ -12,8 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Habit> habits = [Habit(), Habit(), Habit()];
-  List<DateTime> days;
+  final List<Habit> _habits = [Habit(), Habit(), Habit()];
 
   final HabitBloc _habitBloc;
 
@@ -61,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, snapshot) {
         if (snapshot.data == null) return CircularProgressIndicator();
 
-        List<DateTime> days = snapshot.data.weekDays;
+        final List<DateTime> days = snapshot.data.weekDays;
 
         return Container(
           height: 50.0,
@@ -90,8 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _habitItems() => Expanded(
         child: ListView.builder(
-          itemCount: habits.length,
-          itemBuilder: (BuildContext context, int index) => habits[index],
+          itemCount: _habits.length,
+          itemBuilder: (BuildContext context, int index) => _habits[index],
         ),
       );
 }
