@@ -55,11 +55,11 @@ class _HabitState extends State<Habit> {
             CircularStackEntry(
               <CircularSegmentEntry>[
                 CircularSegmentEntry(
-                  60.0,
+                  progress,
                   Colors.green,
                 ),
                 CircularSegmentEntry(
-                  40.0,
+                  (100 - progress),
                   Colors.grey[300],
                 ),
               ],
