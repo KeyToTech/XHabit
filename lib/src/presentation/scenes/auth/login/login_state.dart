@@ -7,17 +7,14 @@ class LoginValidationsState {
   LoginValidationsState(this.emailValidation, this.passwordValidation);
 }
 
-class LoginResultState {
+class LoginState {
+  final LoginValidationsState loginValidationsState;
+  final bool signInButtonEnabled;
   final bool loggedIn;
 
-  LoginResultState(this.loggedIn);
-}
-
-class LoginState {
-  final LoginValidationsState validationsState;
-  final bool signInButtonEnabled;
-  final LoginResultState loginResultState;
-
   LoginState(
-      this.validationsState, this.signInButtonEnabled, this.loginResultState);
+    this.loginValidationsState,
+    this.signInButtonEnabled,
+    this.loggedIn,
+  );
 }

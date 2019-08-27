@@ -2,10 +2,11 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
-import 'login_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 
 class LoginBloc {
   BehaviorSubject<LoginState> _loginStateSubject;
+
   Observable<LoginState> get loginStateObservable => _loginStateSubject.stream;
 
   EmailValidation _emailValidation;
@@ -17,7 +18,8 @@ class LoginBloc {
     _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
         false,
-        LoginResultState(false)));
+        false));
+
     _emailValidation = EmailValidation();
     _passwordValidation = PasswordValidation();
   }
@@ -25,30 +27,24 @@ class LoginBloc {
   void validate(String email, String password) {
     ValidationResult emailValid = _defaultTextInputState;
     ValidationResult passwordValid = _defaultTextInputState;
-    bool isEmptyEmail = email.isEmpty;
-    bool isEmptyPassword = password.isEmpty;
-    if (!isEmptyEmail) {
+    bool isNotEmptyEmail = email.isNotEmpty;
+    bool isNotEmptyPassword = password.isNotEmpty;
+
+    if (isNotEmptyEmail) {
       emailValid = _emailValidation.validate(email);
     }
-    if (!isEmptyPassword) {
+    if (isNotEmptyPassword) {
       passwordValid = _passwordValidation.validate(password);
     }
 
-    if (!isEmptyEmail || !isEmptyPassword) {
-      _loginStateSubject.sink.add(LoginState(
-          LoginValidationsState(emailValid, passwordValid),
-          emailValid.isValid &&
-              !isEmptyEmail &&
-              passwordValid.isValid &&
-              !isEmptyPassword,
-          LoginResultState(false)));
-    }
-  }
-
-  void login() {
     _loginStateSubject.sink.add(LoginState(
-        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
-        true,
-        LoginResultState(true)));
+        LoginValidationsState(emailValid, passwordValid),
+        emailValid.isValid &&
+                passwordValid.isValid &&
+                isNotEmptyEmail &&
+                isNotEmptyPassword
+            ? true
+            : false,
+        false));
   }
 }

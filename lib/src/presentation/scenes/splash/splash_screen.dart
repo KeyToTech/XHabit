@@ -1,25 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/mock/mock_auth.dart';
-import 'package:xhabits/src/data/mock/mock_home_screen.dart';
 import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/simple_check_user_is_signed_in_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
-import 'package:xhabits/src/presentation/scenes/login/login_screen.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() =>
-      _SplashScreenState(
-          SplashScreenBloc(
-              SimpleCheckUserIsSignedInUseCase(
-                MockAuth()
-            )
-          )
-      );
+  _SplashScreenState createState() => _SplashScreenState(
+      SplashScreenBloc(SimpleCheckUserIsSignedInUseCase(MockAuth())));
 }
 
 class _SplashScreenState extends State<SplashScreen> {
