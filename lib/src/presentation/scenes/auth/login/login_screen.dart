@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
-import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
-import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_screen.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -12,7 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final AuthBloc _authBloc = AuthBloc();
+  final _loginBloc = LoginBloc();
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -22,12 +22,12 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _emailTextEditingController.addListener(textChange);
-    _passwordTextEditingController.addListener(textChange);
+    _emailTextEditingController.addListener(_textChange);
+    _passwordTextEditingController.addListener(_textChange);
   }
 
-  void textChange() {
-    _authBloc.loginValidate(
+  void _textChange() {
+    _loginBloc.validate(
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
@@ -48,31 +48,39 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Text('Sign in'),
       ),
       body: StreamBuilder(
-          stream: _authBloc.loginStateObservable,
-          builder: (context, AsyncSnapshot<AuthState> snapshot) {
-            final authState = snapshot.data;
-            return buildUi(context, authState);
+          stream: _loginBloc.loginStateObservable,
+          builder: (context, AsyncSnapshot<LoginState> snapshot) {
+            final loginState = snapshot.data;
+            return buildUi(context, loginState);
           }));
 
-  Widget buildUi(BuildContext context, AuthState authState) => Center(
+  Widget buildUi(BuildContext context, LoginState loginState) => Center(
         child: ListView(
           shrinkWrap: true,
           padding: EdgeInsets.only(left: 24, right: 24),
           children: <Widget>[
-            XHTextField('Email', _emailTextEditingController, false).field(),
-            XHErrorMessage(authState.validationsState.emailValidation.isValid
-                    ? ''
-                    : authState.validationsState.emailValidation.errorMessage)
-                .messageError(),
-            const SizedBox(height: 16.0),
-            XHTextField('Password', _passwordTextEditingController, true)
-                .field(),
-            XHErrorMessage(authState.validationsState.passwordValidation.isValid
-                    ? ''
-                    : authState
-                        .validationsState.passwordValidation.errorMessage)
-                .messageError(),
-            XHButton('Sign in', authState.signInButtonEnabled, _onSubmit)
+            Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  XHTextField('Email', _emailTextEditingController, false)
+                      .field(),
+                  XHErrorMessage(loginState
+                              .loginValidationsState.emailValidation.isValid
+                          ? ''
+                          : loginState.loginValidationsState.emailValidation
+                              .errorMessage)
+                      .messageError(),
+                  const SizedBox(height: 16.0),
+                  XHTextField('Password', _passwordTextEditingController, true)
+                      .field(),
+                  XHErrorMessage(loginState
+                              .loginValidationsState.passwordValidation.isValid
+                          ? ''
+                          : loginState.loginValidationsState.passwordValidation
+                              .errorMessage)
+                      .messageError(),
+                ]),
+            XHButton('Sign in', loginState.signInButtonEnabled, _onSubmit)
                 .materialButton(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Text("Don't have an account?"),
                 const SizedBox(width: 8.0),
                 InkWell(
-                  onTap: navigateToRegisterScreen,
+                  onTap: () {
+                    Navigator.pushNamed(context, RegisterScreen.routeName);
+                  },
                   child: Text('Sign up',
                       style: TextStyle(
                           color: Colors.blue,
