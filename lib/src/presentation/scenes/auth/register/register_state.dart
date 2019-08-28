@@ -11,12 +11,12 @@ class RegisterValidationsState {
 
 class RegisterState {
   final RegisterValidationsState registerValidationsState;
-  final bool signInButtonEnabled;
-  final bool loggedIn;
+  final bool signUpButtonEnabled;
+  final bool signedUp;
 
   RegisterState(
     this.registerValidationsState,
-    this.signInButtonEnabled,
-    this.loggedIn,
+    this.signUpButtonEnabled,
+    this.signedUp,
   );
 }

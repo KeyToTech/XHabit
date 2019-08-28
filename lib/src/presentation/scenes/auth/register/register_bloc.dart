@@ -1,4 +1,6 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/src/data/entities/user.dart';
+import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/username_validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
@@ -11,13 +13,17 @@ class RegisterBloc {
   Observable<RegisterState> get registerStateObservable =>
       _registerStateSubject.stream;
 
+  Future<dynamic> get closeStream => _registerStateSubject.close();
+
+  final RegisterUseCase _registerUseCase;
+
   UserNameValidation _userNameValidation;
   EmailValidation _emailValidation;
   PasswordValidation _passwordValidation;
 
   final _defaultTextInputState = ValidationResult(true, null);
 
-  RegisterBloc() {
+  RegisterBloc(this._registerUseCase) {
     _registerStateSubject = BehaviorSubject<RegisterState>.seeded(RegisterState(
         RegisterValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
@@ -57,5 +63,26 @@ class RegisterBloc {
             ? true
             : false,
         false));
+  }
+
+  void register(String email, String password) {
+    _registerUseCase.register(email, password).listen(handleRegister);
+  }
+
+  void handleRegister(User user) {
+    print(user.email);
+    if (user == null) {
+      _registerStateSubject.sink.add(RegisterState(
+          RegisterValidationsState(_defaultTextInputState,
+              _defaultTextInputState, _defaultTextInputState),
+          false,
+          false));
+    } else {
+      _registerStateSubject.sink.add(RegisterState(
+          RegisterValidationsState(_defaultTextInputState,
+              _defaultTextInputState, _defaultTextInputState),
+          false,
+          true));
+    }
   }
 }
