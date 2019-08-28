@@ -3,7 +3,7 @@ import 'package:xhabits/src/domain/home_screen_use_case.dart';
 
 import 'habit_screen_state.dart';
 
-class HomeScreenBlock {
+class HomeScreenBloc {
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
 
   Observable<HomeScreenResource> get homeScreenStateObservable =>
@@ -11,7 +11,7 @@ class HomeScreenBlock {
 
   HomeScreenUseCase _useCase;
 
-  HomeScreenBlock(HomeScreenUseCase useCase) {
+  HomeScreenBloc(HomeScreenUseCase useCase) {
     _homeStateSubject = BehaviorSubject<HomeScreenResource>();
     _useCase = useCase;
   }

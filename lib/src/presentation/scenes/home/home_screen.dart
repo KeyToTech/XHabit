@@ -3,22 +3,22 @@ import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/domain/simple_home_screen_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit.dart';
 import 'package:xhabits/src/presentation/scenes/home/habit_screen_state.dart';
-import 'package:xhabits/src/presentation/scenes/home/home_screen_block.dart';
+import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(
-      HomeScreenBlock(SimpleHomeScreenUseCase(HomeRepository())));
+      HomeScreenBloc(SimpleHomeScreenUseCase(HomeRepository())));
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final HomeScreenBlock _homeScreenBlock;
+  final HomeScreenBloc _homeScreenBloc;
 
-  _HomeScreenState(this._homeScreenBlock);
+  _HomeScreenState(this._homeScreenBloc);
 
   @override
   void initState() {
-    _homeScreenBlock.init();
+    _homeScreenBloc.init();
     super.initState();
   }
 
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget body() => Container(
       color: Colors.grey[300],
       child: StreamBuilder<HomeScreenResource>(
-          stream: _homeScreenBlock.homeScreenStateObservable,
+          stream: _homeScreenBloc.homeScreenStateObservable,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return CircularProgressIndicator();
