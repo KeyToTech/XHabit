@@ -66,7 +66,10 @@ class RegisterBloc {
   }
 
   void register(String email, String password) {
-    _registerUseCase.register(email, password).listen(handleRegister);
+    _registerUseCase
+        .register(email, password)
+        .handleError((error) => print('HandleError ${error}'))
+        .listen(handleRegister);
   }
 
   void handleRegister(User user) {

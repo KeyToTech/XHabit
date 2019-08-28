@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
@@ -23,7 +24,8 @@ class LoginBloc {
     _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
         false,
-        false));
+        false,
+        null));
 
     _emailValidation = EmailValidation();
     _passwordValidation = PasswordValidation();
@@ -50,11 +52,22 @@ class LoginBloc {
                 isNotEmptyPassword
             ? true
             : false,
-        false));
+        false,
+        null));
   }
 
   void login(String email, String password) {
-    _loginUseCase.login(email, password).listen(handleLogin);
+    _loginUseCase
+        .login(email, password)
+        .handleError((Object error) => {
+              _loginStateSubject.sink.add(LoginState(
+                  LoginValidationsState(
+                      _defaultTextInputState, _defaultTextInputState),
+                  true,
+                  false,
+                  error.toString()))
+            })
+        .listen(handleLogin);
   }
 
   void handleLogin(User user) {
@@ -63,12 +76,14 @@ class LoginBloc {
       _loginStateSubject.sink.add(LoginState(
           LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
           false,
-          false));
+          false,
+          null));
     } else {
       _loginStateSubject.sink.add(LoginState(
           LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
           false,
-          true));
+          true,
+          null));
     }
   }
 }

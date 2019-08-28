@@ -41,19 +41,20 @@ class _LoginScreenState extends State<LoginScreen> {
     _loginBloc.loginStateObservable.listen(_handleRedirect);
     _loginBloc.login(
         _emailTextEditingController.text, _passwordTextEditingController.text);
-    _showToast();
   }
 
   void _handleRedirect(LoginState loginState) {
+    print(loginState.errorMessage);
     if (loginState.loggedIn) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    } else {
+      _showToast(loginState.errorMessage);
     }
   }
 
-  void _showToast() {
-    final snackBar = SnackBar(
-        content: Text('Logged    ${_emailTextEditingController.text}'));
+  void _showToast(String error) {
+    final snackBar = SnackBar(content: Text(error));
     _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
