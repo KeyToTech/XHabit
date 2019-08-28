@@ -11,12 +11,15 @@ class LoginBloc {
 
   Observable<LoginState> get loginStateObservable => _loginStateSubject.stream;
 
+  Future<dynamic> get closeStream => _loginStateSubject.close();
+
+  final LoginUseCase _loginUseCase;
   EmailValidation _emailValidation;
   PasswordValidation _passwordValidation;
 
   final _defaultTextInputState = ValidationResult(true, null);
 
-  LoginBloc() {
+  LoginBloc(this._loginUseCase) {
     _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
         false,
@@ -50,12 +53,12 @@ class LoginBloc {
         false));
   }
 
-  void submit(String email, String password) {
-    LoginUseCase(email, password).login().listen(handleLogin);
+  void login(String email, String password) {
+    _loginUseCase.login(email, password).listen(handleLogin);
   }
 
   void handleLogin(User user) {
-     print(user.email);
+    print(user.email);
     if (user == null) {
       _loginStateSubject.sink.add(LoginState(
           LoginValidationsState(_defaultTextInputState, _defaultTextInputState),

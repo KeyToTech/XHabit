@@ -40,8 +40,8 @@ class _SplashScreenState extends State<SplashScreen> {
   void handleTimeout(SplashScreenState splashState) {
     print('handleTimeout: ${splashState.showHome}');
     StatefulWidget nextScreen;
-    // splashState.showHome == true && splashState.showLogin == false
-    if (false) {
+
+    if (splashState.showHome == true && splashState.showLogin == false) {
       nextScreen = HomeScreen();
     } else {
       nextScreen = LoginScreen();

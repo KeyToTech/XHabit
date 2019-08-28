@@ -1,17 +1,13 @@
-import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginUseCase {
-  final String email;
-  final String password;
-  FirebaseAuthService firebaseAuthService;
+  final AuthService _service;
 
-  LoginUseCase(this.email, this.password) {
-    firebaseAuthService = FirebaseAuthService();
-  }
+  LoginUseCase(this._service);
 
-  Observable<User> login() {
-    return firebaseAuthService.signIn(email, password);
+  Observable<User> login(String email, String password) {
+    return _service.signIn(email, password);
   }
 }
