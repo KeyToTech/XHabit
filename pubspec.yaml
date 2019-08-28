@@ -20,6 +20,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Dependency for circular chart
+  flutter_circular_chart: ^0.1.0
+
   # Dependency for RXDart
   rxdart: ^0.22.1+1
 

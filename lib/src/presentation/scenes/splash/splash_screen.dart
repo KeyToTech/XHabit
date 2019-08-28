@@ -11,8 +11,8 @@ import 'splash_screen_state.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState(SplashScreenBloc(
-      SimpleCheckUserIsSignedInUseCase(FirebaseAuthService())));
+  _SplashScreenState createState() => _SplashScreenState(
+      SplashScreenBloc(SimpleCheckUserIsSignedInUseCase(MockAuth())));
 }
 
 class _SplashScreenState extends State<SplashScreen> {
