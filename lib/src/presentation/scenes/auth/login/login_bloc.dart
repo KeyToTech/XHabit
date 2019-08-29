@@ -57,17 +57,21 @@ class LoginBloc {
   }
 
   void login(String email, String password) {
-    _loginUseCase
-        .login(email, password)
-        .handleError((Object error) => {
-              _loginStateSubject.sink.add(LoginState(
-                  LoginValidationsState(
-                      _defaultTextInputState, _defaultTextInputState),
-                  true,
-                  false,
-                  error.toString()))
-            })
-        .listen(handleLogin);
+    _loginUseCase.login(email, password).listen(handleLogin, onError: (e) {
+      _loginStateSubject.sink.add(LoginState(
+          LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+          true,
+          false,
+          e.toString()));
+    });
+  }
+
+  void handleError(PlatformException exception) {
+    _loginStateSubject.sink.add(LoginState(
+        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+        true,
+        false,
+        exception.message));
   }
 
   void handleLogin(User user) {
