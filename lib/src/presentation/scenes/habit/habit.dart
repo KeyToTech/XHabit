@@ -18,6 +18,7 @@ class HabitRow extends StatefulWidget {
 class _HabitRowState extends State<HabitRow> {
   final HabitBloc _habitBloc;
   final List<DateTime> _weekDays;
+  Size _screenSize;
 
   _HabitRowState(this._habitBloc, this._weekDays);
 
@@ -32,17 +33,17 @@ class _HabitRowState extends State<HabitRow> {
         stream: _habitBloc.habitStateObservable,
         builder: (BuildContext context, AsyncSnapshot<HabitState> snapshot) {
           if (snapshot.data == null) return CircularProgressIndicator();
+          _screenSize = MediaQuery.of(context).size;
           return buildUi(context, snapshot.data);
         },
       );
 
   Widget buildUi(BuildContext context, HabitState habitState) => Container(
-        padding: EdgeInsets.all(10.0),
-        margin: EdgeInsets.only(bottom: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
+        margin: EdgeInsets.only(bottom: _screenSize.height * 0.012),
         color: Colors.white,
-        height: 50.0,
+        height: _screenSize.height * 0.08,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             _progressCircle(habitState.progress),
             _habitTitle(habitState.habitTitle),
@@ -52,10 +53,10 @@ class _HabitRowState extends State<HabitRow> {
       );
 
   Widget _progressCircle(double progress) => Container(
-        margin: EdgeInsets.only(right: 7.0),
+        margin: EdgeInsets.only(right: _screenSize.width * 0.01),
         child: AnimatedCircularChart(
-          holeRadius: 3.0,
-          size: Size.fromRadius(15.0),
+          holeRadius: _screenSize.width * 0.008,
+          size: Size.fromRadius(_screenSize.width * 0.05),
           initialChartData: <CircularStackEntry>[
             CircularStackEntry(
               <CircularSegmentEntry>[
@@ -78,17 +79,18 @@ class _HabitRowState extends State<HabitRow> {
 
   Widget _habitTitle(String title) => Expanded(
         child: Container(
-          margin: EdgeInsets.only(right: 50.0),
           child: Text(
             title,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
+            style: TextStyle(fontSize: _screenSize.width * 0.043),
           ),
         ),
       );
 
   Widget _marks(List<DateTime> days) => Container(
-        width: 190.0,
+        width: _screenSize.width * 0.5,
+        margin: EdgeInsets.only(left: _screenSize.width * 0.1),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -96,10 +98,18 @@ class _HabitRowState extends State<HabitRow> {
                 scrollDirection: Axis.horizontal,
                 itemCount: days.length,
                 itemBuilder: (context, index) => Container(
-                  margin: EdgeInsets.symmetric(horizontal: 7.6),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: _screenSize.width * 0.025),
                   child: _habitBloc.dayIsChecked(days[index])
-                      ? Icon(Icons.check, color: Colors.green)
-                      : Icon(Icons.close),
+                      ? Icon(
+                          Icons.check,
+                          color: Colors.green,
+                          size: _screenSize.width * 0.054,
+                        )
+                      : Icon(
+                          Icons.close,
+                          size: _screenSize.width * 0.054,
+                        ),
                 ),
               ),
             ),

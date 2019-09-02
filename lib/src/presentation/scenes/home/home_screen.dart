@@ -13,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeScreenBloc _homeScreenBloc;
+  Size _screenSize;
 
   _HomeScreenState(this._homeScreenBloc);
 
@@ -51,12 +52,18 @@ class _HomeScreenState extends State<HomeScreen> {
             if (snapshot.data == null) {
               return CircularProgressIndicator();
             } else {
+              _screenSize = MediaQuery.of(context).size;
               final List<DateTime> days = snapshot.data.weekDays;
+              final Map<int, String> daysWords = snapshot.data.daysWords;
 
               return Column(children: <Widget>[
                 Container(
-                  height: 50.0,
-                  padding: EdgeInsets.only(left: 210.0, right: 8.0, top: 9.0),
+                  height: _screenSize.height * 0.08,
+                  padding: EdgeInsets.only(
+                    left: _screenSize.width * 0.485,
+                    right: _screenSize.width * 0.015,
+                    top: _screenSize.height * 0.018,
+                  ),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -66,11 +73,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, index) => Container(
                             child: Column(
                               children: <Widget>[
-                                Text(days[index].weekday.toString()),
-                                Text(days[index].day.toString())
+                                Text(
+                                  daysWords[days[index].weekday],
+                                  style: TextStyle(
+                                      fontSize: _screenSize.width * 0.024),
+                                ),
+                                Text(
+                                  days[index].day.toString(),
+                                  style: TextStyle(
+                                      fontSize: _screenSize.width * 0.033),
+                                )
                               ],
                             ),
-                            margin: EdgeInsets.symmetric(horizontal: 12),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: _screenSize.width * 0.031),
                           ),
                         ),
                       ),
