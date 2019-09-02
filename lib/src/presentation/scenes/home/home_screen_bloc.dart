@@ -17,6 +17,7 @@ class HomeScreenBloc {
   }
 
   void init() {
-    _homeStateSubject.sink.add(HomeScreenResource(_useCase.weekDays(), false));
+    _homeStateSubject.sink.add(
+        HomeScreenResource(_useCase.weekDays(), _useCase.daysWords(), false));
   }
 }
