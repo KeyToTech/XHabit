@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/domain/simple_home_screen_data_use_case.dart';
+import 'package:xhabits/src/domain/simple_logout_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit.dart';
 import 'package:xhabits/src/presentation/scenes/home/habit_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState(
-      HomeScreenBloc(SimpleHomeScreenUseCase(HomeRepository())));
+  _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
+      SimpleHomeScreenUseCase(HomeRepository()), SimpleLogoutUseCase(FirebaseAuthService())));
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   final HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
 
@@ -21,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     _homeScreenBloc.init();
+    _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
   }
 
@@ -109,4 +112,15 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (BuildContext context, int index) => habits[index],
         ),
       );
+
+  void _handleLogoutRedirect(bool wasLoggedOut) {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  }
+
+  @override
+  void dispose() {
+    _homeScreenBloc.dispose();
+    super.dispose();
+  }
 }

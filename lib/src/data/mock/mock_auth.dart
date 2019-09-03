@@ -15,7 +15,8 @@ class MockAuth implements AuthService {
   }
 
   @override
-  Observable<bool> isSignedIn() {
-    return Observable.just(true);
-  }
+  Observable<bool> isSignedIn() => Observable.just(true);
+
+  @override
+  Observable<bool> logout() => Observable.just(true);
 }
