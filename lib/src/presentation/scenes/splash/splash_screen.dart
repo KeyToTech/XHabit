@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/mock/mock_auth.dart';
 import 'package:xhabits/src/data/mock/mock_user_repository.dart';
 import 'package:xhabits/src/data/user_repository.dart';
@@ -11,8 +12,8 @@ import 'splash_screen_state.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState(SplashScreenBloc(
-      SimpleCheckUserIsSignedInUseCase(FirebaseAuthService())));
+  _SplashScreenState createState() => _SplashScreenState(
+      SplashScreenBloc(SimpleCheckUserIsSignedInUseCase(FirebaseAuthService())));
 }
 
 class _SplashScreenState extends State<SplashScreen> {
@@ -23,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+
     _splashBloc.splashStateObservable
         .delay(Duration(seconds: 3))
         .listen(handleTimeout);

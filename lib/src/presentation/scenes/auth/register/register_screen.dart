@@ -1,101 +1,126 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/presentation/scenes/auth/auth_state.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/domain/register/register_use_case.dart';
+import 'package:xhabits/src/presentation/resource.dart';
+import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
+import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
+import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
-import 'package:xhabits/src/presentation/scenes/auth/auth_bloc.dart';
+import 'package:xhabits/src/presentation/scenes/auth/register/register_bloc.dart';
 
+@immutable
 class RegisterScreen extends StatefulWidget {
-  static final String routeName = "/register";
+  static final String routeName = '/register';
   final String title;
 
-  RegisterScreen({Key key, this.title}) : super(key: key);
+  const RegisterScreen({Key key, this.title}) : super(key: key);
+
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState(
+      RegisterBloc(RegisterUseCase(FirebaseAuthService())));
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  AuthBloc _authBloc = new AuthBloc();
+  final RegisterBloc _registerBloc;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
   final _usernameTextEditingController = TextEditingController();
+
+  _RegisterScreenState(this._registerBloc);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _usernameTextEditingController.addListener(textChange);
-    _emailTextEditingController.addListener(textChange);
-    _passwordTextEditingController.addListener(textChange);
+    _usernameTextEditingController.addListener(_textChange);
+    _emailTextEditingController.addListener(_textChange);
+    _passwordTextEditingController.addListener(_textChange);
   }
 
-  void textChange() {
-    _authBloc.registerValidate(_usernameTextEditingController.text,
+  void _textChange() {
+    _registerBloc.validate(_usernameTextEditingController.text,
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _onSubmit(BuildContext contex) {}
+  void _onSubmit() {
+    _registerBloc.registerStateObservable.listen(_handleRedirect);
+    _registerBloc.register(
+        _emailTextEditingController.text, _passwordTextEditingController.text);
+  }
 
-  void _showToast(BuildContext contex) {
-    // final snackBar =
-    //     SnackBar(content: Text('Logged    ${emailController.text}'));
-    // _scaffoldKey.currentState.showSnackBar(snackBar);
+  void _handleRedirect(Resource<RegisterState> registerState) {
+    if (registerState.status == Status.SUCCESS) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text("Sign up"),
-        ),
-        body: StreamBuilder(
-            stream: _authBloc.loginStateObservable,
-            builder: (context, AsyncSnapshot<AuthState> snapshot) {
-              final authState = snapshot.data;
-              return buildUi(context, authState);
-            }));
-  }
-
-  Widget buildUi(BuildContext context, AuthState authState) {
-    return Center(
-      child: ListView(
-        shrinkWrap: true,
-        padding: EdgeInsets.only(left: 24, right: 24),
-        children: <Widget>[
-          new XHTextField("User name", _usernameTextEditingController, false)
-              .field(),
-          new XHErrorMessage(authState
-                      .validationsState.usernameValidation.isValid
-                  ? ""
-                  : authState.validationsState.usernameValidation.errorMessage)
-              .messageError(),
-          new XHTextField("Email", _emailTextEditingController, false).field(),
-          new XHErrorMessage(authState.validationsState.emailValidation.isValid
-                  ? ""
-                  : authState.validationsState.emailValidation.errorMessage)
-              .messageError(),
-          new XHTextField("Password", _passwordTextEditingController, true)
-              .field(),
-          new XHErrorMessage(authState
-                      .validationsState.passwordValidation.isValid
-                  ? ""
-                  : authState.validationsState.passwordValidation.errorMessage)
-              .messageError(),
-          new XHButton("Sign up", authState.signInButtonEnabled)
-              .materialButton(),
-        ],
+  Widget build(BuildContext context) => Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-    );
-  }
+      body: StreamBuilder(
+          stream: _registerBloc.registerStateObservable,
+          builder: (context, AsyncSnapshot<Resource<RegisterState>> snapshot) {
+            final registerState = snapshot.data.data;
+            if (snapshot.data.status == Status.ERROR) {
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                  InfoDialog().show(context, 'Error', snapshot.data.message));
+            }
+            return buildUi(context, registerState);
+          }));
+
+  Widget buildUi(BuildContext context, RegisterState registerState) => Center(
+        child: ListView(
+          shrinkWrap: true,
+          padding: EdgeInsets.only(left: 24, right: 24),
+          children: <Widget>[
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                Widget>[
+              XHTextField('User name', _usernameTextEditingController, false)
+                  .field(),
+              XHErrorMessage(registerState
+                          .registerValidationsState.userNameValidation.isValid
+                      ? ''
+                      : registerState.registerValidationsState
+                          .userNameValidation.errorMessage)
+                  .messageError(),
+              const SizedBox(height: 16.0),
+              XHTextField('Email', _emailTextEditingController, false).field(),
+              XHErrorMessage(registerState
+                          .registerValidationsState.emailValidation.isValid
+                      ? ''
+                      : registerState.registerValidationsState.emailValidation
+                          .errorMessage)
+                  .messageError(),
+              const SizedBox(height: 16.0),
+              XHTextField('Password', _passwordTextEditingController, true)
+                  .field(),
+              XHErrorMessage(registerState
+                          .registerValidationsState.passwordValidation.isValid
+                      ? ''
+                      : registerState.registerValidationsState
+                          .passwordValidation.errorMessage)
+                  .messageError(),
+            ]),
+            XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
+                .materialButton()
+          ],
+        ),
+      );
 
   @override
   void dispose() {
     _emailTextEditingController.dispose();
     _passwordTextEditingController.dispose();
     _usernameTextEditingController.dispose();
+    _registerBloc.closeStream;
     super.dispose();
   }
 }
