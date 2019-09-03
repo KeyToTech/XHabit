@@ -44,11 +44,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _handleRedirect(LoginState loginState) {
-    print(loginState.errorMessage);
     if (loginState.loggedIn) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    } else {
+    } else if (loginState.errorMessage.isNotEmpty) {
       _showToast(loginState.errorMessage);
     }
   }

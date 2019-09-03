@@ -80,6 +80,7 @@ class LoginBloc {
               )
             })
         .listen( (user) => handleLogin);
+    _loginUseCase.login(email, password).listen(handleLogin);
   }
 
   void handleLogin(User user) {
