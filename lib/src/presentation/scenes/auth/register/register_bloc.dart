@@ -88,7 +88,7 @@ class RegisterBloc {
   }
 
   void handleRegister(User user) {
-    if (user == null) {
+    if (user != null) {
       _registerStateSubject.sink.add(Resource.success(RegisterState(
           RegisterValidationsState(_defaultTextInputState,
               _defaultTextInputState, _defaultTextInputState),

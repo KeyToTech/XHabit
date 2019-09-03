@@ -71,7 +71,6 @@ class LoginBloc {
         handleError(PlatformException(code: '400'));
       }
     });
-    _loginUseCase.login(email, password).listen(handleLogin);
   }
 
   void handleLogin(User user) {
