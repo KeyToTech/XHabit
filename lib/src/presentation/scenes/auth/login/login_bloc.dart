@@ -19,16 +19,18 @@ class LoginBloc {
   PasswordValidation _passwordValidation;
 
   final _defaultTextInputState = ValidationResult(true, null);
+  LoginValidationsState _defaultValidationState;
 
   LoginBloc(this._loginUseCase) {
+    _emailValidation = EmailValidation();
+    _passwordValidation = PasswordValidation();
     _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
         false,
         false,
-        null));
-
-    _emailValidation = EmailValidation();
-    _passwordValidation = PasswordValidation();
+        null,
+        false));
+    _defaultValidationState = LoginValidationsState(_defaultTextInputState, _defaultTextInputState);
   }
 
   void validate(String email, String password) {
@@ -53,37 +55,49 @@ class LoginBloc {
             ? true
             : false,
         false,
-        null));
+        null,
+        false));
   }
 
   void login(String email, String password) {
+    _loginStateSubject.sink.add(LoginState(
+        _defaultValidationState,
+        true,
+        false,
+        null,
+        true));
+
     _loginUseCase
         .login(email, password)
         .handleError((Object error) => {
-              _loginStateSubject.sink.add(LoginState(
-                  LoginValidationsState(
-                      _defaultTextInputState, _defaultTextInputState),
+              _loginStateSubject.sink.add(
+                  LoginState(
+                      _defaultValidationState,
                   true,
                   false,
-                  error.toString()))
+                  error.toString(),
+                  false)
+              )
             })
-        .listen(handleLogin);
+        .listen( (user) => handleLogin);
   }
 
   void handleLogin(User user) {
     print(user.email);
-    if (user == null) {
+    if (user != null) {
       _loginStateSubject.sink.add(LoginState(
-          LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+          _defaultValidationState,
           false,
           false,
-          null));
+          null,
+          false));
     } else {
       _loginStateSubject.sink.add(LoginState(
-          LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+          _defaultValidationState,
           false,
           true,
-          null));
+          null,
+          false));
     }
   }
 }

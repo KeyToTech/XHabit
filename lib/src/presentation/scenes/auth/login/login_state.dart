@@ -12,11 +12,8 @@ class LoginState {
   final bool signInButtonEnabled;
   final bool loggedIn;
   final String errorMessage;
+  final bool showLoading;
 
-  LoginState(
-    this.loginValidationsState,
-    this.signInButtonEnabled,
-    this.loggedIn,
-    this.errorMessage,
-  );
+  LoginState(this.loginValidationsState, this.signInButtonEnabled,
+      this.loggedIn, this.errorMessage, this.showLoading);
 }
