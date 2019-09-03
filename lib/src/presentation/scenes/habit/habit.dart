@@ -83,7 +83,10 @@ class _HabitRowState extends State<HabitRow> {
             title,
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
-            style: TextStyle(fontSize: _screenSize.width * 0.043),
+            style: TextStyle(
+                fontSize: _screenSize.width * 0.043,
+                fontFamily: 'SFProDisplay',
+                fontWeight: FontWeight.w400),
           ),
         ),
       );
