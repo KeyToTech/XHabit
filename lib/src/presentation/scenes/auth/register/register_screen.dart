@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
+import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
+import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -48,20 +50,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _registerBloc.registerStateObservable.listen(_handleRedirect);
     _registerBloc.register(
         _emailTextEditingController.text, _passwordTextEditingController.text);
-    _showToast();
   }
 
-  void _handleRedirect(RegisterState registerState) {
-    if (registerState.signedUp) {
+  void _handleRedirect(Resource<RegisterState> registerState) {
+    if (registerState.status == Status.SUCCESS) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
     }
-  }
-
-  void _showToast() {
-    final snackBar = SnackBar(
-        content: Text('Logged    ${_emailTextEditingController.text}'));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -72,8 +67,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: StreamBuilder(
           stream: _registerBloc.registerStateObservable,
-          builder: (context, AsyncSnapshot<RegisterState> snapshot) {
-            final registerState = snapshot.data;
+          builder: (context, AsyncSnapshot<Resource<RegisterState>> snapshot) {
+            final registerState = snapshot.data.data;
+            if (snapshot.data.status == Status.ERROR) {
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                  InfoDialog().show(context, 'Error', snapshot.data.message));
+            }
             return buildUi(context, registerState);
           }));
 

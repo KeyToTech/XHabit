@@ -9,6 +9,9 @@ import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 import 'package:xhabits/src/domain/login/login_use_case.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 
+import '../../../resource.dart';
+import '../../info_dialog.dart';
+
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() =>
@@ -43,18 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _handleRedirect(LoginState loginState) {
-    if (loginState.loggedIn) {
+  void _handleRedirect(Resource<LoginState> loginState) {
+    if (loginState.status == Status.SUCCESS) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeScreen()));
-    } else if (loginState.errorMessage.isNotEmpty) {
-      _showToast(loginState.errorMessage);
     }
-  }
-
-  void _showToast(String error) {
-    final snackBar = SnackBar(content: Text(error));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
   }
 
   @override
@@ -65,15 +61,19 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       body: StreamBuilder(
           stream: _loginBloc.loginStateObservable,
-          builder: (context, AsyncSnapshot<LoginState> snapshot) {
-            final loginState = snapshot.data;
-            if(loginState.errorMessage != null && loginState.errorMessage.isNotEmpty) {
-              _showDialog('Could not login', loginState.errorMessage);
+          builder: (context, AsyncSnapshot<Resource<LoginState>> snapshot) {
+            final loginState = snapshot.data.data;
+            if (snapshot.data.status == Status.ERROR) {
+              WidgetsBinding.instance.addPostFrameCallback((_) => InfoDialog()
+                  .show(context, 'Could not login', snapshot.data.message));
             }
-            return buildUi(context, loginState);
+            return buildUi(
+                context, loginState, snapshot.data.status == Status.LOADING);
           }));
 
-  Widget buildUi(BuildContext context, LoginState loginState) => Center(
+  Widget buildUi(
+          BuildContext context, LoginState loginState, bool showLoading) =>
+      Center(
         child: ListView(
           shrinkWrap: true,
           padding: EdgeInsets.only(left: 24, right: 24),
@@ -99,10 +99,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               .errorMessage)
                       .messageError(),
                 ]),
-            loginState.showLoading ? Center(
-              child: CircularProgressIndicator(),
-            ) : XHButton('Sign in', loginState.signInButtonEnabled, _onSubmit)
-                .materialButton(),
+            showLoading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : XHButton('Sign in', loginState.signInButtonEnabled, _onSubmit)
+                    .materialButton(),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -120,55 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 )
               ],
             ),
-
-//            loginState.errorMessage != null && loginState.errorMessage.isNotEmpty ?
-//                _showDialog("lol", loginState.errorMessage)
-//                : Text('lol'),
-
           ],
         ),
       );
-
-//  AlertDialog _showDialog(String title, String message) {
-//    // flutter defined function
-//        // return object of type Dialog
-//        return AlertDialog(
-//          title: new Text(title),
-//          content: new Text(message),
-//          actions: <Widget>[
-//            // usually buttons at the bottom of the dialog
-//            new FlatButton(
-//              child: new Text("Close"),
-//              onPressed: () {
-//                Navigator.of(context).pop();
-//              },
-//            ),
-//          ],
-//        );
-//  }
-
-  void _showDialog(String title, String message) {
-    // flutter defined function
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text(title),
-          content: new Text(message),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   void dispose() {

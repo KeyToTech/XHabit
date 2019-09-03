@@ -4,13 +4,15 @@ import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
 import 'package:xhabits/src/domain/login/login_use_case.dart';
+import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 
 class LoginBloc {
-  BehaviorSubject<LoginState> _loginStateSubject;
+  BehaviorSubject<Resource<LoginState>> _loginStateSubject;
 
-  Observable<LoginState> get loginStateObservable => _loginStateSubject.stream;
+  Observable<Resource<LoginState>> get loginStateObservable =>
+      _loginStateSubject.stream;
 
   Future<dynamic> get closeStream => _loginStateSubject.close();
 
@@ -20,17 +22,18 @@ class LoginBloc {
 
   final _defaultTextInputState = ValidationResult(true, null);
   LoginValidationsState _defaultValidationState;
+  LoginState _initialState;
 
   LoginBloc(this._loginUseCase) {
+    _initialState = LoginState(
+        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
+        false);
     _emailValidation = EmailValidation();
     _passwordValidation = PasswordValidation();
-    _loginStateSubject = BehaviorSubject<LoginState>.seeded(LoginState(
-        LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
-        false,
-        false,
-        null,
-        false));
-    _defaultValidationState = LoginValidationsState(_defaultTextInputState, _defaultTextInputState);
+    _loginStateSubject = BehaviorSubject<Resource<LoginState>>.seeded(
+        Resource.initial(_initialState));
+    _defaultValidationState =
+        LoginValidationsState(_defaultTextInputState, _defaultTextInputState);
   }
 
   void validate(String email, String password) {
@@ -46,59 +49,42 @@ class LoginBloc {
       passwordValid = _passwordValidation.validate(password);
     }
 
-    _loginStateSubject.sink.add(LoginState(
+    _loginStateSubject.sink.add(Resource.initial(LoginState(
         LoginValidationsState(emailValid, passwordValid),
         emailValid.isValid &&
                 passwordValid.isValid &&
                 isNotEmptyEmail &&
                 isNotEmptyPassword
             ? true
-            : false,
-        false,
-        null,
-        false));
+            : false)));
   }
 
   void login(String email, String password) {
-    _loginStateSubject.sink.add(LoginState(
-        _defaultValidationState,
-        true,
-        false,
-        null,
-        true));
+    _loginStateSubject.sink.add(Resource.loading(_initialState));
 
-    _loginUseCase
-        .login(email, password)
-        .handleError((Object error) => {
-              _loginStateSubject.sink.add(
-                  LoginState(
-                      _defaultValidationState,
-                  true,
-                  false,
-                  error.toString(),
-                  false)
-              )
-            })
-        .listen( (user) => handleLogin);
+    _loginUseCase.login(email, password).listen(handleLogin, onDone: () {
+      print('DONE');
+    }, onError: (error) {
+      if (error.runtimeType == PlatformException) {
+        handleError(error as PlatformException);
+      } else {
+        handleError(PlatformException(code: '400'));
+      }
+    });
     _loginUseCase.login(email, password).listen(handleLogin);
   }
 
   void handleLogin(User user) {
-    print(user.email);
     if (user != null) {
-      _loginStateSubject.sink.add(LoginState(
-          _defaultValidationState,
-          false,
-          false,
-          null,
-          false));
+      _loginStateSubject.sink.add(Resource.success(_initialState));
     } else {
-      _loginStateSubject.sink.add(LoginState(
-          _defaultValidationState,
-          false,
-          true,
-          null,
-          false));
+      _loginStateSubject.sink.add(Resource.error('Could not login'));
     }
+  }
+
+  void handleError(PlatformException error) {
+    print('ERR ${error.toString()}');
+    _loginStateSubject.sink
+        .add(Resource.errorWithData(error.message, _initialState));
   }
 }

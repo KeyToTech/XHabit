@@ -42,6 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.more_vert),
             onPressed: () {},
           ),
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: _homeScreenBloc.logout,
+          ),
         ],
       );
 

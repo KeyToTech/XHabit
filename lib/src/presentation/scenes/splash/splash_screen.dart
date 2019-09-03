@@ -13,7 +13,7 @@ import 'splash_screen_state.dart';
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState(
-      SplashScreenBloc(SimpleCheckUserIsSignedInUseCase(MockAuth())));
+      SplashScreenBloc(SimpleCheckUserIsSignedInUseCase(FirebaseAuthService())));
 }
 
 class _SplashScreenState extends State<SplashScreen> {
@@ -40,9 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void handleTimeout(SplashScreenState splashState) {
     print('handleTimeout: ${splashState.showHome}');
     StatefulWidget nextScreen;
-
-//splashState.showHome == true && splashState.showLogin == false
-    if (false) {
+    if (splashState.showHome == true && splashState.showLogin == false) {
       nextScreen = HomeScreen();
     } else {
       nextScreen = LoginScreen();
