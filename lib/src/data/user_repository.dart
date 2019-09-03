@@ -1,4 +1,3 @@
-import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/domain/check_user_is_signed_use_case.dart';
 
 class UserRepository {
