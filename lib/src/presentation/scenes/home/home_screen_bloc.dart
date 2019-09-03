@@ -1,19 +1,26 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
+import 'package:xhabits/src/domain/logout_use_case.dart';
 
 import 'habit_screen_state.dart';
 
 class HomeScreenBloc {
+  BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
 
   Observable<HomeScreenResource> get homeScreenStateObservable =>
       _homeStateSubject.stream;
 
-  HomeScreenUseCase _useCase;
+  Observable<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
-  HomeScreenBloc(HomeScreenUseCase useCase) {
-    _homeStateSubject = BehaviorSubject<HomeScreenResource>();
+  HomeScreenUseCase _useCase;
+  LogoutUseCase _logoutUseCase;
+
+  HomeScreenBloc(HomeScreenUseCase useCase, LogoutUseCase logoutUseCase) {
     _useCase = useCase;
+    _logoutUseCase = logoutUseCase;
+    _homeStateSubject = BehaviorSubject<HomeScreenResource>();
+    _logoutStateSubject = BehaviorSubject<bool>();
   }
 
   void init() {
@@ -22,6 +29,15 @@ class HomeScreenBloc {
   }
 
   void logout() {
-    //TODO https://trello.com/c/FMkNgXWm/59-implement-logout
+    _logoutUseCase.logout().listen(onLogout);
+  }
+
+  void onLogout(bool result) {
+    _logoutStateSubject.sink.add(result);
+  }
+
+  void dispose() {
+    _homeStateSubject.close();
+    _logoutStateSubject.close();
   }
 }

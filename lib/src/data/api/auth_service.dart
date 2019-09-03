@@ -7,4 +7,6 @@ abstract class AuthService {
   Observable<User> signIn(String email, String password);
 
   Observable<bool> isSignedIn();
+
+  Observable<bool> logout();
 }

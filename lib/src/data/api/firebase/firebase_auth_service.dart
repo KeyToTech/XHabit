@@ -43,4 +43,14 @@ class FirebaseAuthService implements AuthService {
 
     return Observable.fromFuture(getIsSignedIn());
   }
+
+  @override
+  Observable<bool> logout() {
+    Future<bool> getLogoutResult() async {
+      await _auth.signOut();
+      return true;
+    }
+
+    return Observable.fromFuture(getLogoutResult());
+  }
 }
