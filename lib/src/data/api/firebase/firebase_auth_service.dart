@@ -11,6 +11,7 @@ class FirebaseAuthService implements AuthService {
     Future<User> getSignedUpUser() async {
       AuthResult authResult = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      print('signUp ${authResult}');
       return User(authResult.user.uid, authResult.user.email);
     }
 
@@ -22,6 +23,7 @@ class FirebaseAuthService implements AuthService {
     Future<User> getSignedInUser() async {
       AuthResult authResult = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+      print('signIn ${authResult}');
       return User(authResult.user.uid, authResult.user.email);
     }
 

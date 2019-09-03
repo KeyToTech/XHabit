@@ -20,4 +20,8 @@ class HomeScreenBloc {
     _homeStateSubject.sink.add(
         HomeScreenResource(_useCase.weekDays(), _useCase.daysWords(), false));
   }
+
+  void logout() {
+    //TODO https://trello.com/c/FMkNgXWm/59-implement-logout
+  }
 }

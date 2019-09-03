@@ -10,11 +10,7 @@ class LoginValidationsState {
 class LoginState {
   final LoginValidationsState loginValidationsState;
   final bool signInButtonEnabled;
-  final bool loggedIn;
 
   LoginState(
-    this.loginValidationsState,
-    this.signInButtonEnabled,
-    this.loggedIn,
-  );
+      this.loginValidationsState, this.signInButtonEnabled);
 }

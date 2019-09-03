@@ -12,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
   final HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
 
@@ -40,6 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.more_vert),
             onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.close),
+            onPressed: _homeScreenBloc.logout,
           ),
         ],
       );

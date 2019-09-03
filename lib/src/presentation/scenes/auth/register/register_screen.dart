@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/domain/register/register_use_case.dart';
+import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
+import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
+import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -13,15 +18,18 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key key, this.title}) : super(key: key);
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState(
+      RegisterBloc(RegisterUseCase(FirebaseAuthService())));
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _registerBloc = RegisterBloc();
+  final RegisterBloc _registerBloc;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
   final _usernameTextEditingController = TextEditingController();
+
+  _RegisterScreenState(this._registerBloc);
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -39,13 +47,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onSubmit() {
-    _showToast();
+    _registerBloc.registerStateObservable.listen(_handleRedirect);
+    _registerBloc.register(
+        _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-  void _showToast() {
-    final snackBar = SnackBar(
-        content: Text('Logged    ${_emailTextEditingController.text}'));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+  void _handleRedirect(Resource<RegisterState> registerState) {
+    if (registerState.status == Status.SUCCESS) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+    }
   }
 
   @override
@@ -56,8 +67,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: StreamBuilder(
           stream: _registerBloc.registerStateObservable,
-          builder: (context, AsyncSnapshot<RegisterState> snapshot) {
-            final registerState = snapshot.data;
+          builder: (context, AsyncSnapshot<Resource<RegisterState>> snapshot) {
+            final registerState = snapshot.data.data;
+            if (snapshot.data.status == Status.ERROR) {
+              WidgetsBinding.instance.addPostFrameCallback((_) =>
+                  InfoDialog().show(context, 'Error', snapshot.data.message));
+            }
             return buildUi(context, registerState);
           }));
 
@@ -94,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           .passwordValidation.errorMessage)
                   .messageError(),
             ]),
-            XHButton('Sign up', registerState.signInButtonEnabled, _onSubmit)
+            XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
                 .materialButton()
           ],
         ),
@@ -105,6 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailTextEditingController.dispose();
     _passwordTextEditingController.dispose();
     _usernameTextEditingController.dispose();
+    _registerBloc.closeStream;
     super.dispose();
   }
 }
