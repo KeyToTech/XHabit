@@ -14,11 +14,15 @@ class HabitBloc {
     _useCase = useCase;
   }
 
-  void initHabits() {
-    _habitStateSubject.sink.add(HabitState(_useCase.habitTitle(),
-        _useCase.checkedDays(), _useCase.progress()));
+  /*void initHabits() {
+    _habitStateSubject.sink.add(HabitState(
+        _useCase.habitTitle(), _useCase.checkedDays(), _useCase.progress()));
+  }*/
+
+  void getHabitData() {
+    _habitStateSubject.sink.add(HabitState(
+        _useCase.habitTitle(), _useCase.checkedDays(), _useCase.progress()));
   }
 
-  bool dayIsChecked(DateTime date) =>
-      _useCase.isChecked(date);
+  bool dayIsChecked(DateTime date) => _useCase.isChecked(date);
 }

@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/domain/simple_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
-import 'package:xhabits/src/presentation/scenes/habit/habit.dart';
+import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/habit_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
-      SimpleHomeScreenUseCase(HomeRepository()), SimpleLogoutUseCase(FirebaseAuthService())));
+      SimpleHomeScreenUseCase(HomeRepository()),
+      SimpleLogoutUseCase(FirebaseAuthService())));
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -22,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    //FirebaseDatabaseService().createHabit('1', 'DB habit title 1');
     _homeScreenBloc.init();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
@@ -101,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                _habitsList([HabitRow(days), HabitRow(days), HabitRow(days)]),
+                _habitsList([HabitRow('0', days), HabitRow('1', days)]),
               ]);
             }
           }));
