@@ -21,21 +21,23 @@ class HabitBloc {
 
   void getHabitData() {
     print('BLOC START getHabitData()');
-    Observable.combineLatest(
-        [_useCase.habitTitle(), _useCase.checkedDays()], handleHabitData);
-    //_useCase.habitTitle().listen(handleHabitData);
+    Observable.combineLatest2(
+        _useCase.habitTitle(), _useCase.checkedDays(), handleHabitData);
+    //_useCase.checkedDays().listen(handleHabitData);
     print('BLOC END getHabitData()');
   }
 
-  handleHabitData(List<Object> values) {
+  handleHabitData(String title, List<DateTime> checkedDays) {
     print('BLOC START handleHabitData');
-    print('values[0]: ${values[0]}\nvalues[1]: ${values[1]}');
+    //print('values[0]: ${values[0]}\nvalues[1]: ${values[1]}');
     _habitStateSubject.sink.add(HabitState(
-        values[0] as String,
-        values[1] as List<DateTime>,
-        _useCase.progress()));
+      title,
+      checkedDays,
+      _useCase.progress(),
+    ));
     print('BLOC END handleHabitData');
   }
 
-  bool dayIsChecked(DateTime date) => _useCase.isChecked(date);
+  bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
+      checkedDays.contains(date);
 }

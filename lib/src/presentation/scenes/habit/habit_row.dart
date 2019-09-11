@@ -52,7 +52,7 @@ class _HabitRowState extends State<HabitRow> {
           children: <Widget>[
             _progressCircle(habitState.progress),
             _habitTitle(habitState.habitTitle),
-            _marks(_weekDays),
+            _marks(habitState.checkedDays, _weekDays),
           ],
         ),
       );
@@ -96,7 +96,7 @@ class _HabitRowState extends State<HabitRow> {
         ),
       );
 
-  Widget _marks(List<DateTime> days) => Container(
+  Widget _marks(List<DateTime>checkedDays, List<DateTime> weekdays) => Container(
         width: _screenSize.width * 0.5,
         margin: EdgeInsets.only(left: _screenSize.width * 0.1),
         child: Row(
@@ -104,11 +104,11 @@ class _HabitRowState extends State<HabitRow> {
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: days.length,
+                itemCount: weekdays.length,
                 itemBuilder: (context, index) => Container(
                   margin: EdgeInsets.symmetric(
                       horizontal: _screenSize.width * 0.025),
-                  child: _habitBloc.dayIsChecked(days[index])
+                  child: _habitBloc.dayIsChecked(checkedDays, weekdays[index])
                       ? Icon(
                           Icons.check,
                           color: Colors.green,

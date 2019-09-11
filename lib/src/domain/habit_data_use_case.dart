@@ -6,6 +6,4 @@ abstract class HabitDataUseCase {
   Observable<List<DateTime>> checkedDays();
 
   double progress();
-
-  bool isChecked(DateTime dateTime);
 }

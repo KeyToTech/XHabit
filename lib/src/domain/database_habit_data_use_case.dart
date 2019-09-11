@@ -18,11 +18,4 @@ class DatabaseHabitDataUseCase implements HabitDataUseCase {
 
   @override
   double progress() => 60.0;
-
-  @override
-  bool isChecked(DateTime dateTime) => [
-        DateTime(2019, 08, 25),
-        DateTime(2019, 08, 24),
-        DateTime(2019, 08, 21),
-      ].contains(dateTime);
 }

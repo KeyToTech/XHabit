@@ -16,9 +16,6 @@ class SimpleHabitDataUseCase implements HabitDataUseCase {
   @override
   double progress() => 60.0;
 
- /* @override
-  bool isChecked(DateTime dateTime) => checkedDays().contains(dateTime);*/
-
   @override
   Observable<List<DateTime>> checkedDays() {
     // TODO: implement checkedDays
@@ -28,12 +25,6 @@ class SimpleHabitDataUseCase implements HabitDataUseCase {
   @override
   Observable<String> habitTitle() {
     // TODO: implement habitTitle
-    return null;
-  }
-
-  @override
-  bool isChecked(DateTime dateTime) {
-    // TODO: implement isChecked
     return null;
   }
 }
