@@ -1,7 +1,9 @@
-abstract class HabitDataUseCase {
-  String habitTitle();
+import 'package:rxdart/rxdart.dart';
 
-  List<DateTime> checkedDays();
+abstract class HabitDataUseCase {
+  Observable<String> habitTitle();
+
+  Observable<List<DateTime>> checkedDays();
 
   double progress();
 

@@ -1,4 +1,6 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
+import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/habit_data_use_case.dart';
 
 class DatabaseHabitDataUseCase implements HabitDataUseCase {
@@ -8,34 +10,19 @@ class DatabaseHabitDataUseCase implements HabitDataUseCase {
   DatabaseHabitDataUseCase(this._habitId, this._service);
 
   @override
-  List<DateTime> checkedDays() {
-    var data;
-    List<DateTime> result;
-    _service.getHabit(_habitId).then((snapshot) {
-      data = snapshot.checkedDays;
-      print('-USE CASE $_habitId- _service.getHabit() : $data');
-    });
-    print('-USE CASE $_habitId- AFTER _service.getHabit(): $data');
-    for (String item in data) {
-      result.add(DateTime.parse(item));
-    }
-    print('-USE CASE $_habitId- BEFORE RETURN: $result');
-    return result;
-  }
+  Observable<List<DateTime>> checkedDays() =>
+      _service.getHabitCheckedDays(_habitId);
 
   @override
-  String habitTitle() {
-    String result;
-    _service.getHabit(_habitId).then((snapshot) {
-      result = snapshot.title as String;
-    });
-
-    return result;
-  }
+  Observable<String> habitTitle() => _service.getHabitTitle(_habitId);
 
   @override
   double progress() => 60.0;
 
   @override
-  bool isChecked(DateTime dateTime) => checkedDays().contains(dateTime);
+  bool isChecked(DateTime dateTime) => [
+        DateTime(2019, 08, 25),
+        DateTime(2019, 08, 24),
+        DateTime(2019, 08, 21),
+      ].contains(dateTime);
 }
