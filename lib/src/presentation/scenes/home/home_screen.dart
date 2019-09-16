@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/home_repository.dart';
-import 'package:xhabits/src/domain/simple_home_screen_data_use_case.dart';
+import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
@@ -11,7 +11,7 @@ import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
-      SimpleHomeScreenUseCase(HomeRepository()),
+      DatabaseHomeScreenUseCase(HomeRepository()),
       SimpleLogoutUseCase(FirebaseAuthService())));
 }
 
@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    _homeScreenBloc.init();
+    _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
   }
@@ -59,10 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
           stream: _homeScreenBloc.homeScreenStateObservable,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             } else {
               _screenSize = MediaQuery.of(context).size;
-              final List<DateTime> days = snapshot.data.weekDays;
+              final List<String> habitIds = snapshot.data.habitIds;
+              final List<DateTime> weekDays = snapshot.data.weekDays;
               final Map<int, String> daysWords = snapshot.data.daysWords;
 
               return Column(children: <Widget>[
@@ -78,17 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: days.length,
+                          itemCount: weekDays.length,
                           itemBuilder: (context, index) => Container(
                             child: Column(
                               children: <Widget>[
                                 Text(
-                                  daysWords[days[index].weekday],
+                                  daysWords[weekDays[index].weekday],
                                   style: TextStyle(
                                       fontSize: _screenSize.width * 0.024),
                                 ),
                                 Text(
-                                  days[index].day.toString(),
+                                  weekDays[index].day.toString(),
                                   style: TextStyle(
                                       fontSize: _screenSize.width * 0.033),
                                 )
@@ -102,15 +103,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                _habitsList([HabitRow('0', days), HabitRow('1', days)]),
+                _habitsList(habitIds, weekDays),
               ]);
             }
           }));
 
-  Widget _habitsList(List<HabitRow> habits) => Expanded(
+  Widget _habitsList(List<String> habitIds, List<DateTime> weekDays) =>
+      Expanded(
         child: ListView.builder(
-          itemCount: habits.length,
-          itemBuilder: (BuildContext context, int index) => habits[index],
+          itemCount: habitIds.length,
+          itemBuilder: (BuildContext context, int index) =>
+              HabitRow(habitIds[index], weekDays),
         ),
       );
 

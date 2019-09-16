@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
-import 'package:xhabits/src/data/mock/mock_habit.dart';
 import 'package:xhabits/src/domain/database_habit_data_use_case.dart';
-import 'package:xhabits/src/domain/simple_habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
@@ -28,7 +26,6 @@ class _HabitRowState extends State<HabitRow> {
 
   @override
   void initState() {
-    //_habitBloc.initHabits();
     _habitBloc.getHabitData();
     super.initState();
   }
@@ -37,7 +34,9 @@ class _HabitRowState extends State<HabitRow> {
   Widget build(BuildContext context) => StreamBuilder<HabitState>(
         stream: _habitBloc.habitStateObservable,
         builder: (BuildContext context, AsyncSnapshot<HabitState> snapshot) {
-          if (snapshot.data == null) return CircularProgressIndicator();
+          if (snapshot.data == null) {
+            return Center(child: CircularProgressIndicator());
+          }
           _screenSize = MediaQuery.of(context).size;
           return buildUi(context, snapshot.data);
         },
@@ -96,7 +95,8 @@ class _HabitRowState extends State<HabitRow> {
         ),
       );
 
-  Widget _marks(List<DateTime>checkedDays, List<DateTime> weekdays) => Container(
+  Widget _marks(List<DateTime> checkedDays, List<DateTime> weekdays) =>
+      Container(
         width: _screenSize.width * 0.5,
         margin: EdgeInsets.only(left: _screenSize.width * 0.1),
         child: Row(

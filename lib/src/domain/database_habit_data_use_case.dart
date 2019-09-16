@@ -1,6 +1,5 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
-import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/habit_data_use_case.dart';
 
 class DatabaseHabitDataUseCase implements HabitDataUseCase {

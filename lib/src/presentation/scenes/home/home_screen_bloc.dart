@@ -23,9 +23,13 @@ class HomeScreenBloc {
     _logoutStateSubject = BehaviorSubject<bool>();
   }
 
-  void init() {
-    _homeStateSubject.sink.add(
-        HomeScreenResource(_useCase.weekDays(), _useCase.daysWords(), false));
+  void getHomeData() {
+    _useCase.habitIds().listen(handleHomeData);
+  }
+
+  void handleHomeData(List<String> habitIds) {
+    _homeStateSubject.sink.add(HomeScreenResource(
+        habitIds, _useCase.weekDays(), _useCase.daysWords(), false));
   }
 
   void logout() {

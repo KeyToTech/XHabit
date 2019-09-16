@@ -1,4 +1,4 @@
-import 'package:rxdart/src/observables/observable.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/mock/mock_habit.dart';
 import 'package:xhabits/src/domain/habit_data_use_case.dart';
 

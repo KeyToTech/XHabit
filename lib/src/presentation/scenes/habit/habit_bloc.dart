@@ -14,13 +14,8 @@ class HabitBloc {
     _useCase = useCase;
   }
 
-  /*void initHabits() {
-    _habitStateSubject.sink.add(HabitState(
-        _useCase.habitTitle(), _useCase.checkedDays(), _useCase.progress()));
-  }*/
-
   void getHabitData() {
-    Observable.combineLatest2(_useCase.habitTitle(), _useCase.checkedDays(),
+    Observable.zip2(_useCase.habitTitle(), _useCase.checkedDays(),
             ((title, checkedDays) => {title: checkedDays}))
         .listen(handleHabitData);
   }
