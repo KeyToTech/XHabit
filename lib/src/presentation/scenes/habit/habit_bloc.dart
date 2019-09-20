@@ -1,5 +1,4 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:xhabits/src/domain/habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
 class HabitBloc {
@@ -7,25 +6,17 @@ class HabitBloc {
 
   Observable<HabitState> get habitStateObservable => _habitStateSubject.stream;
 
-  HabitDataUseCase _useCase;
+  String _title;
+  List<DateTime> _checkedDays;
 
-  HabitBloc(HabitDataUseCase useCase) {
+  HabitBloc(String title, List<DateTime> checkedDays) {
     _habitStateSubject = BehaviorSubject<HabitState>();
-    _useCase = useCase;
+    _title = title;
+    _checkedDays = checkedDays;
   }
 
   void getHabitData() {
-    Observable.zip2(_useCase.habitTitle(), _useCase.checkedDays(),
-            ((title, checkedDays) => {title: checkedDays}))
-        .listen(handleHabitData);
-  }
-
-  handleHabitData(Map<dynamic, dynamic> map) {
-    _habitStateSubject.sink.add(HabitState(
-      map.keys.first as String,
-      map.values.first as List<DateTime>,
-      _useCase.progress(),
-    ));
+    _habitStateSubject.sink.add(HabitState(_title, _checkedDays, 60.0));
   }
 
   bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>

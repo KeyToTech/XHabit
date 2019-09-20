@@ -1,4 +1,5 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
 
@@ -8,8 +9,8 @@ class DatabaseHomeScreenUseCase extends HomeScreenUseCase {
   DatabaseHomeScreenUseCase(this._repository);
 
   @override
-  Observable<List<String>> habitIds() => _repository.habitIds();
+  List<DateTime> weekDays() => _repository.weekDays();
 
   @override
-  List<DateTime> weekDays() => _repository.weekDays();
+  Observable<List<Habit>> getHabits() => _repository.getHabits();
 }

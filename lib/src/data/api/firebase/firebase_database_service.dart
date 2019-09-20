@@ -2,62 +2,26 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:xhabits/src/data/entities/habit.dart';
 
 class FirebaseDatabaseService implements DatabaseService {
   final _database = FirebaseDatabase.instance.reference();
   final _auth = FirebaseAuth.instance;
 
   @override
-  Observable<List<String>> getHabitIds() {
+  Observable<List<Habit>> getHabits() {
     getFuture() async {
       String userId = (await _auth.currentUser()).uid;
-      List<String> result = ((await _database
+      List<Habit> result = ((await _database
           .child(userId)
           .child('habits')
           .once())
           .value as Map<dynamic, dynamic>)
-          .keys
-          .map((item) => item.toString())
+          .values
+          .map((item) => Habit(item as Map))
           .toList();
 
-      return result;
-    }
-
-    return Observable.fromFuture(getFuture());
-  }
-
-  @override
-  Observable<List<DateTime>> getHabitCheckedDays(String habitId) {
-    getFuture() async {
-      String userId = (await _auth.currentUser()).uid;
-      List<DateTime> result = (((await _database
-                  .child(userId)
-                  .child('habits')
-                  .child(habitId)
-                  .child('checked_days')
-                  .once())
-              .value as List<dynamic>))
-          .map((item) => DateTime.parse(item.toString()))
-          .toList();
-
-      return result;
-    }
-
-    return Observable.fromFuture(getFuture());
-  }
-
-  @override
-  Observable<String> getHabitTitle(String habitId) {
-    getFuture() async {
-      String userId = (await _auth.currentUser()).uid;
-      String result = (await _database
-              .child(userId)
-              .child('habits')
-              .child(habitId)
-              .child('title')
-              .once())
-          .value as String;
-
+      print('\n\n\n${result.map((i)=>i.checkedDays).toList()}\n\n\n');
       return result;
     }
 

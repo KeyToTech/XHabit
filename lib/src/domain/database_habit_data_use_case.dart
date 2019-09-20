@@ -10,10 +10,10 @@ class DatabaseHabitDataUseCase implements HabitDataUseCase {
 
   @override
   Observable<List<DateTime>> checkedDays() =>
-      _service.getHabitCheckedDays(_habitId);
+      null;
 
   @override
-  Observable<String> habitTitle() => _service.getHabitTitle(_habitId);
+  Observable<String> habitTitle() => null;
 
   @override
   double progress() => 60.0;

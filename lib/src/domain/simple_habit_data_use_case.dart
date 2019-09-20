@@ -18,13 +18,11 @@ class SimpleHabitDataUseCase implements HabitDataUseCase {
 
   @override
   Observable<List<DateTime>> checkedDays() {
-    // TODO: implement checkedDays
     return null;
   }
 
   @override
   Observable<String> habitTitle() {
-    // TODO: implement habitTitle
     return null;
   }
 }

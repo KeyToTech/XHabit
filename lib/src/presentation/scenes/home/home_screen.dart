@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
+import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
@@ -11,7 +13,7 @@ import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
-      DatabaseHomeScreenUseCase(HomeRepository()),
+      DatabaseHomeScreenUseCase(HomeRepository(FirebaseDatabaseService())),
       SimpleLogoutUseCase(FirebaseAuthService())));
 }
 
@@ -62,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return Center(child: CircularProgressIndicator());
             } else {
               _screenSize = MediaQuery.of(context).size;
-              final List<String> habitIds = snapshot.data.habitIds;
+              final List<Habit> habits = snapshot.data.habits;
               final List<DateTime> weekDays = snapshot.data.weekDays;
               final Map<int, String> daysWords = snapshot.data.daysWords;
 
@@ -103,17 +105,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                _habitsList(habitIds, weekDays),
+                _habitsList(habits, weekDays),
               ]);
             }
           }));
 
-  Widget _habitsList(List<String> habitIds, List<DateTime> weekDays) =>
-      Expanded(
+  Widget _habitsList(List<Habit> habits, List<DateTime> weekDays) => Expanded(
         child: ListView.builder(
-          itemCount: habitIds.length,
-          itemBuilder: (BuildContext context, int index) =>
-              HabitRow(habitIds[index], weekDays),
+          itemCount: habits.length,
+          itemBuilder: (BuildContext context, int index) => HabitRow(
+              habits[index].title, habits[index].checkedDays, weekDays),
         ),
       );
 

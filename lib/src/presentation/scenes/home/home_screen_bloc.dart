@@ -1,4 +1,5 @@
 import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
 
@@ -24,12 +25,12 @@ class HomeScreenBloc {
   }
 
   void getHomeData() {
-    _useCase.habitIds().listen(handleHomeData);
+    _useCase.getHabits().listen(handleHomeData);
   }
 
-  void handleHomeData(List<String> habitIds) {
+  void handleHomeData(List<Habit> habits) {
     _homeStateSubject.sink.add(HomeScreenResource(
-        habitIds, _useCase.weekDays(), _useCase.daysWords(), false));
+        habits, _useCase.weekDays(), _useCase.daysWords(), false));
   }
 
   void logout() {

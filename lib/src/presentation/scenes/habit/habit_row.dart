@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
-import 'package:xhabits/src/domain/database_habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
 class HabitRow extends StatefulWidget {
-  final String habitId;
+  final String title;
+  final List<DateTime> checkedDays;
   final List<DateTime> _weekDays;
 
-  const HabitRow(this.habitId, this._weekDays);
+  const HabitRow(this.title, this.checkedDays, this._weekDays);
 
   @override
-  _HabitRowState createState() => _HabitRowState(
-      HabitBloc(DatabaseHabitDataUseCase(habitId, FirebaseDatabaseService())),
-      _weekDays);
+  _HabitRowState createState() =>
+      _HabitRowState(HabitBloc(title, checkedDays), _weekDays);
 }
 
 class _HabitRowState extends State<HabitRow> {
