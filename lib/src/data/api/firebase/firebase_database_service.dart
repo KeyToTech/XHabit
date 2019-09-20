@@ -21,7 +21,6 @@ class FirebaseDatabaseService implements DatabaseService {
           .map((item) => Habit(item as Map))
           .toList();
 
-      print('\n\n\n${result.map((i)=>i.checkedDays).toList()}\n\n\n');
       return result;
     }
 
