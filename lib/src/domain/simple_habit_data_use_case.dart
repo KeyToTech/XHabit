@@ -1,3 +1,4 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/mock/mock_habit.dart';
 import 'package:xhabits/src/domain/habit_data_use_case.dart';
 
@@ -6,15 +7,22 @@ class SimpleHabitDataUseCase implements HabitDataUseCase {
 
   SimpleHabitDataUseCase(this._habitData);
 
-  @override
+  /*@override
   List<DateTime> checkedDays() => _habitData.checkedDays;
 
   @override
-  String habitTitle() => _habitData.title;
+  String habitTitle() => _habitData.title;*/
 
   @override
   double progress() => 60.0;
 
   @override
-  bool isChecked(DateTime dateTime) => checkedDays().contains(dateTime);
+  Observable<List<DateTime>> checkedDays() {
+    return null;
+  }
+
+  @override
+  Observable<String> habitTitle() {
+    return null;
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:rxdart/rxdart.dart';
-import 'package:xhabits/src/domain/habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
 class HabitBloc {
@@ -7,18 +6,19 @@ class HabitBloc {
 
   Observable<HabitState> get habitStateObservable => _habitStateSubject.stream;
 
-  HabitDataUseCase _useCase;
+  String _title;
+  List<DateTime> _checkedDays;
 
-  HabitBloc(HabitDataUseCase useCase) {
+  HabitBloc(String title, List<DateTime> checkedDays) {
     _habitStateSubject = BehaviorSubject<HabitState>();
-    _useCase = useCase;
+    _title = title;
+    _checkedDays = checkedDays;
   }
 
-  void initHabits() {
-    _habitStateSubject.sink.add(HabitState(_useCase.habitTitle(),
-        _useCase.checkedDays(), _useCase.progress()));
+  void getHabitData() {
+    _habitStateSubject.sink.add(HabitState(_title, _checkedDays, 60.0));
   }
 
-  bool dayIsChecked(DateTime date) =>
-      _useCase.isChecked(date);
+  bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
+      checkedDays.contains(date);
 }

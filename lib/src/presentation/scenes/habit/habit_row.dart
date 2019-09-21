@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:xhabits/src/data/mock/mock_habit.dart';
-import 'package:xhabits/src/domain/simple_habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
 class HabitRow extends StatefulWidget {
+  final String title;
+  final List<DateTime> checkedDays;
   final List<DateTime> _weekDays;
 
-  const HabitRow(this._weekDays);
+  const HabitRow(this.title, this.checkedDays, this._weekDays);
 
   @override
-  _HabitRowState createState() => _HabitRowState(
-      HabitBloc(SimpleHabitDataUseCase(MockHabitData())), _weekDays);
+  _HabitRowState createState() =>
+      _HabitRowState(HabitBloc(title, checkedDays), _weekDays);
 }
 
 class _HabitRowState extends State<HabitRow> {
@@ -24,7 +24,7 @@ class _HabitRowState extends State<HabitRow> {
 
   @override
   void initState() {
-    _habitBloc.initHabits();
+    _habitBloc.getHabitData();
     super.initState();
   }
 
@@ -32,7 +32,9 @@ class _HabitRowState extends State<HabitRow> {
   Widget build(BuildContext context) => StreamBuilder<HabitState>(
         stream: _habitBloc.habitStateObservable,
         builder: (BuildContext context, AsyncSnapshot<HabitState> snapshot) {
-          if (snapshot.data == null) return CircularProgressIndicator();
+          if (snapshot.data == null) {
+            return Center(child: CircularProgressIndicator());
+          }
           _screenSize = MediaQuery.of(context).size;
           return buildUi(context, snapshot.data);
         },
@@ -47,7 +49,7 @@ class _HabitRowState extends State<HabitRow> {
           children: <Widget>[
             _progressCircle(habitState.progress),
             _habitTitle(habitState.habitTitle),
-            _marks(_weekDays),
+            _marks(habitState.checkedDays, _weekDays),
           ],
         ),
       );
@@ -91,7 +93,8 @@ class _HabitRowState extends State<HabitRow> {
         ),
       );
 
-  Widget _marks(List<DateTime> days) => Container(
+  Widget _marks(List<DateTime> checkedDays, List<DateTime> weekdays) =>
+      Container(
         width: _screenSize.width * 0.5,
         margin: EdgeInsets.only(left: _screenSize.width * 0.1),
         child: Row(
@@ -99,11 +102,11 @@ class _HabitRowState extends State<HabitRow> {
             Expanded(
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: days.length,
+                itemCount: weekdays.length,
                 itemBuilder: (context, index) => Container(
                   margin: EdgeInsets.symmetric(
                       horizontal: _screenSize.width * 0.025),
-                  child: _habitBloc.dayIsChecked(days[index])
+                  child: _habitBloc.dayIsChecked(checkedDays, weekdays[index])
                       ? Icon(
                           Icons.check,
                           color: Colors.green,
