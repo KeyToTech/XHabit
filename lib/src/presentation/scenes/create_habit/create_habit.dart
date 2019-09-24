@@ -98,7 +98,11 @@ class _CreateHabitState extends State<CreateHabit> {
             minTime: DateTime(1970, 1, 1),
             maxTime: DateTime(2030, 12, 31),
             onConfirm: (date) {
-              _createHabitBloc.endDate = date;
+              if (hint == 'Start date') {
+                _createHabitBloc.startDate = date;
+              } else {
+                _createHabitBloc.endDate = date;
+              }
             },
             currentTime: DateTime(
               DateTime.now().year,
