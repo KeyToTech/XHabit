@@ -60,6 +60,7 @@ class _CreateHabitState extends State<CreateHabit> {
           children: <Widget>[
             TextField(
               controller: _titleController,
+              style: TextStyle(fontSize: _screenSize.height * 0.032),
               decoration: InputDecoration(
                 hintText: 'Title',
                 hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
@@ -68,6 +69,7 @@ class _CreateHabitState extends State<CreateHabit> {
             Expanded(
               child: TextField(
                 controller: _descriptionController,
+                style: TextStyle(fontSize: _screenSize.height * 0.032),
                 decoration: InputDecoration(
                   hintText: 'Description',
                   hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
