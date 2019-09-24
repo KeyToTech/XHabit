@@ -16,7 +16,7 @@ class FirebaseDatabaseService implements DatabaseService {
           .child(userId)
           .child('habits')
           .once())
-          .value as Map<dynamic, dynamic>)
+          .value as Map<dynamic, dynamic> ?? {})
           .values
           .map((item) => Habit(item as Map))
           .toList();
