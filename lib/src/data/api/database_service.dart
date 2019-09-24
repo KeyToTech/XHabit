@@ -3,6 +3,9 @@ import 'package:xhabits/src/data/entities/habit.dart';
 
 abstract class DatabaseService {
   Observable<List<Habit>> getHabits();
-  void createHabit(String habitId, String title);
+
+  Observable<bool> createHabit(String habitId, String title, String description,
+      String startDate, String endDate);
+
   void removeHabit(String habitId);
 }
