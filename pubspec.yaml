@@ -20,6 +20,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Dependency for DateTimePicker
+  flutter_datetime_picker: ^1.2.6
+
   # Dependency for circular chart
   flutter_circular_chart: ^0.1.0
 

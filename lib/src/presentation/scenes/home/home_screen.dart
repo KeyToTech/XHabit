@@ -6,6 +6,7 @@ import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
+import 'package:xhabits/src/presentation/scenes/create_habit/create_habit.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/habit_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
@@ -38,7 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CreateHabit()));
+            },
           ),
           IconButton(
             icon: Icon(Icons.sort),

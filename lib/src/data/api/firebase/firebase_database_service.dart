@@ -28,11 +28,20 @@ class FirebaseDatabaseService implements DatabaseService {
   }
 
   @override
-  void createHabit(String habitId, String title) async {
-    FirebaseUser user = await _auth.currentUser();
-    await _database.child(user.uid).child('habits').child(habitId).set({
-      'title': title,
-    });
+  Observable<bool> createHabit(String habitId, String title, String description,
+      String startDate, String endDate) {
+    getFuture() async {
+      FirebaseUser user = await _auth.currentUser();
+      await _database.child(user.uid).child('habits').child(habitId).set({
+        'title': title,
+        'description': description,
+        'start_date': startDate,
+        'end_date': endDate,
+      });
+      return true;
+    }
+
+    return Observable.fromFuture(getFuture());
   }
 
   @override
