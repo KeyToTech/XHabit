@@ -2,8 +2,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/create_habit_use_case.dart';
 
 class CreateHabitBloc {
-  DateTime startDate;
-  DateTime endDate;
+  DateTime _startDate;
+  DateTime _endDate;
 
   BehaviorSubject<bool> _createHabitSubject;
 
@@ -15,18 +15,27 @@ class CreateHabitBloc {
     _useCase = useCase;
   }
 
-  void saveHabit(
-      String title, String description) {
-      if (title != null &&
-        description != null &&
-        startDate != null &&
-        endDate != null) {
+  void saveHabit(String title, String description) {
+    if (_validate(title, description, _startDate, _endDate)) {
       _useCase
           .createHabit(DateTime.now().toString().split('.')[0], title,
-              description, startDate.toString(), endDate.toString())
+              description, _startDate.toString(), _endDate.toString())
           .listen(_onSaveHabit);
     }
   }
+
+  void setStartDate(DateTime date) => _startDate = date;
+
+  void setEndDate(DateTime date) => _endDate = date;
+
+  bool _validate(String title, String description, DateTime startDate,
+          DateTime endDate) =>
+      title != null &&
+      title.isNotEmpty &&
+      description != null &&
+      description.isNotEmpty &&
+      startDate != null &&
+      endDate != null;
 
   void _onSaveHabit(bool onSaveHabit) {
     _createHabitSubject.sink.add(onSaveHabit);
