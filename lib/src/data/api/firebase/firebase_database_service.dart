@@ -12,12 +12,14 @@ class FirebaseDatabaseService implements DatabaseService {
   Observable<List<Habit>> getHabits() {
     getFuture() async {
       String userId = (await _auth.currentUser()).uid;
-      List<Habit> result =
-          ((await _database.child(userId).child('habits').once()).value
-                  as Map<dynamic, dynamic>)
-              .values
-              .map((item) => Habit(item as Map))
-              .toList();
+      List<Habit> result = ((await _database
+          .child(userId)
+          .child('habits')
+          .once())
+          .value as Map<dynamic, dynamic> ?? {})
+          .values
+          .map((item) => Habit(item as Map))
+          .toList();
 
       return result;
     }
