@@ -5,7 +5,6 @@ import 'package:xhabits/src/data/entities/user.dart';
 class MockAuth implements AuthService {
   @override
   Observable<User> signUp(String email, String password) {
-    // TODO: implement signUp
     return null;
   }
 
@@ -15,7 +14,8 @@ class MockAuth implements AuthService {
   }
 
   @override
-  Observable<bool> isSignedIn() {
-    return Observable.just(true);
-  }
+  Observable<bool> isSignedIn() => Observable.just(true);
+
+  @override
+  Observable<bool> logout() => Observable.just(true);
 }
