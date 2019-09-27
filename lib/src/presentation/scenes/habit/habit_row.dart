@@ -6,21 +6,23 @@ import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 class HabitRow extends StatefulWidget {
   final String title;
   final List<DateTime> checkedDays;
+  final bool isSelected;
   final List<DateTime> _weekDays;
 
-  const HabitRow(this.title, this.checkedDays, this._weekDays);
+  const HabitRow(this.title, this.checkedDays, this.isSelected, this._weekDays);
 
   @override
   _HabitRowState createState() =>
-      _HabitRowState(HabitBloc(title, checkedDays), _weekDays);
+      _HabitRowState(HabitBloc(title, checkedDays), isSelected, _weekDays);
 }
 
 class _HabitRowState extends State<HabitRow> {
   final HabitBloc _habitBloc;
+  bool _isSelected;
   final List<DateTime> _weekDays;
   Size _screenSize;
 
-  _HabitRowState(this._habitBloc, this._weekDays);
+  _HabitRowState(this._habitBloc, this._isSelected, this._weekDays);
 
   @override
   void initState() {
@@ -41,9 +43,19 @@ class _HabitRowState extends State<HabitRow> {
       );
 
   Widget buildUi(BuildContext context, HabitState habitState) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: _isSelected
+              ? Border(
+                  top: BorderSide(
+                      color: Colors.black, width: _screenSize.height * 0.003),
+                  bottom: BorderSide(
+                      color: Colors.black, width: _screenSize.height * 0.003),
+                )
+              : null,
+        ),
         padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
-        margin: EdgeInsets.only(bottom: _screenSize.height * 0.012),
-        color: Colors.white,
+        margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
         height: _screenSize.height * 0.08,
         child: Row(
           children: <Widget>[

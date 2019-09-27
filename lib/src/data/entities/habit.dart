@@ -1,11 +1,12 @@
 class Habit {
+  final String habitId;
   final String title;
   final String description;
   final List<DateTime> checkedDays;
   final DateTime startDate;
   final DateTime endDate;
 
-  Habit(Map map)
+  Habit(this.habitId, Map map)
       : title = map['title'] as String,
         description = map['description'] as String,
         checkedDays = (map['checked_days'] as List<dynamic> ?? [])
