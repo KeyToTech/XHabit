@@ -58,7 +58,7 @@ class HomeScreenBloc {
 
   void removeHabit(String habitId) {
     _removeUseCase.removeHabit(habitId);
-    _appBarStateSubject.sink.add(AppBarState(false, habitId));
+    _appBarStateSubject.sink.add(AppBarState(false, null));
   }
 
   void cancelEditing() {

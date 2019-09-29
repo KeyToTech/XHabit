@@ -45,7 +45,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 {first as HomeScreenResource: second as AppBarState}),
         builder: (context, snapshot) {
           if (snapshot.data == null) {
-            return Center(child: CircularProgressIndicator());
+            return Container(
+                color: Colors.grey[300],
+                child: Center(child: CircularProgressIndicator()));
           }
 
           _screenSize = MediaQuery.of(context).size;
@@ -156,26 +158,35 @@ class _HomeScreenState extends State<HomeScreen> {
             _habitsList(habits, selectedHabitId, weekDays),
           ]));
 
-  Widget _habitsList(List<Habit> habits, String selectedHabitId,
-          List<DateTime> weekDays) {
-    print('selected $selectedHabitId');
-    return Expanded(
-        child: ListView.builder(
-          itemCount: habits.length,
-          itemBuilder: (BuildContext context, int index) => ListTile(
-            contentPadding: EdgeInsets.all(0.0),
-            title: HabitRow(
-                habits[index].title,
-                habits[index].checkedDays,
-                habits[index].habitId == selectedHabitId ? true : false,
-                weekDays),
-            onLongPress: () {
-              _homeScreenBloc.selectHabit(habits[index].habitId);
-            },
+  Widget _habitsList(
+      List<Habit> habits, String selectedHabitId, List<DateTime> weekDays) => Expanded(
+      child: ListView.builder(
+        itemCount: habits.length,
+        itemBuilder: (BuildContext context, int index) => ListTile(
+          contentPadding: EdgeInsets.all(0.0),
+          title: Container(
+            margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
+            decoration: BoxDecoration(
+              border: habits[index].habitId == selectedHabitId
+                  ? Border(
+                      top: BorderSide(
+                          color: Colors.black,
+                          width: _screenSize.height * 0.003),
+                      bottom: BorderSide(
+                          color: Colors.black,
+                          width: _screenSize.height * 0.003),
+                    )
+                  : null,
+            ),
+            child: HabitRow(
+                habits[index].title, habits[index].checkedDays, weekDays),
           ),
+          onLongPress: () {
+            _homeScreenBloc.selectHabit(habits[index].habitId);
+          },
         ),
-      );
-  }
+      ),
+    );
 
   void _handleLogoutRedirect(bool wasLoggedOut) {
     Navigator.pushReplacement(
