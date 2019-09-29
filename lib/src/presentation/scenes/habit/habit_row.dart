@@ -42,9 +42,8 @@ class _HabitRowState extends State<HabitRow> {
 
   Widget buildUi(BuildContext context, HabitState habitState) => Container(
         padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
-        margin: EdgeInsets.only(bottom: _screenSize.height * 0.012),
-        color: Colors.white,
         height: _screenSize.height * 0.08,
+        color: Colors.white,
         child: Row(
           children: <Widget>[
             _progressCircle(habitState.progress),

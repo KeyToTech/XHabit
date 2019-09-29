@@ -2,26 +2,37 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
+import 'package:xhabits/src/domain/remove_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 
-import 'habit_screen_state.dart';
+import 'home_screen_state.dart';
 
 class HomeScreenBloc {
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
+  BehaviorSubject<AppBarState> _appBarStateSubject;
 
   Observable<HomeScreenResource> get homeScreenStateObservable =>
       _homeStateSubject.stream;
 
   Observable<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
+  Observable<AppBarState> get appBarStateObservable =>
+      _appBarStateSubject.stream;
+
   HomeScreenUseCase _useCase;
   LogoutUseCase _logoutUseCase;
+  RemoveHabitUseCase _removeUseCase;
 
-  HomeScreenBloc(HomeScreenUseCase useCase, LogoutUseCase logoutUseCase) {
+  HomeScreenBloc(HomeScreenUseCase useCase, LogoutUseCase logoutUseCase,
+      RemoveHabitUseCase removeUseCase) {
     _useCase = useCase;
     _logoutUseCase = logoutUseCase;
+    _removeUseCase = removeUseCase;
     _homeStateSubject = BehaviorSubject<HomeScreenResource>();
     _logoutStateSubject = BehaviorSubject<bool>();
+    _appBarStateSubject =
+        BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
   }
 
   void getHomeData() {
@@ -39,6 +50,19 @@ class HomeScreenBloc {
 
   void onLogout(bool result) {
     _logoutStateSubject.sink.add(result);
+  }
+
+  void selectHabit(String habitId) {
+    _appBarStateSubject.sink.add(AppBarState(true, habitId));
+  }
+
+  void removeHabit(String habitId) {
+    _removeUseCase.removeHabit(habitId);
+    _appBarStateSubject.sink.add(AppBarState(false, null));
+  }
+
+  void cancelEditing() {
+    _appBarStateSubject.sink.add(AppBarState(false, null));
   }
 
   void dispose() {
