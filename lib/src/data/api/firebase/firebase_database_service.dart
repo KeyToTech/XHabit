@@ -21,6 +21,7 @@ class FirebaseDatabaseService implements DatabaseService {
           .map((item) => Habit(item.key as String, item.value as Map))
           .toList();
 
+      result.sort((h1,h2) => h1.habitId.compareTo(h2.habitId));
       return result;
     }
 
