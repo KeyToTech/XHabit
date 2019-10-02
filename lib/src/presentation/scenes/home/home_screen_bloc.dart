@@ -52,16 +52,16 @@ class HomeScreenBloc {
     _logoutStateSubject.sink.add(result);
   }
 
-  void selectHabit(String habitId) {
-    _appBarStateSubject.sink.add(AppBarState(true, habitId));
+  void selectHabit(Habit selectedHabit) {
+    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
   }
 
   void removeHabit(String habitId) {
     _removeUseCase.removeHabit(habitId);
-    _appBarStateSubject.sink.add(AppBarState(false, null));
+    showMainAppBar();
   }
 
-  void cancelEditing() {
+  void showMainAppBar() {
     _appBarStateSubject.sink.add(AppBarState(false, null));
   }
 

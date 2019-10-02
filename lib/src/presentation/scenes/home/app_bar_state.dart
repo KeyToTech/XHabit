@@ -1,6 +1,8 @@
+import 'package:xhabits/src/data/entities/habit.dart';
+
 class AppBarState {
   final bool showEditingAppBar;
-  final String selectedHabitId;
+  final Habit selectedHabit;
 
-  AppBarState(this.showEditingAppBar, this.selectedHabitId);
+  AppBarState(this.showEditingAppBar, this.selectedHabit);
 }

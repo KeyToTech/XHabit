@@ -7,5 +7,8 @@ abstract class DatabaseService {
   Observable<bool> createHabit(String habitId, String title, String description,
       String startDate, String endDate);
 
+  Observable<bool> updateHabit(String habitId, String title, String description,
+      String startDate, String endDate);
+
   void removeHabit(String habitId);
 }
