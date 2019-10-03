@@ -179,18 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
             contentPadding: EdgeInsets.all(0.0),
             title: Container(
               margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
-              decoration: BoxDecoration(
-                border: habits[index].habitId == (selectedHabit?.habitId)
-                    ? Border(
-                        top: BorderSide(
-                            color: Colors.black,
-                            width: _screenSize.height * 0.003),
-                        bottom: BorderSide(
-                            color: Colors.black,
-                            width: _screenSize.height * 0.003),
-                      )
-                    : null,
-              ),
+              decoration: _habitRowDecoration(habits[index], selectedHabit),
               child: HabitRow(
                   habits[index].title, habits[index].checkedDays, weekDays),
             ),
@@ -205,6 +194,18 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
+
+  BoxDecoration _habitRowDecoration(Habit currentHabit, Habit selectedHabit) =>
+      BoxDecoration(
+        border: currentHabit.habitId == selectedHabit?.habitId
+            ? Border(
+                top: BorderSide(
+                    color: Colors.black, width: _screenSize.height * 0.003),
+                bottom: BorderSide(
+                    color: Colors.black, width: _screenSize.height * 0.003),
+              )
+            : null,
+      );
 
   @override
   void dispose() {
