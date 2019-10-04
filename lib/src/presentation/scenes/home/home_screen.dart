@@ -181,7 +181,11 @@ class _HomeScreenState extends State<HomeScreen> {
               margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
               decoration: _habitRowDecoration(habits[index], selectedHabit),
               child: HabitRow(
-                  habits[index].title, habits[index].checkedDays, weekDays),
+                habits[index].habitId,
+                habits[index].title,
+                habits[index].checkedDays,
+                weekDays,
+              ),
             ),
             onLongPress: () {
               _homeScreenBloc.selectHabit(habits[index]);

@@ -67,4 +67,14 @@ class FirebaseDatabaseService implements DatabaseService {
     FirebaseUser user = await _auth.currentUser();
     await _database.child(user.uid).child('habits').child(habitId).remove();
   }
+
+  @override
+  void updateCheckedDays(String habitId, List<DateTime> checkedDays) async {
+    FirebaseUser user = await _auth.currentUser();
+    await _database
+        .child(user.uid)
+        .child('habits')
+        .child(habitId)
+        .update({'checked_days': checkedDays.map((item) => item.toString()).toList()});
+  }
 }

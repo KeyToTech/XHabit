@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
+import 'package:xhabits/src/domain/database_habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 
 class HabitRow extends StatefulWidget {
+  final String _habitId;
   final String title;
   final List<DateTime> checkedDays;
   final List<DateTime> _weekDays;
 
-  const HabitRow(this.title, this.checkedDays, this._weekDays);
+  const HabitRow(this._habitId, this.title, this.checkedDays, this._weekDays);
 
   @override
-  _HabitRowState createState() =>
-      _HabitRowState(HabitBloc(title, checkedDays), _weekDays);
+  _HabitRowState createState() => _HabitRowState(
+      HabitBloc(
+        title,
+        checkedDays,
+        DatabaseHabitDataUseCase(_habitId, FirebaseDatabaseService()),
+      ),
+      _weekDays);
 }
 
 class _HabitRowState extends State<HabitRow> {
@@ -100,25 +108,31 @@ class _HabitRowState extends State<HabitRow> {
           children: <Widget>[
             Expanded(
               child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: weekdays.length,
-                itemBuilder: (context, index) => Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: _screenSize.width * 0.025),
-                  child: _habitBloc.dayIsChecked(checkedDays, weekdays[index])
-                      ? Icon(
-                          Icons.check,
-                          color: Colors.green,
-                          size: _screenSize.width * 0.054,
-                        )
-                      : Icon(
-                          Icons.close,
-                          size: _screenSize.width * 0.054,
-                        ),
-                ),
-              ),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: weekdays.length,
+                  itemBuilder: (context, index) =>
+                      _marksIcon(checkedDays, weekdays[index])),
             ),
           ],
+        ),
+      );
+
+  Widget _marksIcon(List<DateTime> checkedDays, DateTime weekday) => Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: _screenSize.width * 0.025,
+            vertical: _screenSize.height * 0.025),
+        child: SizedBox(
+          width: _screenSize.width * 0.054,
+          child: IconButton(
+            icon: _habitBloc.dayIsChecked(checkedDays, weekday)
+                ? Icon(Icons.check, color: Colors.green)
+                : Icon(Icons.close),
+            padding: EdgeInsets.all(0.0),
+            iconSize: _screenSize.width * 0.054,
+            onPressed: () {
+              _habitBloc.checkDay(weekday);
+            },
+          ),
         ),
       );
 }
