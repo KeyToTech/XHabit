@@ -8,11 +8,11 @@ import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
-import 'package:xhabits/src/presentation/scenes/create_habit/create_habit.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
+import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -58,13 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
           final List<DateTime> weekDays = homeState.weekDays;
           final Map<int, String> daysWords = homeState.daysWords;
 
-          final String selectedHabitId = appBarState.selectedHabitId;
+          final Habit selectedHabit = appBarState.selectedHabit;
 
           return Scaffold(
             appBar: appBarState.showEditingAppBar
-                ? editingAppBar(appBarState.selectedHabitId)
+                ? editingAppBar(appBarState.selectedHabit)
                 : mainAppBar(),
-            body: body(habits, selectedHabitId, weekDays, daysWords),
+            body: body(habits, selectedHabit, weekDays, daysWords),
           );
         },
       );
@@ -74,8 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => CreateHabit()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SaveHabit.create(),
+                ),
+              );
             },
           ),
           IconButton(
@@ -93,29 +97,37 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       );
 
-  PreferredSizeWidget editingAppBar(String selectedHabitId) => AppBar(
+  PreferredSizeWidget editingAppBar(Habit selectedHabit) => AppBar(
         backgroundColor: Colors.blue[700],
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: _homeScreenBloc.cancelEditing,
+          onPressed: _homeScreenBloc.showMainAppBar,
         ),
         title: Text('Edit / remove habit'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SaveHabit.update(selectedHabit),
+                ),
+              );
+              _homeScreenBloc.showMainAppBar();
+            },
           ),
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
-              _homeScreenBloc.removeHabit(selectedHabitId);
+              _homeScreenBloc.removeHabit(selectedHabit.habitId);
             },
           ),
         ],
       );
 
-  Widget body(List<Habit> habits, String selectedHabitId,
-          List<DateTime> weekDays, Map<int, String> daysWords) =>
+  Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
+          Map<int, String> daysWords) =>
       Container(
           color: Colors.grey[300],
           child: Column(children: <Widget>[
@@ -155,43 +167,45 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            _habitsList(habits, selectedHabitId, weekDays),
+            _habitsList(habits, selectedHabit, weekDays),
           ]));
 
   Widget _habitsList(
-      List<Habit> habits, String selectedHabitId, List<DateTime> weekDays) => Expanded(
-      child: ListView.builder(
-        itemCount: habits.length,
-        itemBuilder: (BuildContext context, int index) => ListTile(
-          contentPadding: EdgeInsets.all(0.0),
-          title: Container(
-            margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
-            decoration: BoxDecoration(
-              border: habits[index].habitId == selectedHabitId
-                  ? Border(
-                      top: BorderSide(
-                          color: Colors.black,
-                          width: _screenSize.height * 0.003),
-                      bottom: BorderSide(
-                          color: Colors.black,
-                          width: _screenSize.height * 0.003),
-                    )
-                  : null,
+          List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays) =>
+      Expanded(
+        child: ListView.builder(
+          itemCount: habits.length,
+          itemBuilder: (BuildContext context, int index) => ListTile(
+            contentPadding: EdgeInsets.all(0.0),
+            title: Container(
+              margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
+              decoration: _habitRowDecoration(habits[index], selectedHabit),
+              child: HabitRow(
+                  habits[index].title, habits[index].checkedDays, weekDays),
             ),
-            child: HabitRow(
-                habits[index].title, habits[index].checkedDays, weekDays),
+            onLongPress: () {
+              _homeScreenBloc.selectHabit(habits[index]);
+            },
           ),
-          onLongPress: () {
-            _homeScreenBloc.selectHabit(habits[index].habitId);
-          },
         ),
-      ),
-    );
+      );
 
   void _handleLogoutRedirect(bool wasLoggedOut) {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
+
+  BoxDecoration _habitRowDecoration(Habit currentHabit, Habit selectedHabit) =>
+      BoxDecoration(
+        border: currentHabit.habitId == selectedHabit?.habitId
+            ? Border(
+                top: BorderSide(
+                    color: Colors.black, width: _screenSize.height * 0.003),
+                bottom: BorderSide(
+                    color: Colors.black, width: _screenSize.height * 0.003),
+              )
+            : null,
+      );
 
   @override
   void dispose() {

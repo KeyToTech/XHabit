@@ -21,7 +21,7 @@ class FirebaseDatabaseService implements DatabaseService {
           .map((item) => Habit(item.key as String, item.value as Map))
           .toList();
 
-      result.sort((h1,h2) => h1.habitId.compareTo(h2.habitId));
+      result.sort((h1, h2) => h1.habitId.compareTo(h2.habitId));
       return result;
     }
 
@@ -30,6 +30,23 @@ class FirebaseDatabaseService implements DatabaseService {
 
   @override
   Observable<bool> createHabit(String habitId, String title, String description,
+      String startDate, String endDate) {
+    getFuture() async {
+      FirebaseUser user = await _auth.currentUser();
+      await _database.child(user.uid).child('habits').child(habitId).set({
+        'title': title,
+        'description': description,
+        'start_date': startDate,
+        'end_date': endDate,
+      });
+      return true;
+    }
+
+    return Observable.fromFuture(getFuture());
+  }
+
+  @override
+  Observable<bool> updateHabit(String habitId, String title, String description,
       String startDate, String endDate) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();

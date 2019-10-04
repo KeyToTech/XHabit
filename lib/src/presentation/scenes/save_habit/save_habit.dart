@@ -1,28 +1,39 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
-import 'package:xhabits/src/domain/simple_create_habit_use_case.dart';
-import 'package:xhabits/src/presentation/scenes/create_habit/create_habit_bloc.dart';
+import 'package:xhabits/src/data/entities/habit.dart';
+import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 
-class CreateHabit extends StatefulWidget {
+class SaveHabit extends StatefulWidget {
+  final String _hint;
+  Habit _selectedHabit;
+
+  SaveHabit.create() : _hint = 'Create habit';
+
+  SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
+
   @override
-  _CreateHabitState createState() => _CreateHabitState(
-      CreateHabitBloc(SimpleCreateHabitUseCase(FirebaseDatabaseService())));
+  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(_hint,
+      _selectedHabit, SimpleCreateHabitUseCase(FirebaseDatabaseService())));
 }
 
-class _CreateHabitState extends State<CreateHabit> {
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+class _SaveHabitState extends State<SaveHabit> {
+  TextEditingController _titleController;
+  TextEditingController _descriptionController;
 
-  final CreateHabitBloc _createHabitBloc;
+  final SaveHabitBloc _saveHabitBloc;
   Size _screenSize;
 
-  _CreateHabitState(this._createHabitBloc);
+  _SaveHabitState(this._saveHabitBloc) {
+    _titleController = TextEditingController(text: _saveHabitBloc.title);
+    _descriptionController =
+        TextEditingController(text: _saveHabitBloc.description);
+  }
 
   @override
   void initState() {
-    _createHabitBloc.createHabitObservable.listen(_handleSaveHabit);
+    _saveHabitBloc.saveHabitObservable.listen(_handleSaveHabit);
     super.initState();
   }
 
@@ -34,7 +45,7 @@ class _CreateHabitState extends State<CreateHabit> {
 
   PreferredSizeWidget _appBar() => AppBar(
         title: Text(
-          'Create habit',
+          widget._hint,
           style: TextStyle(fontSize: _screenSize.height * 0.03),
         ),
         actions: <Widget>[
@@ -45,7 +56,7 @@ class _CreateHabitState extends State<CreateHabit> {
             ),
             textColor: Colors.white,
             onPressed: () {
-              _createHabitBloc.saveHabit(
+              _saveHabitBloc.saveHabit(
                   _titleController.text, _descriptionController.text);
             },
           )
@@ -88,9 +99,9 @@ class _CreateHabitState extends State<CreateHabit> {
         ),
       );
 
-  FlatButton datePicker(String hint) => FlatButton(
+  FlatButton datePicker(String dateHint) => FlatButton(
         child: Text(
-          hint,
+          dateHint,
           style: TextStyle(fontSize: _screenSize.height * 0.03),
         ),
         onPressed: () {
@@ -100,17 +111,13 @@ class _CreateHabitState extends State<CreateHabit> {
             minTime: DateTime(1970, 1, 1),
             maxTime: DateTime(2030, 12, 31),
             onConfirm: (date) {
-              if (hint == 'Start date') {
-                _createHabitBloc.setStartDate(date);
+              if (dateHint == 'Start date') {
+                _saveHabitBloc.setStartDate(date);
               } else {
-                _createHabitBloc.setEndDate(date);
+                _saveHabitBloc.setEndDate(date);
               }
             },
-            currentTime: DateTime(
-              DateTime.now().year,
-              DateTime.now().month,
-              DateTime.now().day,
-            ),
+            currentTime: _pickerCurrentTime(dateHint),
           );
         },
       );
@@ -118,6 +125,20 @@ class _CreateHabitState extends State<CreateHabit> {
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop();
   }
+
+  DateTime _pickerCurrentTime(String dateHint) {
+    if (dateHint == 'Start date') {
+      return _saveHabitBloc.startDate ?? _dateTimeNow();
+    } else {
+      return _saveHabitBloc.endDate ?? _dateTimeNow();
+    }
+  }
+
+  DateTime _dateTimeNow() => DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      );
 
   @override
   void dispose() {
