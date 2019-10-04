@@ -11,4 +11,6 @@ abstract class DatabaseService {
       String startDate, String endDate);
 
   void removeHabit(String habitId);
+
+  void updateCheckedDays(String habitId, List<DateTime> checkedDays);
 }
