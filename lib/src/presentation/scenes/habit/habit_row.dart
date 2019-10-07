@@ -9,21 +9,28 @@ class HabitRow extends StatefulWidget {
   final String _habitId;
   final String title;
   final List<DateTime> checkedDays;
+  final DateTime _startDate;
+  final DateTime _endDate;
   final List<DateTime> _weekDays;
 
-  const HabitRow(this._habitId, this.title, this.checkedDays, this._weekDays);
+  const HabitRow(this._habitId, this.title, this.checkedDays, this._startDate,
+      this._endDate, this._weekDays);
 
   @override
   _HabitRowState createState() => _HabitRowState(
       HabitBloc(
         title,
         checkedDays,
+        _startDate,
+        _endDate,
         DatabaseHabitDataUseCase(_habitId, FirebaseDatabaseService()),
       ),
       _weekDays);
 }
 
 class _HabitRowState extends State<HabitRow> {
+  final GlobalKey<AnimatedCircularChartState> _chartKey =
+      GlobalKey<AnimatedCircularChartState>();
   final HabitBloc _habitBloc;
   final List<DateTime> _weekDays;
   Size _screenSize;
@@ -44,6 +51,10 @@ class _HabitRowState extends State<HabitRow> {
             return Center(child: CircularProgressIndicator());
           }
           _screenSize = MediaQuery.of(context).size;
+
+          _chartKey.currentState
+              ?.updateData(_progressChartData(snapshot.data.progress));
+
           return buildUi(context, snapshot.data);
         },
       );
@@ -64,27 +75,30 @@ class _HabitRowState extends State<HabitRow> {
   Widget _progressCircle(double progress) => Container(
         margin: EdgeInsets.only(right: _screenSize.width * 0.01),
         child: AnimatedCircularChart(
+          key: _chartKey,
           holeRadius: _screenSize.width * 0.008,
           size: Size.fromRadius(_screenSize.width * 0.05),
-          initialChartData: <CircularStackEntry>[
-            CircularStackEntry(
-              <CircularSegmentEntry>[
-                CircularSegmentEntry(
-                  progress,
-                  Colors.green,
-                ),
-                CircularSegmentEntry(
-                  (100 - progress),
-                  Colors.grey[300],
-                ),
-              ],
-              rankKey: 'progress',
-            ),
-          ],
+          initialChartData: _progressChartData(progress),
           chartType: CircularChartType.Radial,
           percentageValues: true,
         ),
       );
+
+  List<CircularStackEntry> _progressChartData(double progress) => [
+        CircularStackEntry(
+          <CircularSegmentEntry>[
+            CircularSegmentEntry(
+              progress,
+              Colors.green,
+            ),
+            CircularSegmentEntry(
+              (100 - progress),
+              Colors.grey[300],
+            ),
+          ],
+          rankKey: 'progress',
+        )
+      ];
 
   Widget _habitTitle(String title) => Expanded(
         child: Container(
