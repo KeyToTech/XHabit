@@ -11,17 +11,21 @@ class HabitBloc {
 
   String _title;
   List<DateTime> _checkedDays;
+  DateTime _startDate;
+  DateTime _endDate;
 
-  HabitBloc(
-      String title, List<DateTime> checkedDays, HabitDataUseCase useCase) {
+  HabitBloc(String title, List<DateTime> checkedDays, DateTime startDate,
+      DateTime endDate, HabitDataUseCase useCase) {
     _habitStateSubject = BehaviorSubject<HabitState>();
     _title = title;
     _checkedDays = checkedDays;
+    _startDate = startDate;
+    _endDate = endDate;
     _useCase = useCase;
   }
 
   void getHabitData() {
-    _habitStateSubject.sink.add(HabitState(_title, _checkedDays, 60.0));
+    _habitStateSubject.sink.add(HabitState(_title, _checkedDays, _progress()));
   }
 
   void checkDay(DateTime day) {
@@ -36,4 +40,7 @@ class HabitBloc {
 
   bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
       checkedDays.contains(date);
+
+  double _progress() =>
+      (_checkedDays.length / _endDate.difference(_startDate).inDays) * 100;
 }
