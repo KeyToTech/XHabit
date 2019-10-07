@@ -4,6 +4,7 @@ import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
+import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 
 class SaveHabit extends StatefulWidget {
   final String _hint;
@@ -91,15 +92,31 @@ class _SaveHabitState extends State<SaveHabit> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                datePicker('Start date'),
-                datePicker('End date'),
+                dateColumn('Start date'),
+                dateColumn('End date'),
               ],
             )
           ],
         ),
       );
 
-  FlatButton datePicker(String dateHint) => FlatButton(
+  Widget dateColumn(String dateHint) => StreamBuilder<SelectedDates>(
+      stream: _saveHabitBloc.selectedDatesObservable,
+      builder: (context, snapshot) => Column(
+            children: <Widget>[
+              _dateText(dateHint, snapshot.data ?? SelectedDates('', '')),
+              _datePicker(dateHint),
+            ],
+          ));
+
+  Text _dateText(String dateHint, SelectedDates selectedDates) => Text(
+        dateHint == 'Start date'
+            ? selectedDates.startDate
+            : selectedDates.endDate,
+        style: TextStyle(fontSize: _screenSize.width * 0.04),
+      );
+
+  FlatButton _datePicker(String dateHint) => FlatButton(
         child: Text(
           dateHint,
           style: TextStyle(fontSize: _screenSize.height * 0.03),
@@ -113,18 +130,16 @@ class _SaveHabitState extends State<SaveHabit> {
             onConfirm: (date) {
               if (dateHint == 'Start date') {
                 _saveHabitBloc.setStartDate(date);
+                _saveHabitBloc.displaySelectedDates();
               } else {
                 _saveHabitBloc.setEndDate(date);
+                _saveHabitBloc.displaySelectedDates();
               }
             },
             currentTime: _pickerCurrentTime(dateHint),
           );
         },
       );
-
-  void _handleSaveHabit(bool onSaveHabit) {
-    Navigator.of(context).pop();
-  }
 
   DateTime _pickerCurrentTime(String dateHint) {
     if (dateHint == 'Start date') {
@@ -140,10 +155,15 @@ class _SaveHabitState extends State<SaveHabit> {
         DateTime.now().day,
       );
 
+  void _handleSaveHabit(bool onSaveHabit) {
+    Navigator.of(context).pop();
+  }
+
   @override
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _saveHabitBloc.dispose();
     super.dispose();
   }
 }

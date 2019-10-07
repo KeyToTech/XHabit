@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/save_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 
 class SaveHabitBloc {
   final String _hint;
@@ -11,8 +12,13 @@ class SaveHabitBloc {
   DateTime endDate;
 
   BehaviorSubject<bool> _saveHabitSubject;
+  BehaviorSubject<SelectedDates> _selectedDatesSubject;
 
   Observable<bool> get saveHabitObservable => _saveHabitSubject.stream;
+
+  Observable<SelectedDates> get selectedDatesObservable =>
+      _selectedDatesSubject.stream;
+
   CreateHabitUseCase _useCase;
 
   SaveHabitBloc(this._hint, Habit selectedHabit, CreateHabitUseCase useCase) {
@@ -22,6 +28,8 @@ class SaveHabitBloc {
     startDate = selectedHabit?.startDate;
     endDate = selectedHabit?.endDate;
     _saveHabitSubject = BehaviorSubject<bool>();
+    _selectedDatesSubject = BehaviorSubject<SelectedDates>.seeded(
+        SelectedDates(_dateString(startDate), _dateString(endDate)));
     _useCase = useCase;
   }
 
@@ -56,5 +64,18 @@ class SaveHabitBloc {
 
   void _onSaveHabit(bool onSaveHabit) {
     _saveHabitSubject.sink.add(onSaveHabit);
+  }
+
+  void displaySelectedDates() {
+    _selectedDatesSubject.sink
+        .add(SelectedDates(_dateString(startDate), _dateString(endDate)));
+  }
+
+  String _dateString(DateTime date) =>
+      date?.toString()?.split(' ')?.first ?? '';
+
+  void dispose() {
+    _saveHabitSubject.close();
+    _selectedDatesSubject.close();
   }
 }
