@@ -4,6 +4,7 @@ import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
+import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
@@ -17,7 +18,8 @@ import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
-      DatabaseHomeScreenUseCase(HomeRepository(FirebaseDatabaseService())),
+      DatabaseHomeScreenUseCase(
+          HomeRepository(FirebaseDatabaseService(), RealWeekDays())),
       SimpleLogoutUseCase(FirebaseAuthService()),
       SimpleRemoveHabitUseCase(FirebaseDatabaseService())));
 }

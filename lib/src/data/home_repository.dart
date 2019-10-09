@@ -1,15 +1,15 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
-import 'package:xhabits/src/data/mock/mock_week_days.dart';
+import 'package:xhabits/src/data/week_days.dart';
 
 class HomeRepository {
   final DatabaseService _service;
+  final WeekDays _weekDays;
 
-  HomeRepository(this._service);
+  HomeRepository(this._service, this._weekDays);
 
-  List<DateTime> weekDays() => MockWeekDays().weekDays;
+  List<DateTime> weekDays() => _weekDays.weekDays();
 
   Observable<List<Habit>> getHabits() => _service.getHabits();
 }
