@@ -1,5 +1,8 @@
-class MockWeekDays {
-  List<DateTime> weekDays = [
+import 'package:xhabits/src/data/week_days.dart';
+
+class MockWeekDays implements WeekDays{
+  @override
+  List<DateTime> weekDays() => [
     DateTime(2019, 08, 27),
     DateTime(2019, 08, 26),
     DateTime(2019, 08, 25),
