@@ -9,11 +9,11 @@ class SimpleCreateHabitUseCase implements CreateHabitUseCase {
 
   @override
   Observable<bool> createHabit(String habitId, String title, String description,
-          String startDate, String endDate) =>
-      _service.createHabit(habitId, title, description, startDate, endDate);
+          String startDate, String endDate, String notificationTime) =>
+      _service.createHabit(habitId, title, description, startDate, endDate, notificationTime);
 
   @override
   Observable<bool> updateHabit(String habitId, String title, String description,
-      String startDate, String endDate) =>
-      _service.updateHabit(habitId, title, description, startDate, endDate);
+      String startDate, String endDate,String notificationTime) =>
+      _service.updateHabit(habitId, title, description, startDate, endDate, notificationTime);
 }

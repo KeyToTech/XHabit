@@ -30,7 +30,7 @@ class FirebaseDatabaseService implements DatabaseService {
 
   @override
   Observable<bool> createHabit(String habitId, String title, String description,
-      String startDate, String endDate) {
+      String startDate, String endDate, String notificationTime) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
@@ -38,6 +38,7 @@ class FirebaseDatabaseService implements DatabaseService {
         'description': description,
         'start_date': startDate,
         'end_date': endDate,
+        'notification_time': notificationTime,
       });
       return true;
     }
@@ -47,7 +48,7 @@ class FirebaseDatabaseService implements DatabaseService {
 
   @override
   Observable<bool> updateHabit(String habitId, String title, String description,
-      String startDate, String endDate) {
+      String startDate, String endDate,String notificationTime) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
@@ -55,6 +56,7 @@ class FirebaseDatabaseService implements DatabaseService {
         'description': description,
         'start_date': startDate,
         'end_date': endDate,
+        'notification_time': notificationTime,
       });
       return true;
     }
