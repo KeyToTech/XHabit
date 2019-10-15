@@ -5,10 +5,10 @@ abstract class DatabaseService {
   Observable<List<Habit>> getHabits();
 
   Observable<bool> createHabit(String habitId, String title, String description,
-      String startDate, String endDate);
+      String startDate, String endDate, String notificationTime);
 
   Observable<bool> updateHabit(String habitId, String title, String description,
-      String startDate, String endDate);
+      String startDate, String endDate, String notificationTime);
 
   void removeHabit(String habitId);
 

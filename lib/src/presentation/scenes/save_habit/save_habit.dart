@@ -95,7 +95,8 @@ class _SaveHabitState extends State<SaveHabit> {
                 dateColumn('Start date'),
                 dateColumn('End date'),
               ],
-            )
+            ),
+            _notificationRow(),
           ],
         ),
       );
@@ -124,7 +125,6 @@ class _SaveHabitState extends State<SaveHabit> {
         onPressed: () {
           DatePicker.showDatePicker(
             context,
-            showTitleActions: true,
             minTime: DateTime(1970, 1, 1),
             maxTime: DateTime(2030, 12, 31),
             onConfirm: (date) {
@@ -153,6 +153,40 @@ class _SaveHabitState extends State<SaveHabit> {
         DateTime.now().year,
         DateTime.now().month,
         DateTime.now().day,
+      );
+
+  Widget _notificationRow() => StreamBuilder<String>(
+        stream: _saveHabitBloc.notificationTimeObservable,
+        builder: (context, snapshot) => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _timePicker(),
+            Text(
+              snapshot.data ?? '',
+              style: TextStyle(fontSize: _screenSize.height * 0.05),
+            ),
+          ],
+        ),
+      );
+
+  Widget _timePicker() => Container(
+        margin: EdgeInsets.symmetric(vertical: _screenSize.height * 0.01),
+        width: _screenSize.width * 0.18,
+        height: _screenSize.height * 0.1,
+        child: IconButton(
+          icon: Icon(Icons.alarm, size: _screenSize.width * 0.1),
+          onPressed: () {
+            DatePicker.showTimePicker(
+              context,
+              currentTime:
+                  DateTime(0, 0, 0, DateTime.now().hour, DateTime.now().minute),
+              onConfirm: (time) {
+                _saveHabitBloc.setNotificationTime(time);
+                _saveHabitBloc.displayNotificationTime();
+              },
+            );
+          },
+        ),
       );
 
   void _handleSaveHabit(bool onSaveHabit) {
