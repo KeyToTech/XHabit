@@ -175,19 +175,31 @@ class _SaveHabitState extends State<SaveHabit> {
         height: _screenSize.height * 0.1,
         child: IconButton(
           icon: Icon(Icons.alarm, size: _screenSize.width * 0.1),
-          onPressed: () {
-            DatePicker.showTimePicker(
-              context,
-              currentTime:
-                  DateTime(0, 0, 0, DateTime.now().hour, DateTime.now().minute),
-              onConfirm: (time) {
-                _saveHabitBloc.setNotificationTime(time);
-                _saveHabitBloc.displayNotificationTime();
-              },
+          onPressed: () async {
+            final TimeOfDay time = await showTimePicker(
+              context: context,
+              initialTime: _selectedTime(),
+              builder: (BuildContext context, Widget child) => MediaQuery(
+                data: MediaQuery.of(context)
+                    .copyWith(alwaysUse24HourFormat: true),
+                child: child,
+              ),
             );
+            if (time != null) _saveHabitBloc.setNotificationTime(time);
+            _saveHabitBloc.displayNotificationTime();
           },
         ),
       );
+
+  TimeOfDay _selectedTime() {
+    List<String> timeStrings = _saveHabitBloc.notificationTime?.split(':');
+    if (timeStrings != null) {
+      return TimeOfDay(
+          hour: int.parse(timeStrings[0]), minute: int.parse(timeStrings[1]));
+    } else {
+      return TimeOfDay.now();
+    }
+  }
 
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop();

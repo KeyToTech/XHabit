@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/save_habit_use_case.dart';
@@ -71,7 +72,7 @@ class SaveHabitBloc {
 
   void setEndDate(DateTime date) => endDate = date;
 
-  void setNotificationTime(DateTime time) =>
+  void setNotificationTime(TimeOfDay time) =>
       notificationTime = '${time.hour}:${time.minute}';
 
   bool _validate(String title, String description, DateTime startDate,
