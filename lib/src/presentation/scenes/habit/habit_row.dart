@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
+import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/domain/database_habit_data_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
@@ -23,7 +23,7 @@ class HabitRow extends StatefulWidget {
         checkedDays,
         _startDate,
         _endDate,
-        DatabaseHabitDataUseCase(_habitId, FirebaseDatabaseService()),
+        DatabaseHabitDataUseCase(_habitId, AppConfig.database),
       ),
       _weekDays);
 }
@@ -76,8 +76,8 @@ class _HabitRowState extends State<HabitRow> {
         margin: EdgeInsets.only(right: _screenSize.width * 0.01),
         child: AnimatedCircularChart(
           key: _chartKey,
-          holeRadius: _screenSize.width * 0.008,
-          size: Size.fromRadius(_screenSize.width * 0.05),
+          holeRadius: _screenSize.shortestSide * 0.008,
+          size: Size.fromRadius(_screenSize.shortestSide * 0.05),
           initialChartData: _progressChartData(progress),
           chartType: CircularChartType.Radial,
           percentageValues: true,
@@ -107,7 +107,7 @@ class _HabitRowState extends State<HabitRow> {
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: TextStyle(
-                fontSize: _screenSize.width * 0.043,
+                fontSize: _screenSize.shortestSide * 0.043,
                 fontFamily: 'SFProDisplay',
                 fontWeight: FontWeight.w400),
           ),
@@ -116,8 +116,13 @@ class _HabitRowState extends State<HabitRow> {
 
   Widget _marks(List<DateTime> checkedDays, List<DateTime> weekdays) =>
       Container(
+        alignment: Alignment.center,
         width: _screenSize.width * 0.5,
         margin: EdgeInsets.only(left: _screenSize.width * 0.1),
+        padding: EdgeInsets.only(
+            left: _screenSize.width > 1100
+                ? _screenSize.width * 0.11
+                : _screenSize.width > 800 ? _screenSize.width * 0.04 : 0),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -132,9 +137,8 @@ class _HabitRowState extends State<HabitRow> {
       );
 
   Widget _marksIcon(List<DateTime> checkedDays, DateTime weekday) => Container(
-        margin: EdgeInsets.symmetric(
-            horizontal: _screenSize.width * 0.025,
-            vertical: _screenSize.height * 0.025),
+        margin:
+            EdgeInsets.symmetric(horizontal: _screenSize.shortestSide * 0.022),
         child: SizedBox(
           width: _screenSize.width * 0.054,
           child: IconButton(
@@ -142,7 +146,7 @@ class _HabitRowState extends State<HabitRow> {
                 ? Icon(Icons.check, color: Colors.green)
                 : Icon(Icons.close),
             padding: EdgeInsets.all(0.0),
-            iconSize: _screenSize.width * 0.054,
+            iconSize: _screenSize.shortestSide * 0.054,
             onPressed: () {
               _habitBloc.checkDay(weekday);
             },

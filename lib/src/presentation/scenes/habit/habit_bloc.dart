@@ -5,7 +5,7 @@ import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 class HabitBloc {
   BehaviorSubject<HabitState> _habitStateSubject;
 
-  Observable<HabitState> get habitStateObservable => _habitStateSubject.stream;
+  Stream<HabitState> get habitStateObservable => _habitStateSubject.stream;
 
   HabitDataUseCase _useCase;
 

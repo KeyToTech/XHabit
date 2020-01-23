@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/data/real_week_days.dart';
@@ -19,9 +19,9 @@ class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
       DatabaseHomeScreenUseCase(
-          HomeRepository(FirebaseDatabaseService(), RealWeekDays())),
+          HomeRepository(AppConfig.database, RealWeekDays())),
       SimpleLogoutUseCase(FirebaseAuthService()),
-      SimpleRemoveHabitUseCase(FirebaseDatabaseService())));
+      SimpleRemoveHabitUseCase(AppConfig.database)));
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) =>
       StreamBuilder<Map<HomeScreenResource, AppBarState>>(
-        stream: Observable.combineLatest2(
+        stream: Rx.combineLatest2(
             _homeScreenBloc.homeScreenStateObservable,
             _homeScreenBloc.appBarStateObservable,
             (first, second) =>
@@ -134,12 +134,17 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Colors.grey[300],
           child: Column(children: <Widget>[
             Container(
-              height: _screenSize.height * 0.08,
-              padding: EdgeInsets.only(
+              height: _screenSize.shortestSide * 0.09,
+              width: _screenSize.width * 0.5,
+              margin: EdgeInsets.only(
                 left: _screenSize.width * 0.485,
                 right: _screenSize.width * 0.015,
                 top: _screenSize.height * 0.018,
               ),
+              padding: EdgeInsets.only(
+                  left: _screenSize.width > 1100
+                      ? _screenSize.width * 0.105
+                      : _screenSize.width > 800 ? _screenSize.width * 0.04 : 0),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -152,17 +157,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text(
                               daysWords[weekDays[index].weekday],
                               style: TextStyle(
-                                  fontSize: _screenSize.width * 0.024),
+                                  fontSize: _screenSize.shortestSide * 0.024),
                             ),
                             Text(
                               weekDays[index].day.toString(),
                               style: TextStyle(
-                                  fontSize: _screenSize.width * 0.033),
+                                  fontSize: _screenSize.shortestSide * 0.033),
                             )
                           ],
                         ),
                         margin: EdgeInsets.symmetric(
-                            horizontal: _screenSize.width * 0.031),
+                            horizontal: _screenSize.width * 0.0274),
                       ),
                     ),
                   ),
@@ -208,9 +213,11 @@ class _HomeScreenState extends State<HomeScreen> {
         border: currentHabit.habitId == selectedHabit?.habitId
             ? Border(
                 top: BorderSide(
-                    color: Colors.black, width: _screenSize.height * 0.003),
+                    color: Colors.black,
+                    width: _screenSize.shortestSide * 0.003),
                 bottom: BorderSide(
-                    color: Colors.black, width: _screenSize.height * 0.003),
+                    color: Colors.black,
+                    width: _screenSize.shortestSide * 0.003),
               )
             : null,
       );

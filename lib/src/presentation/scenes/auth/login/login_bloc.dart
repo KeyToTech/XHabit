@@ -11,7 +11,7 @@ import 'package:xhabits/src/data/entities/user.dart';
 class LoginBloc {
   BehaviorSubject<Resource<LoginState>> _loginStateSubject;
 
-  Observable<Resource<LoginState>> get loginStateObservable =>
+  Stream<Resource<LoginState>> get loginStateObservable =>
       _loginStateSubject.stream;
 
   Future<dynamic> get closeStream => _loginStateSubject.close();

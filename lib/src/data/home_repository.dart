@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/week_days.dart';
@@ -11,5 +10,5 @@ class HomeRepository {
 
   List<DateTime> weekDays() => _weekDays.weekDays();
 
-  Observable<List<Habit>> getHabits() => _service.getHabits();
+  Stream<List<Habit>> getHabits() => _service.getHabits();
 }

@@ -1,9 +1,8 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 
 abstract class HomeScreenUseCase {
   List<DateTime> weekDays();
-  Observable<List<Habit>> getHabits();
+  Stream<List<Habit>> getHabits();
 
   Map<int, String> daysWords() => {
         1: 'Mon',

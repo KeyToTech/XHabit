@@ -17,12 +17,12 @@ class SaveHabitBloc {
   BehaviorSubject<SelectedDates> _selectedDatesSubject;
   BehaviorSubject<String> _notificationTimeSubject;
 
-  Observable<bool> get saveHabitObservable => _saveHabitSubject.stream;
+  Stream<bool> get saveHabitObservable => _saveHabitSubject.stream;
 
-  Observable<SelectedDates> get selectedDatesObservable =>
+  Stream<SelectedDates> get selectedDatesObservable =>
       _selectedDatesSubject.stream;
 
-  Observable<String> get notificationTimeObservable =>
+  Stream<String> get notificationTimeObservable =>
       _notificationTimeSubject.stream;
 
   CreateHabitUseCase _useCase;

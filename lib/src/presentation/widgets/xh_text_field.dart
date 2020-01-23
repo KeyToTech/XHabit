@@ -7,12 +7,10 @@ class XHTextField {
 
   XHTextField(this.hint, this.textController, this.obscureText);
 
-  Widget field() {
-    return TextFormField(
+  Widget field() => TextFormField(
       decoration:
           InputDecoration(labelText: hint, border: OutlineInputBorder()),
       obscureText: obscureText,
       controller: textController,
     );
-  }
 }

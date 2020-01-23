@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:xhabits/main.dart';
 import 'package:xhabits/src/presentation/XHApp.dart';
 
 void main() {

@@ -20,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final LoginBloc _loginBloc;
+  Size _screenSize;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -67,6 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
               WidgetsBinding.instance.addPostFrameCallback((_) => InfoDialog()
                   .show(context, 'Could not login', snapshot.data.message));
             }
+            _screenSize = MediaQuery.of(context).size;
+
             return buildUi(
                 context, loginState, snapshot.data.status == Status.LOADING);
           }));
@@ -76,7 +79,10 @@ class _LoginScreenState extends State<LoginScreen> {
       Center(
         child: ListView(
           shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24, right: 24),
+          padding: EdgeInsets.symmetric(
+              horizontal: _screenSize.width > 1000
+                  ? _screenSize.width * 0.3
+                  : _screenSize.width * 0.15),
           children: <Widget>[
             Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,26 +111,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 : XHButton('Sign in', loginState.signInButtonEnabled, _onSubmit)
                     .materialButton(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Don't have an account?"),
-                const SizedBox(width: 8.0),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, RegisterScreen.routeName);
-                  },
-                  child: Text('Sign up',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
-                )
-              ],
-            ),
+            _screenSize.width > 360
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _dontHaveAccountChild(),
+                  )
+                : Column(
+                    //mainAxisAlignment: MainAxisAlignment.center,
+                    children: _dontHaveAccountChild(),
+                  )
           ],
         ),
       );
+
+  List<Widget> _dontHaveAccountChild() => <Widget>[
+        Text('Don\'t have an account?'),
+        const SizedBox(width: 8.0),
+        InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, RegisterScreen.routeName);
+          },
+          child: Text('Sign up',
+              style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline)),
+        )
+      ];
 
   @override
   void dispose() {
