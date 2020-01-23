@@ -12,12 +12,12 @@ class HomeScreenBloc {
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
   BehaviorSubject<AppBarState> _appBarStateSubject;
 
-  Observable<HomeScreenResource> get homeScreenStateObservable =>
+  Stream<HomeScreenResource> get homeScreenStateObservable =>
       _homeStateSubject.stream;
 
-  Observable<bool> get logoutStateObservable => _logoutStateSubject.stream;
+  Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
-  Observable<AppBarState> get appBarStateObservable =>
+  Stream<AppBarState> get appBarStateObservable =>
       _appBarStateSubject.stream;
 
   HomeScreenUseCase _useCase;

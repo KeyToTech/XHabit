@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
+import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
@@ -16,7 +15,7 @@ class SaveHabit extends StatefulWidget {
 
   @override
   _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(_hint,
-      _selectedHabit, SimpleCreateHabitUseCase(FirebaseDatabaseService())));
+      _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
 }
 
 class _SaveHabitState extends State<SaveHabit> {
@@ -114,7 +113,7 @@ class _SaveHabitState extends State<SaveHabit> {
         dateHint == 'Start date'
             ? selectedDates.startDate
             : selectedDates.endDate,
-        style: TextStyle(fontSize: _screenSize.width * 0.04),
+        style: TextStyle(fontSize: _screenSize.height * 0.035),
       );
 
   FlatButton _datePicker(String dateHint) => FlatButton(
@@ -122,22 +121,21 @@ class _SaveHabitState extends State<SaveHabit> {
           dateHint,
           style: TextStyle(fontSize: _screenSize.height * 0.03),
         ),
-        onPressed: () {
-          DatePicker.showDatePicker(
-            context,
-            minTime: DateTime(1970, 1, 1),
-            maxTime: DateTime(2030, 12, 31),
-            onConfirm: (date) {
-              if (dateHint == 'Start date') {
-                _saveHabitBloc.setStartDate(date);
-                _saveHabitBloc.displaySelectedDates();
-              } else {
-                _saveHabitBloc.setEndDate(date);
-                _saveHabitBloc.displaySelectedDates();
-              }
-            },
-            currentTime: _pickerCurrentTime(dateHint),
-          );
+        onPressed: () async {
+          final DateTime date = await showDatePicker(
+              context: context,
+              initialDate: _pickerCurrentTime(dateHint),
+              firstDate: DateTime(1970, 1, 1),
+              lastDate: DateTime(2030, 12, 31));
+
+          if (date != null) {
+            if (dateHint == 'Start date') {
+              _saveHabitBloc.setStartDate(date);
+            } else {
+              _saveHabitBloc.setEndDate(date);
+            }
+            _saveHabitBloc.displaySelectedDates();
+          }
         },
       );
 
@@ -174,7 +172,7 @@ class _SaveHabitState extends State<SaveHabit> {
         width: _screenSize.width * 0.18,
         height: _screenSize.height * 0.1,
         child: IconButton(
-          icon: Icon(Icons.alarm, size: _screenSize.width * 0.1),
+          icon: Icon(Icons.alarm, size: _screenSize.shortestSide * 0.1),
           onPressed: () async {
             final TimeOfDay time = await showTimePicker(
               context: context,

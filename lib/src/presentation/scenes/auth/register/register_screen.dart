@@ -24,6 +24,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterBloc _registerBloc;
+  Size _screenSize;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -73,13 +74,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
               WidgetsBinding.instance.addPostFrameCallback((_) =>
                   InfoDialog().show(context, 'Error', snapshot.data.message));
             }
+            _screenSize = MediaQuery.of(context).size;
+
             return buildUi(context, registerState);
           }));
 
   Widget buildUi(BuildContext context, RegisterState registerState) => Center(
         child: ListView(
           shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24, right: 24),
+          padding: EdgeInsets.symmetric(
+              horizontal: _screenSize.width > 1000
+                  ? _screenSize.width * 0.3
+                  : _screenSize.width * 0.15),
           children: <Widget>[
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
                 Widget>[
@@ -110,7 +116,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   .messageError(),
             ]),
             XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
-                .materialButton()
+                .materialButton(),
           ],
         ),
       );

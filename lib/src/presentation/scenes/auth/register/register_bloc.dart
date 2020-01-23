@@ -12,7 +12,7 @@ import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dar
 class RegisterBloc {
   BehaviorSubject<Resource<RegisterState>> _registerStateSubject;
 
-  Observable<Resource<RegisterState>> get registerStateObservable =>
+  Stream<Resource<RegisterState>> get registerStateObservable =>
       _registerStateSubject.stream;
 
   Future<dynamic> get closeStream => _registerStateSubject.close();
