@@ -30,7 +30,6 @@ class SaveHabitBloc {
   SaveHabitBloc(this._hint, Habit selectedHabit, CreateHabitUseCase useCase) {
     habitId = selectedHabit?.habitId;
     title = selectedHabit?.title;
-    description = selectedHabit?.description;
     startDate = selectedHabit?.startDate;
     endDate = selectedHabit?.endDate;
     notificationTime = selectedHabit?.notificationTime;
@@ -41,14 +40,13 @@ class SaveHabitBloc {
     _useCase = useCase;
   }
 
-  void saveHabit(String title, String description) {
-    if (_validate(title, description, startDate, endDate, notificationTime)) {
+  void saveHabit(String title) {
+    if (_validate(title, startDate, endDate, notificationTime)) {
       if (_hint == 'Create habit') {
         _useCase
             .createHabit(
                 DateTime.now().toString().split('.')[0],
                 title,
-                description,
                 startDate.toString(),
                 endDate.toString(),
                 notificationTime)
@@ -58,7 +56,6 @@ class SaveHabitBloc {
             .updateHabit(
               habitId,
               title,
-              description,
               startDate.toString(),
               endDate.toString(),
               notificationTime,
@@ -75,12 +72,10 @@ class SaveHabitBloc {
   void setNotificationTime(TimeOfDay time) =>
       notificationTime = '${time.hour}:${time.minute}';
 
-  bool _validate(String title, String description, DateTime startDate,
+  bool _validate(String title, DateTime startDate,
           DateTime endDate, String notificationTime) =>
       title != null &&
       title.isNotEmpty &&
-      description != null &&
-      description.isNotEmpty &&
       startDate != null &&
       endDate != null &&
       notificationTime != null;

@@ -20,15 +20,12 @@ class SaveHabit extends StatefulWidget {
 
 class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
-  TextEditingController _descriptionController;
 
   final SaveHabitBloc _saveHabitBloc;
   Size _screenSize;
 
   _SaveHabitState(this._saveHabitBloc) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
-    _descriptionController =
-        TextEditingController(text: _saveHabitBloc.description);
   }
 
   @override
@@ -57,7 +54,7 @@ class _SaveHabitState extends State<SaveHabit> {
             textColor: Colors.white,
             onPressed: () {
               _saveHabitBloc.saveHabit(
-                  _titleController.text, _descriptionController.text);
+                  _titleController.text);
             },
           )
         ],
@@ -75,17 +72,6 @@ class _SaveHabitState extends State<SaveHabit> {
               decoration: InputDecoration(
                 hintText: 'Title',
                 hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                controller: _descriptionController,
-                style: TextStyle(fontSize: _screenSize.height * 0.032),
-                decoration: InputDecoration(
-                  hintText: 'Description',
-                  hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
-                ),
-                maxLines: null,
               ),
             ),
             Row(
@@ -206,7 +192,6 @@ class _SaveHabitState extends State<SaveHabit> {
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     _saveHabitBloc.dispose();
     super.dispose();
   }

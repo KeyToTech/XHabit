@@ -11,7 +11,7 @@ class MockHabitData implements DatabaseService {
   ];
 
   @override
-  Stream<bool> createHabit(String habitId, String title, String description,
+  Stream<bool> createHabit(String habitId, String title,
           String startDate, String endDate, String notificationTime) =>
       null;
 
@@ -19,7 +19,6 @@ class MockHabitData implements DatabaseService {
   Stream<List<Habit>> getHabits() => Stream.value(<Habit>[
         Habit('mockId1', {
           'title': 'mockaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa title1',
-          'description': 'mock descr',
           'checked_days': [],
           'start_date': '2019-09-20 00:00:00.000',
           'end_date': '2019-09-30 00:00:00.000',
@@ -27,7 +26,6 @@ class MockHabitData implements DatabaseService {
         }),
         Habit('mockId2', {
           'title': 'mock title2',
-          'description': 'mock descr',
           'checked_days': [],
           'start_date': '2019-09-20 00:00:00.000',
           'end_date': '2019-09-30 00:00:00.000',
@@ -35,7 +33,6 @@ class MockHabitData implements DatabaseService {
         }),
         Habit('mockId3', {
           'title': 'mock title3',
-          'description': 'mock descr',
           'checked_days': [],
           'start_date': '2019-09-20 00:00:00.000',
           'end_date': '2019-09-30 00:00:00.000',
@@ -50,7 +47,7 @@ class MockHabitData implements DatabaseService {
   void updateCheckedDays(String habitId, List<DateTime> checkedDays) {}
 
   @override
-  Stream<bool> updateHabit(String habitId, String title, String description,
+  Stream<bool> updateHabit(String habitId, String title,
           String startDate, String endDate, String notificationTime) =>
       null;
 }
