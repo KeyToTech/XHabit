@@ -28,13 +28,12 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
-  Stream<bool> createHabit(String habitId, String title, String description,
+  Stream<bool> createHabit(String habitId, String title,
       String startDate, String endDate, String notificationTime) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
         'title': title,
-        'description': description,
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
@@ -46,13 +45,12 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
-  Stream<bool> updateHabit(String habitId, String title, String description,
+  Stream<bool> updateHabit(String habitId, String title,
       String startDate, String endDate,String notificationTime) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
         'title': title,
-        'description': description,
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
