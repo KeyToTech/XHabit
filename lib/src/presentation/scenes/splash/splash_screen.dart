@@ -50,14 +50,29 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) => Container(
         alignment: Alignment.center,
-        color: Colors.white,
-        child: Text(
-          'XHabit',
-          style: TextStyle(
-            fontSize: 36.0,
-            decoration: TextDecoration.none,
-            color: Colors.black,
-          ),
+        color: Colors.black,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'XHabit',
+              style: TextStyle(
+                fontSize: 40.0,
+                decoration: TextDecoration.none,
+                color: Colors.redAccent,
+              ),
+            ),
+            Text(
+              'BUILD A BETTER YOU',
+              style: TextStyle(
+                fontSize: 28.0,
+                decoration: TextDecoration.none,
+                color: Colors.white
+              )
+            )
+          ],
         ),
+
       );
 }
