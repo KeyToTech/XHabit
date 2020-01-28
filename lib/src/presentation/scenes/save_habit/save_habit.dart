@@ -14,8 +14,8 @@ class SaveHabit extends StatefulWidget {
   SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
 
   @override
-  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(_hint,
-      _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
+  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
+      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
 }
 
 class _SaveHabitState extends State<SaveHabit> {
@@ -53,38 +53,50 @@ class _SaveHabitState extends State<SaveHabit> {
             ),
             textColor: Colors.white,
             onPressed: () {
-              _saveHabitBloc.saveHabit(
-                  _titleController.text);
+              _saveHabitBloc.saveHabit(_titleController.text);
             },
           )
         ],
       );
 
-  Widget _body() => Container(
-        padding: EdgeInsets.symmetric(
-            vertical: _screenSize.height * 0.02,
-            horizontal: _screenSize.width * 0.035),
-        child: Column(
+  Widget _body() => Padding(
+    padding: EdgeInsets.symmetric(
+        vertical: _screenSize.height * 0.02,
+        horizontal: _screenSize.width * 0.035),
+    child: Column(
           children: <Widget>[
-            TextField(
-              controller: _titleController,
-              style: TextStyle(fontSize: _screenSize.height * 0.032),
-              decoration: InputDecoration(
-                hintText: 'Title',
-                hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
               children: <Widget>[
-                dateColumn('Start date'),
-                dateColumn('End date'),
+                TextField(
+                  controller: _titleController,
+                  style: TextStyle(fontSize: _screenSize.height * 0.032),
+                  decoration: InputDecoration(
+                    hintText: 'Title',
+                    hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
+                  ),
+                ),
               ],
             ),
-            _notificationRow(),
+            Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        dateColumn('Start date'),
+                        dateColumn('End date'),
+                      ],
+                    ),
+                    _notificationRow(),
+                  ],
+                ),
+              ),
           ],
         ),
-      );
+  );
 
   Widget dateColumn(String dateHint) => StreamBuilder<SelectedDates>(
       stream: _saveHabitBloc.selectedDatesObservable,
