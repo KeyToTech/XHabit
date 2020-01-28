@@ -14,8 +14,8 @@ class SaveHabit extends StatefulWidget {
   SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
 
   @override
-  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(_hint,
-      _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
+  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
+      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
 }
 
 class _SaveHabitState extends State<SaveHabit> {
@@ -53,18 +53,18 @@ class _SaveHabitState extends State<SaveHabit> {
             ),
             textColor: Colors.white,
             onPressed: () {
-              _saveHabitBloc.saveHabit(
-                  _titleController.text);
+              _saveHabitBloc.saveHabit(_titleController.text);
             },
           )
         ],
       );
 
-  Widget _body() => Container(
+  Widget _body() => Padding(
         padding: EdgeInsets.symmetric(
             vertical: _screenSize.height * 0.02,
             horizontal: _screenSize.width * 0.035),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             TextField(
               controller: _titleController,
@@ -74,14 +74,18 @@ class _SaveHabitState extends State<SaveHabit> {
                 hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            Column(
               children: <Widget>[
-                dateColumn('Start date'),
-                dateColumn('End date'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    dateColumn('Start date'),
+                    dateColumn('End date'),
+                  ],
+                ),
+                _notificationRow(),
               ],
             ),
-            _notificationRow(),
           ],
         ),
       );
