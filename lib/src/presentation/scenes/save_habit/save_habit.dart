@@ -114,8 +114,8 @@ class _SaveHabitState extends State<SaveHabit> {
         onPressed: () async {
           final DateTime date = await showDatePicker(
               context: context,
-              initialDate: _pickerCurrentTime(dateHint),
-              firstDate: DateTime(1970, 1, 1),
+              initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
+              firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
               lastDate: DateTime(2030, 12, 31));
 
           if (date != null) {
@@ -127,20 +127,6 @@ class _SaveHabitState extends State<SaveHabit> {
             _saveHabitBloc.displaySelectedDates();
           }
         },
-      );
-
-  DateTime _pickerCurrentTime(String dateHint) {
-    if (dateHint == 'Start date') {
-      return _saveHabitBloc.startDate ?? _dateTimeNow();
-    } else {
-      return _saveHabitBloc.endDate ?? _dateTimeNow();
-    }
-  }
-
-  DateTime _dateTimeNow() => DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
       );
 
   Widget _notificationRow() => StreamBuilder<String>(
