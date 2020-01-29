@@ -65,15 +65,20 @@ class SaveHabitBloc {
     }
   }
 
-  void setStartDate(DateTime date) => startDate = date;
+  void setStartDate(DateTime date) {
+    startDate = date;
+    if (endDate != null && startDate.compareTo(endDate) >= 0) {
+      endDate = startDate.add(Duration(days: 1));
+    }
+  }
 
   void setEndDate(DateTime date) => endDate = date;
 
   void setNotificationTime(TimeOfDay time) =>
       notificationTime = '${time.hour}:${time.minute}';
 
-  bool _validate(String title, DateTime startDate,
-          DateTime endDate, String notificationTime) =>
+  bool _validate(String title, DateTime startDate, DateTime endDate,
+          String notificationTime) =>
       title != null &&
       title.isNotEmpty &&
       startDate != null &&
@@ -95,6 +100,29 @@ class SaveHabitBloc {
 
   String _dateString(DateTime date) =>
       date?.toString()?.split(' ')?.first ?? '';
+
+  DateTime pickerCurrentDate(String dateHint) {
+    if (dateHint == 'Start date') {
+      return startDate ?? _dateTimeNow();
+    } else {
+      return endDate ?? pickerFirstDate('End date');
+    }
+  }
+
+  DateTime pickerFirstDate(String dateHint) {
+    if (dateHint == 'Start date') {
+      return _dateTimeNow();
+    } else {
+      DateTime currentStartDate = startDate ?? _dateTimeNow();
+      return currentStartDate.add(Duration(days: 1));
+    }
+  }
+
+  DateTime _dateTimeNow() => DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      );
 
   void dispose() {
     _saveHabitSubject.close();
