@@ -14,7 +14,9 @@ class HabitRow extends StatefulWidget {
   final List<DateTime> _weekDays;
 
   const HabitRow(this._habitId, this.title, this.checkedDays, this._startDate,
-      this._endDate, this._weekDays);
+      this._endDate, this._weekDays,
+      {Key key})
+      : super(key: key);
 
   @override
   _HabitRowState createState() => _HabitRowState(

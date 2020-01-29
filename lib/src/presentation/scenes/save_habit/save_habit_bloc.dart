@@ -12,6 +12,7 @@ class SaveHabitBloc {
   DateTime startDate;
   DateTime endDate;
   String notificationTime;
+  List<DateTime> checkedDays;
 
   BehaviorSubject<bool> _saveHabitSubject;
   BehaviorSubject<SelectedDates> _selectedDatesSubject;
@@ -33,6 +34,7 @@ class SaveHabitBloc {
     startDate = selectedHabit?.startDate;
     endDate = selectedHabit?.endDate;
     notificationTime = selectedHabit?.notificationTime;
+    checkedDays = selectedHabit?.checkedDays;
     _saveHabitSubject = BehaviorSubject<bool>();
     _selectedDatesSubject = BehaviorSubject<SelectedDates>.seeded(
         SelectedDates(_dateString(startDate), _dateString(endDate)));
@@ -59,6 +61,7 @@ class SaveHabitBloc {
               startDate.toString(),
               endDate.toString(),
               notificationTime,
+              checkedDays
             )
             .listen(_onSaveHabit);
       }

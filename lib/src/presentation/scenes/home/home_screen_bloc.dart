@@ -11,6 +11,7 @@ class HomeScreenBloc {
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
   BehaviorSubject<AppBarState> _appBarStateSubject;
+  Habit lastSelectedHabit;
 
   Stream<HomeScreenResource> get homeScreenStateObservable =>
       _homeStateSubject.stream;
@@ -57,12 +58,18 @@ class HomeScreenBloc {
 
   void removeHabit(String habitId) {
     _removeUseCase.removeHabit(habitId);
+    getHomeData();
     showMainAppBar();
   }
 
   void showMainAppBar() {
     _appBarStateSubject.sink.add(AppBarState(false, null));
-    getHomeData();
+  }
+
+  void changeLastSelected(Habit selectedHabit) {
+    if (selectedHabit != null) {
+      lastSelectedHabit = selectedHabit;
+    }
   }
 
   void dispose() {

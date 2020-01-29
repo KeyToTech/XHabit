@@ -20,7 +20,6 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
           .map((item) => Habit(item.key as String, item.value as Map))
           .toList();
 
-      print('---req---');
       result.sort((h1, h2) => h1.habitId.compareTo(h2.habitId));
       return result;
     }
@@ -47,7 +46,7 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
 
   @override
   Stream<bool> updateHabit(String habitId, String title,
-      String startDate, String endDate,String notificationTime) {
+      String startDate, String endDate,String notificationTime,List<DateTime> checkedDays) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
@@ -55,6 +54,7 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
+        'checked_days': checkedDays.map((item) => item.toString()).toList()
       });
       return true;
     }

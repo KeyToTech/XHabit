@@ -61,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
           final Map<int, String> daysWords = homeState.daysWords;
 
           final Habit selectedHabit = appBarState.selectedHabit;
-          print(habits.last.title);
           return Scaffold(
             appBar: appBarState.showEditingAppBar
                 ? editingAppBar(appBarState.selectedHabit)
@@ -117,6 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context) => SaveHabit.update(selectedHabit),
                 ),
               );
+              _homeScreenBloc.getHomeData();
               _homeScreenBloc.showMainAppBar();
             },
           ),
@@ -194,11 +194,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 habits[index].checkedDays,
                 habits[index].startDate,
                 habits[index].endDate,
-                weekDays
+                weekDays,
+                key: habits[index].habitId ==
+                        _homeScreenBloc.lastSelectedHabit?.habitId
+                    ? UniqueKey()
+                    : ValueKey(index),
               ),
             ),
             onLongPress: () {
               _homeScreenBloc.selectHabit(habits[index]);
+              _homeScreenBloc.changeLastSelected(habits[index]);
             },
           ),
         ),
