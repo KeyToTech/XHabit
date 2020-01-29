@@ -48,6 +48,6 @@ class MockHabitData implements DatabaseService {
 
   @override
   Stream<bool> updateHabit(String habitId, String title,
-          String startDate, String endDate, String notificationTime) =>
+          String startDate, String endDate, String notificationTime, List<DateTime> checkedDays) =>
       null;
 }

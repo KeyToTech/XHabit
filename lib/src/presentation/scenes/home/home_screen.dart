@@ -61,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
           final Map<int, String> daysWords = homeState.daysWords;
 
           final Habit selectedHabit = appBarState.selectedHabit;
-
           return Scaffold(
             appBar: appBarState.showEditingAppBar
                 ? editingAppBar(appBarState.selectedHabit)
@@ -75,13 +74,14 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SaveHabit.create(),
                 ),
               );
+              _homeScreenBloc.getHomeData();
             },
           ),
           IconButton(
@@ -109,13 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SaveHabit.update(selectedHabit),
                 ),
               );
+              _homeScreenBloc.getHomeData();
               _homeScreenBloc.showMainAppBar();
             },
           ),
@@ -194,10 +195,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 habits[index].startDate,
                 habits[index].endDate,
                 weekDays,
+                key: habits[index].habitId ==
+                        _homeScreenBloc.lastSelectedHabit?.habitId
+                    ? UniqueKey()
+                    : ValueKey(index),
               ),
             ),
             onLongPress: () {
               _homeScreenBloc.selectHabit(habits[index]);
+              _homeScreenBloc.changeLastSelected(habits[index]);
             },
           ),
         ),
