@@ -17,8 +17,7 @@ class HomeScreenBloc {
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
-  Stream<AppBarState> get appBarStateObservable =>
-      _appBarStateSubject.stream;
+  Stream<AppBarState> get appBarStateObservable => _appBarStateSubject.stream;
 
   HomeScreenUseCase _useCase;
   LogoutUseCase _logoutUseCase;
@@ -63,6 +62,7 @@ class HomeScreenBloc {
 
   void showMainAppBar() {
     _appBarStateSubject.sink.add(AppBarState(false, null));
+    getHomeData();
   }
 
   void dispose() {

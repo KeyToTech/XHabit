@@ -113,3 +113,6 @@ coverage/
 
 # Firebase config for web
 firebase_config.dart
+
+# Generated file
+generated_plugin_registrant.dart

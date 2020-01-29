@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final Map<int, String> daysWords = homeState.daysWords;
 
           final Habit selectedHabit = appBarState.selectedHabit;
-
+          print(habits.last.title);
           return Scaffold(
             appBar: appBarState.showEditingAppBar
                 ? editingAppBar(appBarState.selectedHabit)
@@ -75,13 +75,14 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SaveHabit.create(),
                 ),
               );
+              _homeScreenBloc.getHomeData();
             },
           ),
           IconButton(
@@ -109,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => SaveHabit.update(selectedHabit),
@@ -193,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 habits[index].checkedDays,
                 habits[index].startDate,
                 habits[index].endDate,
-                weekDays,
+                weekDays
               ),
             ),
             onLongPress: () {
