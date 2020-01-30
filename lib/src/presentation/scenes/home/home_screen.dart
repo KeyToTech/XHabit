@@ -8,12 +8,14 @@ import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
+import 'package:xhabits/src/presentation/screen_type.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -48,16 +50,17 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, snapshot) {
           if (snapshot.data == null) {
             return Container(
-              color: Color(0xff323337),
+              color: XHColors.darkGrey,
               child: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Color(0xffff3367)),
+                  valueColor: AlwaysStoppedAnimation<Color>(XHColors.pink),
                 ),
               ),
             );
           }
 
           _screenSize = MediaQuery.of(context).size;
+          ScreenType.screenWidth = _screenSize.width;
           final HomeScreenResource homeState = snapshot.data.keys.first;
           final AppBarState appBarState = snapshot.data.values.first;
 
@@ -80,10 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
           'Habits',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color(0xff323337),
+        backgroundColor: XHColors.darkGrey,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.add, color: Color(0xffff3367)),
+            icon: Icon(Icons.add, color: XHColors.pink),
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -95,22 +98,22 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.exit_to_app, color: Color(0xffff3367)),
+            icon: Icon(Icons.exit_to_app, color: XHColors.pink),
             onPressed: _homeScreenBloc.logout,
           ),
         ],
       );
 
   PreferredSizeWidget editingAppBar(Habit selectedHabit) => AppBar(
-        backgroundColor: Color(0xff323337),
+        backgroundColor: XHColors.darkGrey,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xffff3367)),
+          icon: Icon(Icons.arrow_back, color: XHColors.pink),
           onPressed: _homeScreenBloc.showMainAppBar,
         ),
         title: Text('Edit / remove habit'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.edit, color: Color(0xffff3367)),
+            icon: Icon(Icons.edit, color: XHColors.pink),
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -123,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.delete, color: Color(0xffff3367)),
+            icon: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
               _homeScreenBloc.removeHabit(selectedHabit.habitId);
             },
@@ -134,7 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
           Map<int, String> daysWords) =>
       Container(
-          color: Color(0xff323337),
+          color: XHColors.darkGrey,
           child: Column(children: <Widget>[
             Container(
               height: _screenSize.shortestSide * 0.09,
@@ -145,9 +148,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 top: _screenSize.height * 0.018,
               ),
               padding: EdgeInsets.only(
-                  left: _screenSize.width > 1150
+                  left: ScreenType.large
                       ? _screenSize.width * 0.112
-                      : _screenSize.width > 800
+                      : ScreenType.medium
                           ? _screenSize.width * 0.032
                           : 0),
               child: Row(
@@ -163,20 +166,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               daysWords[weekDays[index].weekday],
                               style: TextStyle(
                                 fontSize: _screenSize.shortestSide * 0.024,
-                                color: Color(0xffc8c8c8),
+                                color: XHColors.lightGrey,
                               ),
                             ),
                             Text(
                               weekDays[index].day.toString(),
                               style: TextStyle(
                                 fontSize: _screenSize.shortestSide * 0.033,
-                                color: Color(0xffc8c8c8),
+                                color: XHColors.lightGrey,
                               ),
                             )
                           ],
                         ),
                         margin: EdgeInsets.symmetric(
-                          horizontal: _screenSize.width > 800
+                          horizontal: ScreenType.medium
                               ? _screenSize.width * 0.025
                               : _screenSize.width * 0.0235,
                         ),
@@ -230,10 +233,10 @@ class _HomeScreenState extends State<HomeScreen> {
         border: currentHabit.habitId == selectedHabit?.habitId
             ? Border(
                 top: BorderSide(
-                    color: Color(0xffc8c8c8),
+                    color: XHColors.lightGrey,
                     width: _screenSize.shortestSide * 0.003),
                 bottom: BorderSide(
-                    color: Color(0xffc8c8c8),
+                    color: XHColors.lightGrey,
                     width: _screenSize.shortestSide * 0.003),
               )
             : null,
