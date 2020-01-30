@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
@@ -58,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) => Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(50, 51, 55, 1),
+        backgroundColor: XHColors.darkGrey,
         title: Text('Sign in'),
       ),
       body: StreamBuilder(
@@ -109,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(
                           fontSize: 30.0,
                           fontFamily: "Montserrat",
-                          color: Color.fromRGBO(200, 200, 200, 1),
+                          color: XHColors.lightGrey,
                         ),
                       ),
                     ),
@@ -159,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
           },
           child: Text('Don\'t have an account?',
               style: TextStyle(
-                  color: Color.fromRGBO(255, 51, 103, 1.0),
+                  color: XHColors.pink,
                   fontWeight: FontWeight.bold)),
         )
       ];

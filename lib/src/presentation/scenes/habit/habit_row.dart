@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/domain/database_habit_data_use_case.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
+import 'package:xhabits/src/presentation/screen_type.dart';
 
 class HabitRow extends StatefulWidget {
   final String _habitId;
@@ -50,10 +52,13 @@ class _HabitRowState extends State<HabitRow> {
         stream: _habitBloc.habitStateObservable,
         builder: (BuildContext context, AsyncSnapshot<HabitState> snapshot) {
           if (snapshot.data == null) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(XHColors.pink)),
+            );
           }
           _screenSize = MediaQuery.of(context).size;
-
+          ScreenType.screenWidth = _screenSize.width;
           _chartKey.currentState
               ?.updateData(_progressChartData(snapshot.data.progress));
 
@@ -64,7 +69,7 @@ class _HabitRowState extends State<HabitRow> {
   Widget buildUi(BuildContext context, HabitState habitState) => Container(
         padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
         height: _screenSize.height * 0.08,
-        color: Colors.white,
+        color: XHColors.grey,
         child: Row(
           children: <Widget>[
             _progressCircle(habitState.progress),
@@ -91,11 +96,11 @@ class _HabitRowState extends State<HabitRow> {
           <CircularSegmentEntry>[
             CircularSegmentEntry(
               progress,
-              Colors.green,
+              XHColors.pink,
             ),
             CircularSegmentEntry(
               (100 - progress),
-              Colors.grey[300],
+              Colors.white,
             ),
           ],
           rankKey: 'progress',
@@ -109,9 +114,9 @@ class _HabitRowState extends State<HabitRow> {
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
             style: TextStyle(
-                fontSize: _screenSize.shortestSide * 0.043,
-                fontFamily: 'SFProDisplay',
-                fontWeight: FontWeight.w400),
+              color: Colors.white,
+              fontSize: _screenSize.shortestSide * 0.043,
+            ),
           ),
         ),
       );
@@ -122,9 +127,9 @@ class _HabitRowState extends State<HabitRow> {
         width: _screenSize.width * 0.5,
         margin: EdgeInsets.only(left: _screenSize.width * 0.1),
         padding: EdgeInsets.only(
-            left: _screenSize.width > 1100
+            left: ScreenType.large
                 ? _screenSize.width * 0.11
-                : _screenSize.width > 800 ? _screenSize.width * 0.04 : 0),
+                : ScreenType.medium ? _screenSize.width * 0.03 : 0),
         child: Row(
           children: <Widget>[
             Expanded(
@@ -145,8 +150,8 @@ class _HabitRowState extends State<HabitRow> {
           width: _screenSize.width * 0.054,
           child: IconButton(
             icon: _habitBloc.dayIsChecked(checkedDays, weekday)
-                ? Icon(Icons.check, color: Colors.green)
-                : Icon(Icons.close),
+                ? Icon(Icons.check, color: XHColors.pink)
+                : Icon(Icons.close, color: Colors.white),
             padding: EdgeInsets.all(0.0),
             iconSize: _screenSize.shortestSide * 0.054,
             onPressed: () {

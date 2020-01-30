@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 
 class XHButton {
   final String text;
@@ -10,11 +11,9 @@ class XHButton {
   Widget materialButton() => Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
-        //shadowColor: buttonEnabled ? Color.fromRGBO(255, 51, 103, 1)
-        //    : Color.fromRGBO(200, 200, 200, 1.0),
         elevation: 3.0,
-        color: buttonEnabled ? Color.fromRGBO(255, 51, 103, 1)
-            : Color.fromRGBO(200, 200, 200, 1.0),
+        color: buttonEnabled ? XHColors.pink
+            : XHColors.lightGrey,
         borderRadius: BorderRadius.circular(30),
         child: MaterialButton(
           minWidth: 400.0,
