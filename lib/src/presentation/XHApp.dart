@@ -8,7 +8,9 @@ class XHApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'XHab',
         theme:
-            ThemeData(primarySwatch: Colors.blue, fontFamily: 'SFProDisplay'),
+            ThemeData(primaryColor: Color.fromRGBO(255, 51, 103, 1),
+                cursorColor: Color.fromRGBO(255, 51, 103, 1),
+                fontFamily: 'Montserrat'),
         home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           RegisterScreen.routeName: (BuildContext context) =>

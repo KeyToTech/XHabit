@@ -10,9 +10,11 @@ class XHButton {
   Widget materialButton() => Padding(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       child: Material(
-        shadowColor: buttonEnabled ? Colors.blue : Colors.grey,
+        //shadowColor: buttonEnabled ? Color.fromRGBO(255, 51, 103, 1)
+        //    : Color.fromRGBO(200, 200, 200, 1.0),
         elevation: 3.0,
-        color: buttonEnabled ? Colors.blue : Colors.grey,
+        color: buttonEnabled ? Color.fromRGBO(255, 51, 103, 1)
+            : Color.fromRGBO(200, 200, 200, 1.0),
         borderRadius: BorderRadius.circular(30),
         child: MaterialButton(
           minWidth: 400.0,
