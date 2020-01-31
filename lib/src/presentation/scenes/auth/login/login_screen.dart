@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
@@ -58,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) => Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: XHColors.darkGrey,
         title: Text('Sign in'),
       ),
       body: StreamBuilder(
@@ -76,66 +78,90 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget buildUi(
           BuildContext context, LoginState loginState, bool showLoading) =>
-      Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.symmetric(
-              horizontal: _screenSize.width > 1000
-                  ? _screenSize.width * 0.3
-                  : _screenSize.width * 0.15),
-          children: <Widget>[
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  XHTextField('Email', _emailTextEditingController, false)
-                      .field(),
-                  XHErrorMessage(loginState
-                              .loginValidationsState.emailValidation.isValid
-                          ? ''
-                          : loginState.loginValidationsState.emailValidation
-                              .errorMessage)
-                      .messageError(),
-                  const SizedBox(height: 16.0),
-                  XHTextField('Password', _passwordTextEditingController, true)
-                      .field(),
-                  XHErrorMessage(loginState
-                              .loginValidationsState.passwordValidation.isValid
-                          ? ''
-                          : loginState.loginValidationsState.passwordValidation
-                              .errorMessage)
-                      .messageError(),
-                ]),
-            showLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : XHButton('Sign in', loginState.signInButtonEnabled, _onSubmit)
-                    .materialButton(),
-            _screenSize.width > 360
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _dontHaveAccountChild(),
-                  )
-                : Column(
-                    //mainAxisAlignment: MainAxisAlignment.center,
-                    children: _dontHaveAccountChild(),
-                  )
-          ],
+      Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/Background_image.png"),
+                fit: BoxFit.cover)),
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(
+                horizontal: _screenSize.width > 1000
+                    ? _screenSize.width * 0.3
+                    : _screenSize.width * 0.15),
+            children: <Widget>[
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(bottom: 40.0),
+                      child: Image(
+                        alignment: Alignment.center,
+                        image: AssetImage("assets/images/Logo.png"),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 30.0,
+                          fontFamily: "Montserrat",
+                          color: XHColors.lightGrey,
+                        ),
+                      ),
+                    ),
+                    XHTextField('Email', _emailTextEditingController, false)
+                        .field(),
+                    XHErrorMessage(loginState
+                                .loginValidationsState.emailValidation.isValid
+                            ? ''
+                            : loginState.loginValidationsState.emailValidation
+                                .errorMessage)
+                        .messageError(),
+                    XHTextField(
+                            'Password', _passwordTextEditingController, true)
+                        .field(),
+                    XHErrorMessage(loginState.loginValidationsState
+                                .passwordValidation.isValid
+                            ? ''
+                            : loginState.loginValidationsState
+                                .passwordValidation.errorMessage)
+                        .messageError(),
+                  ]),
+              showLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : XHButton('Login', loginState.signInButtonEnabled, _onSubmit)
+                      .materialButton(),
+              _screenSize.width > 360
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _dontHaveAccountChild(),
+                    )
+                  : Column(
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      children: _dontHaveAccountChild(),
+                    )
+            ],
+          ),
         ),
       );
 
   List<Widget> _dontHaveAccountChild() => <Widget>[
-        Text('Don\'t have an account?'),
         const SizedBox(width: 8.0),
         InkWell(
           onTap: () {
             Navigator.pushNamed(context, RegisterScreen.routeName);
           },
-          child: Text('Sign up',
+          child: Text('Don\'t have an account?',
               style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline)),
+                  color: XHColors.pink,
+                  fontWeight: FontWeight.bold)),
         )
       ];
 
