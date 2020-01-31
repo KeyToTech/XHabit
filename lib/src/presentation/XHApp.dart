@@ -9,10 +9,11 @@ class XHApp extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'XHab',
-    theme: ThemeData(
-        primaryColor: XHColors.pink,
-        cursorColor: XHColors.pink,
-        fontFamily: 'Montserrat'),
+        theme: ThemeData(
+            primaryColor: XHColors.pink,
+            cursorColor: XHColors.pink,
+            textSelectionHandleColor: XHColors.pink,
+            fontFamily: 'Montserrat'),
         home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           RegisterScreen.routeName: (BuildContext context) =>
