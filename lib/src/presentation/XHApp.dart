@@ -11,6 +11,7 @@ class XHApp extends StatelessWidget {
         theme: ThemeData(
             primaryColor: XHColors.pink,
             cursorColor: XHColors.pink,
+            textSelectionHandleColor: XHColors.pink,
             fontFamily: 'Montserrat'),
         home: SplashScreen(),
         routes: <String, WidgetBuilder>{
