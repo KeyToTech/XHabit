@@ -13,7 +13,7 @@ class XHButton {
       child: Material(
         elevation: 3.0,
         color: buttonEnabled ? XHColors.pink
-            : XHColors.lightGrey,
+          : XHColors.lightGrey,
         borderRadius: BorderRadius.circular(30),
         child: MaterialButton(
           minWidth: 400.0,
