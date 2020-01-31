@@ -44,7 +44,7 @@ class SaveHabitBloc {
 
   void saveHabit(String title) {
     if (_validate(title, startDate, endDate, notificationTime)) {
-      if (_hint == 'Create habit') {
+      if (_hint == 'New habit') {
         _useCase
             .createHabit(
                 DateTime.now().toString().split('.')[0],
