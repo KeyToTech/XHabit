@@ -97,8 +97,9 @@ class _SaveHabitState extends State<SaveHabit> {
               child: TextField(
                 controller: _titleController,
                 style: TextStyle(
-                    fontSize: _screenSize.height * 0.032,
-                    color: Colors.white),
+                  fontSize: _screenSize.height * 0.032,
+                  color: Colors.white,
+                ),
                 decoration: InputDecoration(
                   fillColor: XHColors.grey,
                   filled: true,
@@ -160,17 +161,8 @@ class _SaveHabitState extends State<SaveHabit> {
             initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
             firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
             lastDate: DateTime(2030, 12, 31),
-            builder: (BuildContext context, Widget child) => Theme(
-              data: ThemeData(
-                  primarySwatch: Colors.pink, //OK/Cancel button text color
-                  primaryColor: XHColors.grey, //Head background
-                  accentColor: XHColors.pink, //selection color
-                  dialogBackgroundColor: Colors.grey, //Background color
-//                buttonTheme: ButtonThemeData(
-//                  buttonColor: XHColors.pink),
-                ),
-              child: child,
-            ),
+            builder: (BuildContext context, Widget child) =>
+                _pickerTheme(child),
           );
 
           if (date != null) {
@@ -221,7 +213,7 @@ class _SaveHabitState extends State<SaveHabit> {
           initialTime: _selectedTime(),
           builder: (BuildContext context, Widget child) => MediaQuery(
             data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: child,
+            child: _pickerTheme(child),
           ),
         );
         if (time != null) _saveHabitBloc.setNotificationTime(time);
@@ -237,6 +229,16 @@ class _SaveHabitState extends State<SaveHabit> {
       return TimeOfDay.now();
     }
   }
+
+  Theme _pickerTheme(Widget child) => Theme(
+        data: ThemeData(
+          primarySwatch: Colors.pink,
+          primaryColor: XHColors.grey,
+          accentColor: XHColors.pink,
+          dialogBackgroundColor: Colors.grey,
+        ),
+        child: child,
+      );
 
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop();
