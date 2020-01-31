@@ -156,10 +156,22 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
         onPressed: () async {
           final DateTime date = await showDatePicker(
-              context: context,
-              initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
-              firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
-              lastDate: DateTime(2030, 12, 31));
+            context: context,
+            initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
+            firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
+            lastDate: DateTime(2030, 12, 31),
+            builder: (BuildContext context, Widget child) => Theme(
+              data: ThemeData(
+                  primarySwatch: Colors.pink, //OK/Cancel button text color
+                  primaryColor: XHColors.grey, //Head background
+                  accentColor: XHColors.pink, //selection color
+                  dialogBackgroundColor: Colors.grey, //Background color
+//                buttonTheme: ButtonThemeData(
+//                  buttonColor: XHColors.pink),
+                ),
+              child: child,
+            ),
+          );
 
           if (date != null) {
             if (dateHint == 'Start date') {
