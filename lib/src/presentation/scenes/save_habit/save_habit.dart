@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 
@@ -109,14 +110,27 @@ class _SaveHabitState extends State<SaveHabit> {
   FlatButton _datePicker(String dateHint) => FlatButton(
         child: Text(
           dateHint,
-          style: TextStyle(fontSize: _screenSize.height * 0.03),
+          style: TextStyle(
+              fontSize: _screenSize.height * 0.03),
         ),
         onPressed: () async {
           final DateTime date = await showDatePicker(
-              context: context,
-              initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
-              firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
-              lastDate: DateTime(2030, 12, 31));
+            context: context,
+            initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
+            firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
+            lastDate: DateTime(2030, 12, 31),
+            builder: (BuildContext context, Widget child) => Theme(
+              data: ThemeData(
+                  primarySwatch: Colors.pink, //OK/Cancel button text color
+                  primaryColor: XHColors.grey, //Head background
+                  accentColor: XHColors.pink, //selection color
+                  dialogBackgroundColor: Colors.grey, //Background color
+//                buttonTheme: ButtonThemeData(
+//                  buttonColor: XHColors.pink),
+                ),
+              child: child,
+            ),
+          );
 
           if (date != null) {
             if (dateHint == 'Start date') {
