@@ -62,8 +62,9 @@ flutter:
   # the material Icons class.
   assets:
     - assets/Background_image.png
+    - assets/images/Logo.png
   uses-material-design: true
-    # To add assets to your application, add an assets section, like this:
+  # To add assets to your application, add an assets section, like this:
 
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -9,6 +9,7 @@ import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_bloc.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 
 @immutable
 class RegisterScreen extends StatefulWidget {
@@ -64,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) => Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: XHColors.darkGrey,
         title: Text(widget.title),
       ),
       body: StreamBuilder(
@@ -79,45 +81,80 @@ class _RegisterScreenState extends State<RegisterScreen> {
             return buildUi(context, registerState);
           }));
 
-  Widget buildUi(BuildContext context, RegisterState registerState) => Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.symmetric(
-              horizontal: _screenSize.width > 1000
-                  ? _screenSize.width * 0.3
-                  : _screenSize.width * 0.15),
-          children: <Widget>[
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-                Widget>[
-              XHTextField('User name', _usernameTextEditingController, false)
-                  .field(),
-              XHErrorMessage(registerState
-                          .registerValidationsState.userNameValidation.isValid
-                      ? ''
-                      : registerState.registerValidationsState
-                          .userNameValidation.errorMessage)
-                  .messageError(),
-              const SizedBox(height: 16.0),
-              XHTextField('Email', _emailTextEditingController, false).field(),
-              XHErrorMessage(registerState
-                          .registerValidationsState.emailValidation.isValid
-                      ? ''
-                      : registerState.registerValidationsState.emailValidation
-                          .errorMessage)
-                  .messageError(),
-              const SizedBox(height: 16.0),
-              XHTextField('Password', _passwordTextEditingController, true)
-                  .field(),
-              XHErrorMessage(registerState
-                          .registerValidationsState.passwordValidation.isValid
-                      ? ''
-                      : registerState.registerValidationsState
-                          .passwordValidation.errorMessage)
-                  .messageError(),
-            ]),
-            XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
-                .materialButton(),
-          ],
+  Widget buildUi(BuildContext context, RegisterState registerState) =>
+      Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/Background_image.png"),
+                fit: BoxFit.cover)),
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(
+                horizontal: _screenSize.width > 1000
+                    ? _screenSize.width * 0.3
+                    : _screenSize.width * 0.15),
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(bottom: 40.0),
+                          child: Image(
+                            alignment: Alignment.center,
+                            image: AssetImage("assets/images/Logo.png"),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(bottom: 20.0),
+                          child: Text(
+                            'Sign up',
+                            style: TextStyle(
+                              fontSize: 30.0,
+                              fontFamily: "Montserrat",
+                              color: XHColors.lightGrey,
+                            ),
+                          ),
+                        ),
+                        XHTextField('User name', _usernameTextEditingController,
+                                false)
+                            .field(),
+                        XHErrorMessage(registerState.registerValidationsState
+                                    .userNameValidation.isValid
+                                ? ''
+                                : registerState.registerValidationsState
+                                    .userNameValidation.errorMessage)
+                            .messageError(),
+                        XHTextField('Email', _emailTextEditingController, false)
+                            .field(),
+                        XHErrorMessage(registerState.registerValidationsState
+                                    .emailValidation.isValid
+                                ? ''
+                                : registerState.registerValidationsState
+                                    .emailValidation.errorMessage)
+                            .messageError(),
+                        XHTextField('Password', _passwordTextEditingController,
+                                true)
+                            .field(),
+                        XHErrorMessage(registerState.registerValidationsState
+                                    .passwordValidation.isValid
+                                ? ''
+                                : registerState.registerValidationsState
+                                    .passwordValidation.errorMessage)
+                            .messageError(),
+                      ]),
+                  XHButton('Sign up', registerState.signUpButtonEnabled,
+                          _onSubmit)
+                      .materialButton(),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 
