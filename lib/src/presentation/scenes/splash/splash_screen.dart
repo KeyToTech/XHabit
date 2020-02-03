@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/domain/simple_check_user_is_signed_in_use_case.dart';
+import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'splash_screen_bloc.dart';
@@ -71,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 fontWeight: FontWeight.bold,
                 fontSize: 65.0,
                 decoration: TextDecoration.none,
-                color: Color.fromRGBO(255, 51, 103, 1.0),
+                color: XHColors.pink,
               ),
             ),
             Text('BUILD  A  BETTER  YOU',
