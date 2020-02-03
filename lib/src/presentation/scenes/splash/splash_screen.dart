@@ -53,12 +53,10 @@ class _SplashScreenState extends State<SplashScreen> {
         //alignment: Alignment.center,
         decoration: BoxDecoration(
           color: Colors.black,
-          image: !kIsWeb
-              ? DecorationImage(
-                  image: AssetImage('assets/images/Background_image.png'),
-                  fit: BoxFit.cover,
-                )
-              : null,
+          image: DecorationImage(
+            image: AssetImage('assets/images/Background_image.png'),
+            fit: BoxFit.cover,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
