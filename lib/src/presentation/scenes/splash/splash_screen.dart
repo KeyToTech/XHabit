@@ -52,7 +52,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) => Container(
         //alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.black,
           image: DecorationImage(
             image: AssetImage('assets/images/Background_image.png'),
             fit: BoxFit.cover,
