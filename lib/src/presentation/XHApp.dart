@@ -10,6 +10,7 @@ class XHApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'XHab',
         theme: ThemeData(
+          accentColor: XHColors.pink,
             primaryColor: XHColors.pink,
             cursorColor: XHColors.pink,
             textSelectionHandleColor: XHColors.pink,

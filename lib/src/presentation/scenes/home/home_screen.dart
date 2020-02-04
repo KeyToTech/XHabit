@@ -52,9 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return Container(
               color: XHColors.darkGrey,
               child: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(XHColors.pink),
-                ),
+                child: CircularProgressIndicator(),
               ),
             );
           }
