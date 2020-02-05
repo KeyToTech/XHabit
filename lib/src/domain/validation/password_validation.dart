@@ -4,11 +4,11 @@ class PasswordValidation implements Validation {
   @override
   ValidationResult validate(String text) {
     ValidationResult validationResult;
-    if (text.length > 4) {
+    if (text.length > 5) {
       validationResult = ValidationResult(true, null);
     } else {
       validationResult =
-          ValidationResult(false, "Password should be more then 4 symbols");
+          ValidationResult(false, "Password must be at least 6 characters long");
     }
     return validationResult;
   }
