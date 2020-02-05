@@ -98,64 +98,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.only(bottom: 40.0),
-                          child: Image(
-                            alignment: Alignment.center,
-                            image: AssetImage("assets/images/Logo.png"),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.only(bottom: 20.0),
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              fontSize: 30.0,
-                              fontFamily: "Montserrat",
-                              color: XHColors.lightGrey,
-                            ),
-                          ),
-                        ),
-                        XHTextField('User name', _usernameTextEditingController,
-                                false)
-                            .field(),
-                        XHErrorMessage(registerState.registerValidationsState
-                                    .userNameValidation.isValid
-                                ? ''
-                                : registerState.registerValidationsState
-                                    .userNameValidation.errorMessage)
-                            .messageError(),
-                        XHTextField('Email', _emailTextEditingController, false)
-                            .field(),
-                        XHErrorMessage(registerState.registerValidationsState
-                                    .emailValidation.isValid
-                                ? ''
-                                : registerState.registerValidationsState
-                                    .emailValidation.errorMessage)
-                            .messageError(),
-                        XHTextField('Password', _passwordTextEditingController,
-                                true)
-                            .field(),
-                        XHErrorMessage(registerState.registerValidationsState
-                                    .passwordValidation.isValid
-                                ? ''
-                                : registerState.registerValidationsState
-                                    .passwordValidation.errorMessage)
-                            .messageError(),
-                      ]),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 40.0),
+                    child: Image(
+                      alignment: Alignment.center,
+                      image: AssetImage("assets/images/Logo.png"),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    child: Text(
+                      'Sign up',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontFamily: "Montserrat",
+                        color: XHColors.lightGrey,
+                      ),
+                    ),
+                  ),
+                  XHTextField('User name', _usernameTextEditingController,
+                          false)
+                      .field(),
+                  XHErrorMessage(registerState.registerValidationsState
+                              .userNameValidation.isValid
+                          ? ''
+                          : registerState.registerValidationsState
+                              .userNameValidation.errorMessage)
+                      .messageError(),
+                  XHTextField('Email', _emailTextEditingController, false)
+                      .field(),
+                  XHErrorMessage(registerState.registerValidationsState
+                              .emailValidation.isValid
+                          ? ''
+                          : registerState.registerValidationsState
+                              .emailValidation.errorMessage)
+                      .messageError(),
+                  XHTextField('Password', _passwordTextEditingController,
+                          true)
+                      .field(),
+                  XHErrorMessage(registerState.registerValidationsState
+                              .passwordValidation.isValid
+                          ? ''
+                          : registerState.registerValidationsState
+                              .passwordValidation.errorMessage)
+                      .messageError(),
+                  ]),
                   XHButton('Sign up', registerState.signUpButtonEnabled,
                           _onSubmit)
                       .materialButton(),
                 ],
               ),
-            ],
           ),
-        ),
       );
 
   @override
