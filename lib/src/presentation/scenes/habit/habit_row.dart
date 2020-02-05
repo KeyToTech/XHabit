@@ -53,8 +53,7 @@ class _HabitRowState extends State<HabitRow> {
         builder: (BuildContext context, AsyncSnapshot<HabitState> snapshot) {
           if (snapshot.data == null) {
             return Center(
-              child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(XHColors.pink)),
+              child: CircularProgressIndicator(),
             );
           }
           _screenSize = MediaQuery.of(context).size;
