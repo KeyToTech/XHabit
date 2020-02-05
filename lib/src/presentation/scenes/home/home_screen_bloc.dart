@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
@@ -70,6 +71,15 @@ class HomeScreenBloc {
     if (selectedHabit != null) {
       lastSelectedHabit = selectedHabit;
     }
+  }
+
+  TimeOfDay parseTimeString(String timeString) {
+    var hour = int.parse(timeString.split(':')[0]);
+    var minute = int.parse(timeString.split(':')[1]);
+    return TimeOfDay(
+      hour: hour,
+      minute: minute,
+    );
   }
 
   void dispose() {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
@@ -9,6 +10,7 @@ import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
@@ -29,11 +31,15 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
+  PushNotificationsService _notificationsService;
 
   _HomeScreenState(this._homeScreenBloc);
 
   @override
   void initState() {
+    if (!kIsWeb) {
+      _notificationsService = PushNotificationsService(context);
+    }
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
@@ -193,28 +199,37 @@ class _HomeScreenState extends State<HomeScreen> {
       Expanded(
         child: ListView.builder(
           itemCount: habits.length,
-          itemBuilder: (BuildContext context, int index) => Container(
-            decoration: _habitRowDecoration(habits[index], selectedHabit),
-            child: ListTile(
-              contentPadding: EdgeInsets.all(0.0),
-              title: HabitRow(
-                habits[index].habitId,
+          itemBuilder: (BuildContext context, int index) {
+            if (!kIsWeb) {
+              _notificationsService.showDailyNotification(
+                index,
                 habits[index].title,
-                habits[index].checkedDays,
-                habits[index].startDate,
-                habits[index].endDate,
-                weekDays,
-                key: habits[index].habitId ==
-                        _homeScreenBloc.lastSelectedHabit?.habitId
-                    ? UniqueKey()
-                    : ValueKey(index),
+                _homeScreenBloc.parseTimeString(habits[index].notificationTime),
+              );
+            }
+            return Container(
+              decoration: _habitRowDecoration(habits[index], selectedHabit),
+              child: ListTile(
+                contentPadding: EdgeInsets.all(0.0),
+                title: HabitRow(
+                  habits[index].habitId,
+                  habits[index].title,
+                  habits[index].checkedDays,
+                  habits[index].startDate,
+                  habits[index].endDate,
+                  weekDays,
+                  key: habits[index].habitId ==
+                          _homeScreenBloc.lastSelectedHabit?.habitId
+                      ? UniqueKey()
+                      : ValueKey(index),
+                ),
+                onLongPress: () {
+                  _homeScreenBloc.selectHabit(habits[index]);
+                  _homeScreenBloc.changeLastSelected(habits[index]);
+                },
               ),
-              onLongPress: () {
-                _homeScreenBloc.selectHabit(habits[index]);
-                _homeScreenBloc.changeLastSelected(habits[index]);
-              },
-            ),
-          ),
+            );
+          },
         ),
       );
 
