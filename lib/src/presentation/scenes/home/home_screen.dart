@@ -58,9 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return Container(
               color: XHColors.darkGrey,
               child: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(XHColors.pink),
-                ),
+                child: CircularProgressIndicator(),
               ),
             );
           }
@@ -209,12 +207,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 _homeScreenBloc.parseTimeString(habits[index].notificationTime),
               );
             }
-            return ListTile(
-              contentPadding: EdgeInsets.all(0.0),
-              title: Container(
-                margin: EdgeInsets.only(bottom: _screenSize.height * 0.005),
-                decoration: _habitRowDecoration(habits[index], selectedHabit),
-                child: HabitRow(
+            return Container(
+              decoration: _habitRowDecoration(habits[index], selectedHabit),
+              child: ListTile(
+                contentPadding: EdgeInsets.all(0.0),
+                title: HabitRow(
                   habits[index].habitId,
                   habits[index].title,
                   habits[index].checkedDays,
@@ -226,11 +223,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? UniqueKey()
                       : ValueKey(index),
                 ),
+                onLongPress: () {
+                  _homeScreenBloc.selectHabit(habits[index]);
+                  _homeScreenBloc.changeLastSelected(habits[index]);
+                },
               ),
-              onLongPress: () {
-                _homeScreenBloc.selectHabit(habits[index]);
-                _homeScreenBloc.changeLastSelected(habits[index]);
-              },
             );
           },
         ),
@@ -244,15 +241,18 @@ class _HomeScreenState extends State<HomeScreen> {
   BoxDecoration _habitRowDecoration(Habit currentHabit, Habit selectedHabit) =>
       BoxDecoration(
         border: currentHabit.habitId == selectedHabit?.habitId
-            ? Border(
-                top: BorderSide(
-                    color: XHColors.lightGrey,
-                    width: _screenSize.shortestSide * 0.003),
-                bottom: BorderSide(
-                    color: XHColors.lightGrey,
-                    width: _screenSize.shortestSide * 0.003),
+            ? Border.symmetric(
+                vertical: BorderSide(
+                  color: XHColors.lightGrey,
+                  width: _screenSize.shortestSide * 0.003,
+                ),
               )
-            : null,
+            : Border(
+                bottom: BorderSide(
+                  color: Colors.black,
+                  width: _screenSize.shortestSide * 0.0015,
+                ),
+              ),
       );
 
   @override

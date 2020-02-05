@@ -16,7 +16,7 @@ class XHButton {
           : XHColors.lightGrey,
         borderRadius: BorderRadius.circular(30),
         child: MaterialButton(
-          minWidth: 400.0,
+          minWidth: 700.0,
           height: 42.0,
           child: Text(
             text,
