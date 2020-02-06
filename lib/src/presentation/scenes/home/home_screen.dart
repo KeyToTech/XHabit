@@ -89,8 +89,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: XHColors.darkGrey,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add, color: XHColors.pink),
+          MaterialButton(
+            child: Icon(Icons.add, color: XHColors.pink),
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -100,24 +100,30 @@ class _HomeScreenState extends State<HomeScreen> {
               );
               _homeScreenBloc.getHomeData();
             },
+            shape: CircleBorder(),
+            minWidth: 0,
           ),
-          IconButton(
-            icon: Icon(Icons.exit_to_app, color: XHColors.pink),
+          MaterialButton(
+            child: Icon(Icons.exit_to_app, color: XHColors.pink),
             onPressed: _homeScreenBloc.logout,
+            shape: CircleBorder(),
+            minWidth: 0,
           ),
         ],
       );
 
   PreferredSizeWidget editingAppBar(Habit selectedHabit) => AppBar(
         backgroundColor: XHColors.darkGrey,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: XHColors.pink),
+        leading: MaterialButton(
+          child: Icon(Icons.arrow_back, color: XHColors.pink),
           onPressed: _homeScreenBloc.showMainAppBar,
+          shape: CircleBorder(),
+          minWidth: 0,
         ),
         title: Text('Edit / remove habit'),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit, color: XHColors.pink),
+          MaterialButton(
+            child: Icon(Icons.edit, color: XHColors.pink),
             onPressed: () async {
               await Navigator.push(
                 context,
@@ -128,12 +134,16 @@ class _HomeScreenState extends State<HomeScreen> {
               _homeScreenBloc.getHomeData();
               _homeScreenBloc.showMainAppBar();
             },
+            shape: CircleBorder(),
+            minWidth: 0,
           ),
-          IconButton(
-            icon: Icon(Icons.delete, color: XHColors.pink),
+          MaterialButton(
+            child: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
               _homeScreenBloc.removeHabit(selectedHabit.habitId);
             },
+            shape: CircleBorder(),
+            minWidth: 0,
           ),
         ],
       );
