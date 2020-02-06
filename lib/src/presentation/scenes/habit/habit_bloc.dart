@@ -41,6 +41,9 @@ class HabitBloc {
   bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
       checkedDays.contains(date);
 
+  bool showCheckIcon(DateTime date) =>
+      date.compareTo(_startDate) >= 0 && date.compareTo(_endDate) <= 0;
+
   double _progress() =>
       (_checkedDays.length / _endDate.difference(_startDate).inDays) * 100;
 }

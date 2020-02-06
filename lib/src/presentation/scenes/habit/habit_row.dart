@@ -147,16 +147,18 @@ class _HabitRowState extends State<HabitRow> {
             EdgeInsets.symmetric(horizontal: _screenSize.shortestSide * 0.022),
         child: SizedBox(
           width: _screenSize.width * 0.054,
-          child: IconButton(
-            icon: _habitBloc.dayIsChecked(checkedDays, weekday)
-                ? Icon(Icons.check, color: XHColors.pink)
-                : Icon(Icons.close, color: Colors.white),
-            padding: EdgeInsets.all(0.0),
-            iconSize: _screenSize.shortestSide * 0.054,
-            onPressed: () {
-              _habitBloc.checkDay(weekday);
-            },
-          ),
+          child: _habitBloc.showCheckIcon(weekday)
+              ? IconButton(
+                  icon: _habitBloc.dayIsChecked(checkedDays, weekday)
+                      ? Icon(Icons.check, color: XHColors.pink)
+                      : Icon(Icons.close, color: Colors.white),
+                  padding: EdgeInsets.all(0.0),
+                  iconSize: _screenSize.shortestSide * 0.054,
+                  onPressed: () {
+                    _habitBloc.checkDay(weekday);
+                  },
+                )
+              : null,
         ),
       );
 }
