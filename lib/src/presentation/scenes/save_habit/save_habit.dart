@@ -52,7 +52,7 @@ class _SaveHabitState extends State<SaveHabit> {
               padding: EdgeInsets.only(left: 0),
               child: Text(
                 'Cancel',
-                style: TextStyle(fontSize: _screenSize.height * 0.025),
+                style: TextStyle(fontSize: _screenSize.height * 0.023),
               ),
               textColor: XHColors.pink,
               onPressed: () {
@@ -61,13 +61,13 @@ class _SaveHabitState extends State<SaveHabit> {
             ),
             Text(
               widget._hint,
-              style: TextStyle(fontSize: _screenSize.height * 0.03),
+              style: TextStyle(fontSize: _screenSize.height * 0.027),
             ),
             FlatButton(
               padding: EdgeInsets.only(right: 0),
               child: Text(
                 'Save',
-                style: TextStyle(fontSize: _screenSize.height * 0.025),
+                style: TextStyle(fontSize: _screenSize.height * 0.023),
               ),
               textColor: XHColors.pink,
               onPressed: () {
@@ -88,25 +88,25 @@ class _SaveHabitState extends State<SaveHabit> {
             Text(
               'What do you want to accomplish?',
               style: TextStyle(
-                fontSize: _screenSize.height * 0.04,
+                fontSize: _screenSize.height * 0.03,
                 color: Colors.white,
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: _screenSize.height * 0.03),
+              margin: EdgeInsets.only(top: _screenSize.height * 0.045),
               child: TextField(
                 controller: _titleController,
                 style: TextStyle(
-                  fontSize: _screenSize.height * 0.032,
+                  fontSize: _screenSize.height * 0.03,
                   color: Colors.white,
                 ),
                 decoration: InputDecoration(
                   fillColor: XHColors.grey,
                   filled: true,
                   border: OutlineInputBorder(),
-                  hintText: 'Title',
+                  hintText: 'Name your new habit',
                   hintStyle: TextStyle(
-                    fontSize: _screenSize.height * 0.032,
+                    fontSize: _screenSize.height * 0.02,
                     color: XHColors.lightGrey,
                   ),
                 ),
@@ -119,7 +119,11 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  Divider _pickersDivider() => Divider(color: Colors.black, thickness: 1);
+  Divider _pickersDivider() => Divider(
+        color: Colors.black,
+        thickness: _screenSize.shortestSide * 0.0015,
+        height: _screenSize.height * 0.06,
+      );
 
   Widget _dateRow(String dateHint) => StreamBuilder<SelectedDates>(
         stream: _saveHabitBloc.selectedDatesObservable,
@@ -137,13 +141,16 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  Text _dateText(String dateHint, SelectedDates selectedDates) => Text(
-        dateHint == 'Start date'
-            ? selectedDates.startDate
-            : selectedDates.endDate,
-        style: TextStyle(
-          fontSize: _screenSize.height * 0.03,
-          color: Colors.white,
+  Widget _dateText(String dateHint, SelectedDates selectedDates) => Container(
+        padding: EdgeInsets.only(right: _screenSize.width * 0.04),
+        child: Text(
+          dateHint == 'Start date'
+              ? selectedDates.startDate
+              : selectedDates.endDate,
+          style: TextStyle(
+            fontSize: _screenSize.height * 0.02,
+            color: Colors.white,
+          ),
         ),
       );
 
@@ -151,7 +158,7 @@ class _SaveHabitState extends State<SaveHabit> {
         child: Text(
           dateHint,
           style: TextStyle(
-            fontSize: _screenSize.height * 0.03,
+            fontSize: _screenSize.height * 0.025,
             color: Colors.white,
           ),
         ),
@@ -185,11 +192,14 @@ class _SaveHabitState extends State<SaveHabit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 _timePicker(),
-                Text(
-                  snapshot.data ?? '',
-                  style: TextStyle(
-                    fontSize: _screenSize.height * 0.03,
-                    color: Colors.white,
+                Container(
+                  padding: EdgeInsets.only(right: _screenSize.width * 0.04),
+                  child: Text(
+                    snapshot.data ?? '',
+                    style: TextStyle(
+                      fontSize: _screenSize.height * 0.02,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
@@ -203,7 +213,7 @@ class _SaveHabitState extends State<SaveHabit> {
       child: Text(
         'Reminder time',
         style: TextStyle(
-          fontSize: _screenSize.height * 0.03,
+          fontSize: _screenSize.height * 0.025,
           color: Colors.white,
         ),
       ),
