@@ -9,7 +9,7 @@ import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_bloc.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 @immutable
 class RegisterScreen extends StatefulWidget {

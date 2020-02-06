@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'scenes/auth/register/register_screen.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
 import 'scenes/splash/splash_screen.dart';
 
 class XHApp extends StatelessWidget {

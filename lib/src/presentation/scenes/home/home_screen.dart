@@ -9,7 +9,7 @@ import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
@@ -17,7 +17,7 @@ import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
-import 'package:xhabits/src/presentation/screen_type.dart';
+import 'package:xhabits/src/presentation/styles/screen_type.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

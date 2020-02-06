@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
+import 'package:xhabits/src/presentation/styles/size_config.dart';
 
 class SaveHabit extends StatefulWidget {
   final String _hint;
@@ -23,7 +24,7 @@ class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
 
   final SaveHabitBloc _saveHabitBloc;
-  Size _screenSize;
+  SizeConfig _sizeConfig;
 
   _SaveHabitState(this._saveHabitBloc) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
@@ -37,7 +38,7 @@ class _SaveHabitState extends State<SaveHabit> {
 
   @override
   Widget build(BuildContext context) {
-    _screenSize = MediaQuery.of(context).size;
+    _sizeConfig = SizeConfig(MediaQuery.of(context).size);
     return Scaffold(appBar: _appBar(), body: _body());
   }
 
@@ -52,7 +53,7 @@ class _SaveHabitState extends State<SaveHabit> {
               padding: EdgeInsets.only(left: 0),
               child: Text(
                 'Cancel',
-                style: TextStyle(fontSize: _screenSize.height * 0.023),
+                style: TextStyle(fontSize: _sizeConfig.appBarButtonText),
               ),
               textColor: XHColors.pink,
               onPressed: () {
@@ -61,13 +62,13 @@ class _SaveHabitState extends State<SaveHabit> {
             ),
             Text(
               widget._hint,
-              style: TextStyle(fontSize: _screenSize.height * 0.027),
+              style: TextStyle(fontSize: _sizeConfig.appBarTitle),
             ),
             FlatButton(
               padding: EdgeInsets.only(right: 0),
               child: Text(
                 'Save',
-                style: TextStyle(fontSize: _screenSize.height * 0.023),
+                style: TextStyle(fontSize: _sizeConfig.appBarButtonText),
               ),
               textColor: XHColors.pink,
               onPressed: () {
@@ -80,24 +81,22 @@ class _SaveHabitState extends State<SaveHabit> {
 
   Widget _body() => Container(
         color: XHColors.darkGrey,
-        padding: EdgeInsets.symmetric(
-            vertical: _screenSize.height * 0.02,
-            horizontal: _screenSize.width * 0.035),
+        padding: _sizeConfig.saveScreenPadding,
         child: ListView(
           children: <Widget>[
             Text(
               'What do you want to accomplish?',
               style: TextStyle(
-                fontSize: _screenSize.height * 0.03,
+                fontSize: _sizeConfig.saveScreenLargeText,
                 color: Colors.white,
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: _screenSize.height * 0.045),
+              margin: _sizeConfig.saveScreenInputMargin,
               child: TextField(
                 controller: _titleController,
                 style: TextStyle(
-                  fontSize: _screenSize.height * 0.03,
+                  fontSize: _sizeConfig.saveScreenLargeText,
                   color: Colors.white,
                 ),
                 decoration: InputDecoration(
@@ -106,7 +105,7 @@ class _SaveHabitState extends State<SaveHabit> {
                   border: OutlineInputBorder(),
                   hintText: 'Name your new habit',
                   hintStyle: TextStyle(
-                    fontSize: _screenSize.height * 0.02,
+                    fontSize: _sizeConfig.saveScreenSmallText,
                     color: XHColors.lightGrey,
                   ),
                 ),
@@ -121,8 +120,8 @@ class _SaveHabitState extends State<SaveHabit> {
 
   Divider _pickersDivider() => Divider(
         color: Colors.black,
-        thickness: _screenSize.shortestSide * 0.0015,
-        height: _screenSize.height * 0.06,
+        thickness: _sizeConfig.pickersDividerThickness,
+        height: _sizeConfig.pickersDividerHeight,
       );
 
   Widget _dateRow(String dateHint) => StreamBuilder<SelectedDates>(
@@ -142,13 +141,13 @@ class _SaveHabitState extends State<SaveHabit> {
       );
 
   Widget _dateText(String dateHint, SelectedDates selectedDates) => Container(
-        padding: EdgeInsets.only(right: _screenSize.width * 0.04),
+        padding: _sizeConfig.pickedTextPadding,
         child: Text(
           dateHint == 'Start date'
               ? selectedDates.startDate
               : selectedDates.endDate,
           style: TextStyle(
-            fontSize: _screenSize.height * 0.02,
+            fontSize: _sizeConfig.saveScreenSmallText,
             color: Colors.white,
           ),
         ),
@@ -158,7 +157,7 @@ class _SaveHabitState extends State<SaveHabit> {
         child: Text(
           dateHint,
           style: TextStyle(
-            fontSize: _screenSize.height * 0.025,
+            fontSize: _sizeConfig.pickerText,
             color: Colors.white,
           ),
         ),
@@ -193,11 +192,11 @@ class _SaveHabitState extends State<SaveHabit> {
               children: <Widget>[
                 _timePicker(),
                 Container(
-                  padding: EdgeInsets.only(right: _screenSize.width * 0.04),
+                  padding: _sizeConfig.pickedTextPadding,
                   child: Text(
                     snapshot.data ?? '',
                     style: TextStyle(
-                      fontSize: _screenSize.height * 0.02,
+                      fontSize: _sizeConfig.saveScreenSmallText,
                       color: Colors.white,
                     ),
                   ),
@@ -213,7 +212,7 @@ class _SaveHabitState extends State<SaveHabit> {
       child: Text(
         'Reminder time',
         style: TextStyle(
-          fontSize: _screenSize.height * 0.025,
+          fontSize: _sizeConfig.pickerText,
           color: Colors.white,
         ),
       ),
