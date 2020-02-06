@@ -47,11 +47,12 @@ class SaveHabitBloc {
       if (_hint == 'New habit') {
         _useCase
             .createHabit(
-                DateTime.now().toString().split('.')[0],
-                title,
-                startDate.toString(),
-                endDate.toString(),
-                notificationTime)
+              DateTime.now().toString().split('.')[0],
+              title,
+              startDate.toString(),
+              endDate.toString(),
+              notificationTime,
+            )
             .listen(_onSaveHabit);
       } else {
         _useCase
@@ -61,7 +62,7 @@ class SaveHabitBloc {
               startDate.toString(),
               endDate.toString(),
               notificationTime,
-              checkedDays
+              checkedDays,
             )
             .listen(_onSaveHabit);
       }
@@ -77,8 +78,8 @@ class SaveHabitBloc {
 
   void setEndDate(DateTime date) => endDate = date;
 
-  void setNotificationTime(TimeOfDay time) =>
-      notificationTime = '${time.hour}:${time.minute}';
+  void setNotificationTime(TimeOfDay time) => notificationTime =
+      '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
 
   bool _validate(String title, DateTime startDate, DateTime endDate,
           String notificationTime) =>
