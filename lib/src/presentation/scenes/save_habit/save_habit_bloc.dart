@@ -47,11 +47,12 @@ class SaveHabitBloc {
       if (_hint == 'New habit') {
         _useCase
             .createHabit(
-                DateTime.now().toString().split('.')[0],
-                title,
-                startDate.toString(),
-                endDate.toString(),
-                notificationTime)
+              DateTime.now().toString().split('.')[0],
+              title,
+              startDate.toString(),
+              endDate.toString(),
+              notificationTime,
+            )
             .listen(_onSaveHabit);
       } else {
         _useCase
@@ -61,7 +62,7 @@ class SaveHabitBloc {
               startDate.toString(),
               endDate.toString(),
               notificationTime,
-              checkedDays
+              checkedDays,
             )
             .listen(_onSaveHabit);
       }
@@ -114,7 +115,7 @@ class SaveHabitBloc {
 
   DateTime pickerFirstDate(String dateHint) {
     if (dateHint == 'Start date') {
-      return _dateTimeNow();
+      return startDate ?? _dateTimeNow();
     } else {
       DateTime currentStartDate = startDate ?? _dateTimeNow();
       return currentStartDate.add(Duration(days: 1));
