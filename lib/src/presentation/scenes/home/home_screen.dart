@@ -201,11 +201,14 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: habits.length,
           itemBuilder: (BuildContext context, int index) {
             if (!kIsWeb) {
-              _notificationsService.showDailyNotification(
-                index,
-                habits[index].title,
-                _homeScreenBloc.parseTimeString(habits[index].notificationTime),
-              );
+              if(habits[index].notificationTime != null) {
+                _notificationsService.showDailyNotification(
+                  index,
+                  habits[index].title,
+                  _homeScreenBloc.parseTimeString(
+                      habits[index].notificationTime),
+                );
+              }
             }
             return Container(
               decoration: _habitRowDecoration(habits[index], selectedHabit),

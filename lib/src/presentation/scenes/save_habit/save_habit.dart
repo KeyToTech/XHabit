@@ -112,6 +112,7 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
               ),
             ),
+            _reminderRow(),
             _dateRow('Start date'),
             _dateRow('End date'),
             _notificationRow(),
@@ -120,6 +121,36 @@ class _SaveHabitState extends State<SaveHabit> {
       );
 
   Divider _pickersDivider() => Divider(color: Colors.black, thickness: 1);
+
+  Widget _reminderRow() => StreamBuilder<bool>(
+        stream: _saveHabitBloc.enableNotificationObservable,
+        builder: (context, snapshot) => Column(
+          children: <Widget>[
+            _pickersDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.all(_screenSize.width * 0.04),
+                  child: Text('Set reminder',
+                      style: TextStyle(
+                        fontSize: _screenSize.height * 0.03,
+                        color: Colors.white,
+                      )),
+                ),
+                Switch(
+                  activeColor: XHColors.pink,
+                  value: _saveHabitBloc.enableNotification,
+                  onChanged: (value) {
+                    _saveHabitBloc.setEnableNotification(value);
+                    _saveHabitBloc.switcherChanged();
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      );
 
   Widget _dateRow(String dateHint) => StreamBuilder<SelectedDates>(
         stream: _saveHabitBloc.selectedDatesObservable,
@@ -216,8 +247,10 @@ class _SaveHabitState extends State<SaveHabit> {
             child: _pickerTheme(child),
           ),
         );
-        if (time != null) _saveHabitBloc.setNotificationTime(time);
-        _saveHabitBloc.displayNotificationTime();
+        if (time != null) {
+          _saveHabitBloc.setNotificationTime(time);
+          _saveHabitBloc.displayNotificationTime();
+        }
       });
 
   TimeOfDay _selectedTime() {
