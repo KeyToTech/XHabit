@@ -5,6 +5,7 @@ import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
+import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
   final String _hint;
@@ -144,6 +145,13 @@ class _SaveHabitState extends State<SaveHabit> {
                   onChanged: (value) {
                     _saveHabitBloc.setEnableNotification(value);
                     _saveHabitBloc.switcherChanged();
+                    if(value){
+                      _saveHabitBloc.notificationTime = '12:00';
+                    }
+                    else{
+                      _saveHabitBloc.notificationTime = null;
+                    }
+                    _saveHabitBloc.displayNotificationTime();
                   },
                 )
               ],
@@ -215,7 +223,14 @@ class _SaveHabitState extends State<SaveHabit> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                _timePicker(),
+                XHStatefulButton(
+                        'Reminder time',
+                        _screenSize.height * 0.03,
+                        _saveHabitBloc.enableNotification,
+                        Colors.white,
+                        XHColors.grey,
+                        _onTimePicker)
+                    .statefulButton(),
                 Text(
                   snapshot.data ?? '',
                   style: TextStyle(
@@ -225,33 +240,10 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
               ],
             ),
-            _pickersDivider(),
+            //_pickersDivider(),
           ],
         ),
       );
-
-  Widget _timePicker() => FlatButton(
-      child: Text(
-        'Reminder time',
-        style: TextStyle(
-          fontSize: _screenSize.height * 0.03,
-          color: Colors.white,
-        ),
-      ),
-      onPressed: () async {
-        final TimeOfDay time = await showTimePicker(
-          context: context,
-          initialTime: _selectedTime(),
-          builder: (BuildContext context, Widget child) => MediaQuery(
-            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
-            child: _pickerTheme(child),
-          ),
-        );
-        if (time != null) {
-          _saveHabitBloc.setNotificationTime(time);
-          _saveHabitBloc.displayNotificationTime();
-        }
-      });
 
   TimeOfDay _selectedTime() {
     List<String> timeStrings = _saveHabitBloc.notificationTime?.split(':');
@@ -275,6 +267,21 @@ class _SaveHabitState extends State<SaveHabit> {
 
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop();
+  }
+
+  void _onTimePicker() async {
+    final TimeOfDay time = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime(),
+      builder: (BuildContext context, Widget child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: _pickerTheme(child),
+      ),
+    );
+    if (time != null) {
+      _saveHabitBloc.setNotificationTime(time);
+      _saveHabitBloc.displayNotificationTime();
+    }
   }
 
   @override
