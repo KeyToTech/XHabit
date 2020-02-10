@@ -6,6 +6,7 @@ import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
+import 'package:xhabits/src/presentation/screen_type.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
@@ -137,10 +138,13 @@ class _SaveHabitState extends State<SaveHabit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.all(_screenSize.width * 0.04),
+                  padding: EdgeInsets.only(
+                      left: ScreenType.large
+                          ? _screenSize.width * 0.01
+                          : _screenSize.width * 0.04),
                   child: Text('Set reminder',
                       style: TextStyle(
-                        fontSize: _screenSize.height * 0.03,
+                        fontSize: _screenSize.height * 0.025,
                         color: Colors.white,
                       )),
                 ),
@@ -150,10 +154,9 @@ class _SaveHabitState extends State<SaveHabit> {
                   onChanged: (value) {
                     _saveHabitBloc.setEnableNotification(value);
                     _saveHabitBloc.switcherChanged();
-                    if(value){
+                    if (value) {
                       _saveHabitBloc.notificationTime = '12:00';
-                    }
-                    else{
+                    } else {
                       _saveHabitBloc.notificationTime = null;
                     }
                     _saveHabitBloc.displayNotificationTime();
