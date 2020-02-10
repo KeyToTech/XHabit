@@ -165,14 +165,19 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
         onPressed: () async {
           final DateTime date = await showRoundedDatePicker(
-            context: context,
-            initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
-            firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
-            lastDate: DateTime(2030, 12, 31),
-            theme: ThemeData.dark(),
-//            builder: (BuildContext context, Widget child) =>
-//                _pickerTheme(child),
-          );
+              context: context,
+              initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
+              firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
+              lastDate: DateTime(2030, 12, 31),
+              theme: ThemeData(
+                primarySwatch: Colors.pink,
+                primaryColor: XHColors.darkGrey,
+                accentColor: XHColors.pink,
+                dialogBackgroundColor: XHColors.grey,
+                textTheme: TextTheme(
+                    body1: TextStyle(color: XHColors.lightGrey),
+                    caption: TextStyle(color: XHColors.lightGrey)),
+              ));
 
           if (date != null) {
             if (dateHint == 'Start date') {
