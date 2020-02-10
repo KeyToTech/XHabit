@@ -251,7 +251,6 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
               ],
             ),
-            //_pickersDivider(),
           ],
         ),
       );
