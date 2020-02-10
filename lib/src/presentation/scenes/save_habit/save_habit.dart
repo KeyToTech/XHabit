@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
@@ -163,13 +164,14 @@ class _SaveHabitState extends State<SaveHabit> {
           ),
         ),
         onPressed: () async {
-          final DateTime date = await showDatePicker(
+          final DateTime date = await showRoundedDatePicker(
             context: context,
             initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
             firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
             lastDate: DateTime(2030, 12, 31),
-            builder: (BuildContext context, Widget child) =>
-                _pickerTheme(child),
+            theme: ThemeData.dark(),
+//            builder: (BuildContext context, Widget child) =>
+//                _pickerTheme(child),
           );
 
           if (date != null) {
