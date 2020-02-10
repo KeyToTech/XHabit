@@ -59,15 +59,26 @@ class SaveHabitBloc {
         notificationTime: notificationTime)) {
       if (_hint == 'New habit') {
         _useCase
-            .createHabit(DateTime.now().toString().split('.')[0], title,
-                enableNotification, startDate.toString(), endDate.toString(),
-                notificationTime: notificationTime)
+            .createHabit(
+              DateTime.now().toString().split('.')[0],
+              title,
+              enableNotification,
+              startDate.toString(),
+              endDate.toString(),
+              notificationTime: notificationTime,
+            )
             .listen(_onSaveHabit);
       } else {
         _useCase
-            .updateHabit(habitId, title, enableNotification,
-                startDate.toString(), endDate.toString(), checkedDays,
-                notificationTime: notificationTime)
+            .updateHabit(
+              habitId,
+              title,
+              enableNotification,
+              startDate.toString(),
+              endDate.toString(),
+              checkedDays,
+              notificationTime: notificationTime,
+            )
             .listen(_onSaveHabit);
       }
     }
@@ -79,6 +90,7 @@ class SaveHabitBloc {
       endDate = startDate.add(Duration(days: 1));
     }
   }
+
   void setEndDate(DateTime date) => endDate = date;
 
   void setEnableNotification(bool value) => enableNotification = value;
@@ -120,7 +132,7 @@ class SaveHabitBloc {
 
   DateTime pickerFirstDate(String dateHint) {
     if (dateHint == 'Start date') {
-      return _dateTimeNow();
+      return startDate ?? _dateTimeNow();
     } else {
       DateTime currentStartDate = startDate ?? _dateTimeNow();
       return currentStartDate.add(Duration(days: 1));
