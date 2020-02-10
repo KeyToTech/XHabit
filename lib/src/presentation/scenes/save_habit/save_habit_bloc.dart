@@ -55,8 +55,7 @@ class SaveHabitBloc {
   }
 
   void saveHabit(String title) {
-    if (_validate(title, startDate, endDate,
-        notificationTime: notificationTime)) {
+    if (_validate(title, startDate, endDate)) {
       if (_hint == 'New habit') {
         _useCase
             .createHabit(
@@ -98,8 +97,7 @@ class SaveHabitBloc {
   void setNotificationTime(TimeOfDay time) =>
       notificationTime = '${time.hour}:${time.minute}';
 
-  bool _validate(String title, DateTime startDate, DateTime endDate,
-          {String notificationTime}) =>
+  bool _validate(String title, DateTime startDate, DateTime endDate) =>
       title != null && title.isNotEmpty && startDate != null && endDate != null;
 
   void _onSaveHabit(bool onSaveHabit) {
