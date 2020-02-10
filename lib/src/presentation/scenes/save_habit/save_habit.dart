@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
@@ -139,7 +140,7 @@ class _SaveHabitState extends State<SaveHabit> {
                         color: Colors.white,
                       )),
                 ),
-                Switch(
+                CupertinoSwitch(
                   activeColor: XHColors.pink,
                   value: _saveHabitBloc.enableNotification,
                   onChanged: (value) {
