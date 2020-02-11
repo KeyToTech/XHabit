@@ -56,8 +56,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _handleRedirect(Resource<RegisterState> registerState) {
     if (registerState.status == Status.SUCCESS) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (Route<dynamic> route) => false,
+      );
     }
   }
 
