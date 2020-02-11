@@ -29,12 +29,13 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
   }
 
   @override
-  Stream<bool> createHabit(String habitId, String title,
-      String startDate, String endDate, String notificationTime) {
+  Stream<bool> createHabit(String habitId, String title, bool enableNotification,
+      String startDate, String endDate, {String notificationTime}) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.ref(user.uid).child('habits').child(habitId).set({
         'title': title,
+        'enable_notification': enableNotification,
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
@@ -46,12 +47,13 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
   }
 
   @override
-  Stream<bool> updateHabit(String habitId, String title,
-      String startDate, String endDate,String notificationTime, List<DateTime> checkedDays) {
+  Stream<bool> updateHabit(String habitId, String title, bool enableNotification,
+      String startDate, String endDate, List<DateTime> checkedDays, {String notificationTime}) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.ref(user.uid).child('habits').child(habitId).set({
         'title': title,
+        'enable_notification': enableNotification,
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
