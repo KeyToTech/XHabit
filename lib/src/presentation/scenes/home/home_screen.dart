@@ -219,6 +219,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       habits[index].notificationTime),
                 );
               }
+              else{
+                _notificationsService.cancelNotification(index);
+              }
             }
             return Container(
               decoration: _habitRowDecoration(habits[index], selectedHabit),
