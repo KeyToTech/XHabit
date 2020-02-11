@@ -91,11 +91,12 @@ class SaveHabitBloc {
   }
 
   void setEndDate(DateTime date) => endDate = date;
+  
+  void setNotificationTime(TimeOfDay time) => notificationTime =
+      '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
 
   void setEnableNotification(bool value) => enableNotification = value;
 
-  void setNotificationTime(TimeOfDay time) =>
-      notificationTime = '${time.hour}:${time.minute}';
 
   bool _validate(String title, DateTime startDate, DateTime endDate) =>
       title != null && title.isNotEmpty && startDate != null && endDate != null;
