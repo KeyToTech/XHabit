@@ -7,19 +7,20 @@ class SimpleCreateHabitUseCase implements CreateHabitUseCase {
   SimpleCreateHabitUseCase(this._service);
 
   @override
-  Stream<bool> createHabit(String habitId, String title, String startDate,
-          String endDate, String notificationTime) =>
+  Stream<bool> createHabit(String habitId, String title, enableNotification, String startDate,
+          String endDate, {String notificationTime}) =>
       _service.createHabit(
-          habitId, title, startDate, endDate, notificationTime);
+          habitId, title, enableNotification, startDate, endDate, notificationTime: notificationTime);
 
   @override
   Stream<bool> updateHabit(
           String habitId,
           String title,
+          bool enableNotification,
           String startDate,
           String endDate,
-          String notificationTime,
-          List<DateTime> checkedDays) =>
+          List<DateTime> checkedDays,
+          {String notificationTime}) =>
       _service.updateHabit(
-          habitId, title, startDate, endDate, notificationTime, checkedDays);
+          habitId, title, enableNotification, startDate, endDate, checkedDays, notificationTime: notificationTime,);
 }
