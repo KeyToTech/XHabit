@@ -19,6 +19,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_rounded_date_picker: 0.3.0
 
   # Dependency for circular chart
   flutter_circular_chart: ^0.1.0
