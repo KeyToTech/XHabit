@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
 
 class XHStatefulButton {
   final String text;
