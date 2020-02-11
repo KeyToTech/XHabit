@@ -45,5 +45,6 @@ class HabitBloc {
       date.compareTo(_startDate) >= 0 && date.compareTo(_endDate) <= 0;
 
   double _progress() =>
-      (_checkedDays.length / _endDate.difference(_startDate).inDays) * 100;
+      (_checkedDays.length / (_endDate.difference(_startDate).inDays + 1)) *
+      100;
 }
