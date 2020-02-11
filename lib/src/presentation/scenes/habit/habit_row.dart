@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/domain/database_habit_data_use_case.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
-import 'package:xhabits/src/presentation/screen_type.dart';
+import 'package:xhabits/src/presentation/styles/screen_type.dart';
 
 class HabitRow extends StatefulWidget {
   final String _habitId;

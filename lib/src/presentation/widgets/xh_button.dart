@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 class XHButton {
   final String text;

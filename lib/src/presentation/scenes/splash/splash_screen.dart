@@ -1,11 +1,11 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/domain/simple_check_user_is_signed_in_use_case.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
+import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'splash_screen_bloc.dart';
 import 'splash_screen_state.dart';
 
@@ -50,7 +50,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    SizeConfig.screenSize = MediaQuery.of(context).size;
+    return Container(
         //alignment: Alignment.center,
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -82,4 +84,5 @@ class _SplashScreenState extends State<SplashScreen> {
           ],
         ),
       );
+  }
 }

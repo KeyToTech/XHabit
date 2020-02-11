@@ -4,10 +4,10 @@ import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
-import 'package:xhabits/src/presentation/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
-import 'package:xhabits/src/presentation/screen_type.dart';
+import 'package:xhabits/src/presentation/styles/screen_type.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
