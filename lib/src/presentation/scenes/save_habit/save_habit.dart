@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
@@ -163,14 +164,20 @@ class _SaveHabitState extends State<SaveHabit> {
           ),
         ),
         onPressed: () async {
-          final DateTime date = await showDatePicker(
-            context: context,
-            initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
-            firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
-            lastDate: DateTime(2030, 12, 31),
-            builder: (BuildContext context, Widget child) =>
-                _pickerTheme(child),
-          );
+          final DateTime date = await showRoundedDatePicker(
+              context: context,
+              initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
+              firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
+              lastDate: DateTime(2030, 12, 31),
+              theme: ThemeData(
+                primarySwatch: Colors.pink,
+                primaryColor: XHColors.darkGrey,
+                accentColor: XHColors.pink,
+                dialogBackgroundColor: XHColors.grey,
+                textTheme: TextTheme(
+                    body1: TextStyle(color: XHColors.lightGrey),
+                    caption: TextStyle(color: XHColors.lightGrey)),
+              ));
 
           if (date != null) {
             if (dateHint == 'Start date') {
