@@ -10,10 +10,19 @@ class XHApp extends StatelessWidget {
         title: 'XHab',
         theme: ThemeData(
           accentColor: XHColors.pink,
-            primaryColor: XHColors.pink,
-            cursorColor: XHColors.pink,
-            textSelectionHandleColor: XHColors.pink,
-            fontFamily: 'Montserrat'),
+          primaryColor: XHColors.pink,
+          cursorColor: XHColors.pink,
+          textSelectionHandleColor: XHColors.pink,
+          fontFamily: 'Montserrat',
+          dialogTheme: DialogTheme(
+            backgroundColor: XHColors.darkGrey,
+            elevation: 0,
+          ),
+          textTheme: TextTheme(
+            title: TextStyle(color: Colors.white),
+            subhead: TextStyle(color: Colors.white),
+          ),
+        ),
         home: SplashScreen(),
         routes: <String, WidgetBuilder>{
           RegisterScreen.routeName: (BuildContext context) =>
