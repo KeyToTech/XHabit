@@ -150,9 +150,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
       Map<int, String> daysWords) {
-    Widget container;
-    if (habits.length > 0) {
-      container = Container(
+    if (habits.isNotEmpty) {
+      return Container(
           color: XHColors.darkGrey,
           child: Column(children: <Widget>[
             Container(
@@ -206,47 +205,29 @@ class _HomeScreenState extends State<HomeScreen> {
             _habitsList(habits, selectedHabit, weekDays),
           ]));
     } else {
-      container = Container(
+      _homeScreenBloc.getHomeData();
+      return Container(
           color: XHColors.darkGrey,
           child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                    child: Center(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        'You don\'t have any habits yet.',
-                        style: TextStyle(
-                          color: XHColors.lightGrey,
-                          fontSize: 21.0
-                        ),
-                      ),
-                      Column(
-                        children:
-                          _startAddingAHabbit(),
-                      )
-                    ],
-                  ),
-                ))
+                Text(
+                  'You don\'t have any habits yet.',
+                  style: TextStyle(color: XHColors.lightGrey, fontSize: 20.0),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _startAddingHabit(),
+                    Text(
+                      'adding a new habit!',
+                      style: TextStyle(fontSize: 20, color: XHColors.lightGrey),
+                    )
+                  ],
+                )
               ]));
     }
-    return container;
   }
-
-  List<Widget> _startAddingAHabbit() => <Widget>[
-        const SizedBox(width: 8.0),
-        InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(
-                builder: (context) => SaveHabit.create()));
-          },
-          child: Text('Start adding a habit!',
-              style:
-                  TextStyle(color: XHColors.pink, fontSize: 20.0, fontWeight: FontWeight.bold)),
-        )
-      ];
 
   Widget _habitsList(
           List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays) =>
@@ -296,6 +277,20 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
+
+  Widget _startAddingHabit() => Row(children: <Widget>[
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SaveHabit.create()));
+          },
+          child: Text('Start ',
+              style: TextStyle(
+                  color: XHColors.pink,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold)),
+        )
+      ]);
 
   BoxDecoration _habitRowDecoration(Habit currentHabit, Habit selectedHabit) =>
       BoxDecoration(
