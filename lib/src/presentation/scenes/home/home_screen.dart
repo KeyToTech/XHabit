@@ -10,7 +10,6 @@ import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
-import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
@@ -22,23 +21,23 @@ import 'package:xhabits/src/presentation/styles/screen_type.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
-      DatabaseHomeScreenUseCase(
-          HomeRepository(AppConfig.database, RealWeekDays())),
-      SimpleLogoutUseCase(FirebaseAuthService()),
-      SimpleRemoveHabitUseCase(AppConfig.database)));
+        DatabaseHomeScreenUseCase(
+            HomeRepository(AppConfig.database, RealWeekDays())),
+        SimpleLogoutUseCase(FirebaseAuthService()),
+        SimpleRemoveHabitUseCase(AppConfig.database),
+      ));
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   final HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
-  PushNotificationsService _notificationsService;
 
   _HomeScreenState(this._homeScreenBloc);
 
   @override
   void initState() {
-    if (!kIsWeb) {
-      _notificationsService = PushNotificationsService(context);
+    if(!kIsWeb) {
+      _homeScreenBloc.initPushNotificationService(context);
     }
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
@@ -105,10 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           MaterialButton(
             child: Icon(Icons.exit_to_app, color: XHColors.pink),
-            onPressed: () {
-              _notificationsService.cancelAllNotifications();
-              _homeScreenBloc.logout();
-            },
+            onPressed: _homeScreenBloc.logout,
             shape: CircleBorder(),
             minWidth: 0,
           ),
@@ -214,16 +210,15 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: habits.length,
           itemBuilder: (BuildContext context, int index) {
             if (!kIsWeb) {
-              if(habits[index].notificationTime != null) {
-                _notificationsService.showDailyNotification(
+              if (habits[index].notificationTime != null) {
+                _homeScreenBloc.showDailyNotification(
                   index,
                   habits[index].title,
-                  _homeScreenBloc.parseTimeString(
-                      habits[index].notificationTime),
+                  _homeScreenBloc
+                      .parseTimeString(habits[index].notificationTime),
                 );
-              }
-              else{
-                _notificationsService.cancelNotification(index);
+              } else {
+                _homeScreenBloc.cancelNotification(index);
               }
             }
             return Container(
