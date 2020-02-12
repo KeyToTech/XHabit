@@ -9,6 +9,7 @@ import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
@@ -105,7 +106,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           MaterialButton(
             child: Icon(Icons.exit_to_app, color: XHColors.pink),
-            onPressed: _homeScreenBloc.logout,
+            onPressed: () {
+              ConfirmDialog.show(
+                context,
+                'Logout',
+                'Are you sure you want to logout?',
+                _homeScreenBloc.logout,
+              );
+            },
             shape: CircleBorder(),
             minWidth: 0,
           ),
@@ -140,7 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
-              _homeScreenBloc.removeHabit(selectedHabit.habitId);
+              ConfirmDialog.show(
+                context,
+                'Delete habit',
+                'Are you sure you want to delete habit \'${selectedHabit.title}\' ?',
+                () => _homeScreenBloc.removeHabit(selectedHabit.habitId),
+              );
             },
             shape: CircleBorder(),
             minWidth: 0,
