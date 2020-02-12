@@ -105,7 +105,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           MaterialButton(
             child: Icon(Icons.exit_to_app, color: XHColors.pink),
-            onPressed: _homeScreenBloc.logout,
+            onPressed: () {
+              _notificationsService.cancelAllNotifications();
+              _homeScreenBloc.logout();
+            },
             shape: CircleBorder(),
             minWidth: 0,
           ),

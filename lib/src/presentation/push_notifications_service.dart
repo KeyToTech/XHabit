@@ -57,4 +57,8 @@ class PushNotificationsService {
   void cancelNotification(int index) async {
     await _flutterLocalNotificationsPlugin.cancel(index);
   }
+
+  void cancelAllNotifications() {
+    _flutterLocalNotificationsPlugin.cancelAll();
+  }
 }
