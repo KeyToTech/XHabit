@@ -4,6 +4,7 @@ import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
@@ -75,7 +76,11 @@ class _SaveHabitState extends State<SaveHabit> {
               ),
               textColor: XHColors.pink,
               onPressed: () {
-                _saveHabitBloc.saveHabit(_titleController.text);
+                String validationMessage =
+                    _saveHabitBloc.saveHabit(_titleController.text);
+                if (validationMessage != null) {
+                  InfoDialog().show(context, 'Invalid data', validationMessage);
+                }
               },
             )
           ],
