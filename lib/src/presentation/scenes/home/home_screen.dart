@@ -162,8 +162,9 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
-          Map<int, String> daysWords) =>
-      Container(
+      Map<int, String> daysWords) {
+    if (habits.isNotEmpty) {
+      return Container(
           color: XHColors.darkGrey,
           child: Column(children: <Widget>[
             Container(
@@ -216,6 +217,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             _habitsList(habits, selectedHabit, weekDays),
           ]));
+    } else {
+      _homeScreenBloc.getHomeData();
+      return Container(
+          color: XHColors.darkGrey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'You don\'t have any habits yet.',
+                  style: TextStyle(color: XHColors.lightGrey, fontSize: 20.0),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _startAddingHabit(),
+                    Text(
+                      'adding a new habit!',
+                      style: TextStyle(fontSize: 20, color: XHColors.lightGrey),
+                    )
+                  ],
+                )
+              ]));
+    }
+  }
 
   Widget _habitsList(
           List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays) =>
@@ -224,15 +249,14 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: habits.length,
           itemBuilder: (BuildContext context, int index) {
             if (!kIsWeb) {
-              if(habits[index].notificationTime != null) {
+              if (habits[index].notificationTime != null) {
                 _notificationsService.showDailyNotification(
                   index,
                   habits[index].title,
-                  _homeScreenBloc.parseTimeString(
-                      habits[index].notificationTime),
+                  _homeScreenBloc
+                      .parseTimeString(habits[index].notificationTime),
                 );
-              }
-              else{
+              } else {
                 _notificationsService.cancelNotification(index);
               }
             }
@@ -266,6 +290,20 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
+
+  Widget _startAddingHabit() => Row(children: <Widget>[
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SaveHabit.create()));
+          },
+          child: Text('Start ',
+              style: TextStyle(
+                  color: XHColors.pink,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold)),
+        )
+      ]);
 
   BoxDecoration _habitRowDecoration(Habit currentHabit, Habit selectedHabit) =>
       BoxDecoration(
