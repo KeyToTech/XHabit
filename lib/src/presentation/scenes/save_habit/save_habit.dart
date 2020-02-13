@@ -82,45 +82,50 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  Widget _body() => Container(
-        color: XHColors.darkGrey,
-        padding: EdgeInsets.symmetric(
-            vertical: _screenSize.height * 0.02,
-            horizontal: _screenSize.width * 0.035),
-        child: ListView(
-          children: <Widget>[
-            Text(
-              'What do you want to accomplish?',
-              style: TextStyle(
-                fontSize: _screenSize.height * 0.03,
-                color: Colors.white,
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(top: _screenSize.height * 0.045),
-              child: TextField(
-                controller: _titleController,
+  Widget _body() => GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          color: XHColors.darkGrey,
+          padding: EdgeInsets.symmetric(
+              vertical: _screenSize.height * 0.02,
+              horizontal: _screenSize.width * 0.035),
+          child: ListView(
+            children: <Widget>[
+              Text(
+                'What do you want to accomplish?',
                 style: TextStyle(
                   fontSize: _screenSize.height * 0.03,
                   color: Colors.white,
                 ),
-                decoration: InputDecoration(
-                  fillColor: XHColors.grey,
-                  filled: true,
-                  border: OutlineInputBorder(),
-                  hintText: 'Name your new habit',
-                  hintStyle: TextStyle(
-                    fontSize: _screenSize.height * 0.02,
-                    color: XHColors.lightGrey,
+              ),
+              Container(
+                margin: EdgeInsets.only(top: _screenSize.height * 0.045),
+                child: TextField(
+                  controller: _titleController,
+                  style: TextStyle(
+                    fontSize: _screenSize.height * 0.03,
+                    color: Colors.white,
+                  ),
+                  decoration: InputDecoration(
+                    fillColor: XHColors.grey,
+                    filled: true,
+                    border: OutlineInputBorder(),
+                    hintText: 'Name your new habit',
+                    hintStyle: TextStyle(
+                      fontSize: _screenSize.height * 0.02,
+                      color: XHColors.lightGrey,
+                    ),
                   ),
                 ),
               ),
-            ),
-            _reminderRow(),
-            _dateRow('Start date'),
-            _dateRow('End date'),
-            _notificationRow(),
-          ],
+              _reminderRow(),
+              _dateRow('Start date'),
+              _dateRow('End date'),
+              _notificationRow(),
+            ],
+          ),
         ),
       );
 
@@ -153,6 +158,7 @@ class _SaveHabitState extends State<SaveHabit> {
                   activeColor: XHColors.pink,
                   value: _saveHabitBloc.enableNotification,
                   onChanged: (value) {
+                    FocusScope.of(context).unfocus();
                     _saveHabitBloc.setEnableNotification(value);
                     _saveHabitBloc.switcherChanged();
                     if (value) {
@@ -207,6 +213,7 @@ class _SaveHabitState extends State<SaveHabit> {
           ),
         ),
         onPressed: () async {
+          FocusScope.of(context).unfocus();
           final DateTime date = await showRoundedDatePicker(
               context: context,
               initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
@@ -290,6 +297,7 @@ class _SaveHabitState extends State<SaveHabit> {
   }
 
   void _onTimePicker() async {
+    FocusScope.of(context).unfocus();
     final TimeOfDay time = await showTimePicker(
       context: context,
       initialTime: _selectedTime(),
