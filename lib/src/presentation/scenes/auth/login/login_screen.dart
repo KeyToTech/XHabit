@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
+import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -25,8 +26,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _LoginScreenState(this._loginBloc);
 
@@ -56,13 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: XHColors.darkGrey,
-        title: Text('Sign in'),
-      ),
-      body: StreamBuilder(
+  Widget build(BuildContext context) => Material(
+        child: StreamBuilder(
           stream: _loginBloc.loginStateObservable,
           builder: (context, AsyncSnapshot<Resource<LoginState>> snapshot) {
             final loginState = snapshot.data.data;
@@ -74,7 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
             return buildUi(
                 context, loginState, snapshot.data.status == Status.LOADING);
-          }));
+          },
+        ),
+      );
 
   Widget buildUi(
           BuildContext context, LoginState loginState, bool showLoading) =>
@@ -138,32 +134,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     )
                   : XHButton('Login', loginState.signInButtonEnabled, _onSubmit)
                       .materialButton(),
-              _screenSize.width > 360
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: _dontHaveAccountChild(),
-                    )
-                  : Column(
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      children: _dontHaveAccountChild(),
-                    )
+              AuthInkWell.inkWell(
+                context,
+                "Don't have an account?",
+                RegisterScreen(),
+              ),
             ],
           ),
         ),
       );
-
-  List<Widget> _dontHaveAccountChild() => <Widget>[
-        const SizedBox(width: 8.0),
-        InkWell(
-          onTap: () {
-            Navigator.pushNamed(context, RegisterScreen.routeName);
-          },
-          child: Text('Don\'t have an account?',
-              style: TextStyle(
-                  color: XHColors.pink,
-                  fontWeight: FontWeight.bold)),
-        )
-      ];
 
   @override
   void dispose() {
