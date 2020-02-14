@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
+import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -32,8 +34,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _usernameTextEditingController = TextEditingController();
 
   _RegisterScreenState(this._registerBloc);
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -65,13 +65,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        backgroundColor: XHColors.darkGrey,
-        title: Text(widget.title),
-      ),
-      body: StreamBuilder(
+  Widget build(BuildContext context) => Material(
+        child: StreamBuilder(
           stream: _registerBloc.registerStateObservable,
           builder: (context, AsyncSnapshot<Resource<RegisterState>> snapshot) {
             final registerState = snapshot.data.data;
@@ -82,7 +77,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
             _screenSize = MediaQuery.of(context).size;
 
             return buildUi(context, registerState);
-          }));
+          },
+        ),
+      );
 
   Widget buildUi(BuildContext context, RegisterState registerState) =>
       Container(
@@ -121,8 +118,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-                  XHTextField('User name', _usernameTextEditingController,
-                          false)
+                  XHTextField(
+                          'User name', _usernameTextEditingController, false)
                       .field(),
                   XHErrorMessage(registerState.registerValidationsState
                               .userNameValidation.isValid
@@ -132,14 +129,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       .messageError(),
                   XHTextField('Email', _emailTextEditingController, false)
                       .field(),
-                  XHErrorMessage(registerState.registerValidationsState
-                              .emailValidation.isValid
+                  XHErrorMessage(registerState
+                              .registerValidationsState.emailValidation.isValid
                           ? ''
                           : registerState.registerValidationsState
                               .emailValidation.errorMessage)
                       .messageError(),
-                  XHTextField('Password', _passwordTextEditingController,
-                          true)
+                  XHTextField('Password', _passwordTextEditingController, true)
                       .field(),
                   XHErrorMessage(registerState.registerValidationsState
                               .passwordValidation.isValid
@@ -147,13 +143,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : registerState.registerValidationsState
                               .passwordValidation.errorMessage)
                       .messageError(),
-                  ]),
-                  XHButton('Sign up', registerState.signUpButtonEnabled,
-                          _onSubmit)
-                      .materialButton(),
                 ],
               ),
+              XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
+                  .materialButton(),
+              AuthInkWell.inkWell(
+                context,
+                'Already have an account?',
+                LoginScreen(),
+              ),
+            ],
           ),
+        ),
       );
 
   @override
