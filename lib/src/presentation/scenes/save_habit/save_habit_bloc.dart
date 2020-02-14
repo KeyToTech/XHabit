@@ -54,8 +54,9 @@ class SaveHabitBloc {
     _useCase = useCase;
   }
 
-  void saveHabit(String title) {
-    if (_validate(title, startDate, endDate)) {
+  String saveHabit(String title) {
+    String message = _validationMessage(title, startDate, endDate);
+    if (message == null) {
       if (_hint == 'New habit') {
         _useCase
             .createHabit(
@@ -81,6 +82,7 @@ class SaveHabitBloc {
             .listen(_onSaveHabit);
       }
     }
+    return message;
   }
 
   void setStartDate(DateTime date) {
@@ -91,15 +93,24 @@ class SaveHabitBloc {
   }
 
   void setEndDate(DateTime date) => endDate = date;
-  
+
   void setNotificationTime(TimeOfDay time) => notificationTime =
       '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
 
   void setEnableNotification(bool value) => enableNotification = value;
 
-
-  bool _validate(String title, DateTime startDate, DateTime endDate) =>
-      title != null && title.isNotEmpty && startDate != null && endDate != null;
+  String _validationMessage(
+      String title, DateTime startDate, DateTime endDate) {
+    String message;
+    if (title == null || title.isEmpty) {
+      message = "Title can't be empty.";
+    } else if (startDate == null) {
+      message = 'Please, select start date.';
+    } else if (endDate == null) {
+      message = 'Please, select end date.';
+    }
+    return message;
+  }
 
   void _onSaveHabit(bool onSaveHabit) {
     _saveHabitSubject.sink.add(onSaveHabit);
