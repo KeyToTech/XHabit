@@ -8,7 +8,7 @@ import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
-import 'package:xhabits/src/presentation/styles/screen_type.dart';
+import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
@@ -57,7 +57,7 @@ class _SaveHabitState extends State<SaveHabit> {
               padding: EdgeInsets.only(left: 0),
               child: Text(
                 'Cancel',
-                style: TextStyle(fontSize: _screenSize.height * 0.023),
+                style: TextStyle(fontSize: SizeConfig.appBarButtonText),
               ),
               textColor: XHColors.pink,
               onPressed: () {
@@ -66,13 +66,13 @@ class _SaveHabitState extends State<SaveHabit> {
             ),
             Text(
               widget._hint,
-              style: TextStyle(fontSize: _screenSize.height * 0.027),
+              style: TextStyle(fontSize: SizeConfig.appBarTitle),
             ),
             FlatButton(
               padding: EdgeInsets.only(right: 0),
               child: Text(
                 'Save',
-                style: TextStyle(fontSize: _screenSize.height * 0.023),
+                style: TextStyle(fontSize: SizeConfig.appBarButtonText),
               ),
               textColor: XHColors.pink,
               onPressed: () {
@@ -93,24 +93,22 @@ class _SaveHabitState extends State<SaveHabit> {
         },
         child: Container(
           color: XHColors.darkGrey,
-          padding: EdgeInsets.symmetric(
-              vertical: _screenSize.height * 0.02,
-              horizontal: _screenSize.width * 0.035),
+          padding: SizeConfig.saveScreenPadding,
           child: ListView(
             children: <Widget>[
               Text(
                 'What do you want to accomplish?',
                 style: TextStyle(
-                  fontSize: _screenSize.height * 0.03,
+                  fontSize: SizeConfig.saveScreenLargeText,
                   color: Colors.white,
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: _screenSize.height * 0.045),
+                margin: SizeConfig.saveScreenInputMargin,
                 child: TextField(
                   controller: _titleController,
                   style: TextStyle(
-                    fontSize: _screenSize.height * 0.03,
+                    fontSize: SizeConfig.saveScreenLargeText,
                     color: Colors.white,
                   ),
                   decoration: InputDecoration(
@@ -119,7 +117,7 @@ class _SaveHabitState extends State<SaveHabit> {
                     border: OutlineInputBorder(),
                     hintText: 'Name your new habit',
                     hintStyle: TextStyle(
-                      fontSize: _screenSize.height * 0.02,
+                      fontSize: SizeConfig.saveScreenSmallText,
                       color: XHColors.lightGrey,
                     ),
                   ),
@@ -136,8 +134,8 @@ class _SaveHabitState extends State<SaveHabit> {
 
   Divider _pickersDivider() => Divider(
         color: Colors.black,
-        thickness: _screenSize.shortestSide * 0.0015,
-        height: _screenSize.height * 0.06,
+        thickness: SizeConfig.pickersDividerThickness,
+        height: SizeConfig.pickersDividerHeight,
       );
 
   Widget _reminderRow() => StreamBuilder<bool>(
@@ -149,13 +147,10 @@ class _SaveHabitState extends State<SaveHabit> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.only(
-                      left: ScreenType.large
-                          ? _screenSize.width * 0.01
-                          : _screenSize.width * 0.04),
+                  padding: SizeConfig.pickerPadding,
                   child: Text('Set reminder',
                       style: TextStyle(
-                        fontSize: _screenSize.height * 0.025,
+                        fontSize: SizeConfig.pickerText,
                         color: Colors.white,
                       )),
                 ),
@@ -197,23 +192,24 @@ class _SaveHabitState extends State<SaveHabit> {
       );
 
   Widget _dateText(String dateHint, SelectedDates selectedDates) => Container(
-        padding: EdgeInsets.only(right: _screenSize.width * 0.04),
+        padding: SizeConfig.pickedTextPadding,
         child: Text(
           dateHint == 'Start date'
               ? selectedDates.startDate
               : selectedDates.endDate,
           style: TextStyle(
-            fontSize: _screenSize.height * 0.02,
+            fontSize: SizeConfig.saveScreenSmallText,
             color: Colors.white,
           ),
         ),
       );
 
   FlatButton _datePicker(String dateHint) => FlatButton(
+        padding: SizeConfig.pickerPadding,
         child: Text(
           dateHint,
           style: TextStyle(
-            fontSize: _screenSize.height * 0.025,
+            fontSize: SizeConfig.pickerText,
             color: Colors.white,
           ),
         ),
@@ -255,24 +251,26 @@ class _SaveHabitState extends State<SaveHabit> {
               children: <Widget>[
                 XHStatefulButton(
                         'Reminder time',
-                        _screenSize.height * 0.03,
+                        SizeConfig.pickerText,
+                        SizeConfig.pickerPadding,
                         _saveHabitBloc.enableNotification,
                         Colors.white,
                         XHColors.grey,
                         _onTimePicker)
                     .statefulButton(),
                 Container(
-                  padding: EdgeInsets.only(right: _screenSize.width * 0.04),
+                  padding: SizeConfig.pickedTextPadding,
                   child: Text(
                     snapshot.data ?? '',
                     style: TextStyle(
-                      fontSize: _screenSize.height * 0.02,
+                      fontSize: SizeConfig.saveScreenSmallText,
                       color: Colors.white,
                     ),
                   ),
                 ),
               ],
             ),
+            _pickersDivider(),
           ],
         ),
       );
