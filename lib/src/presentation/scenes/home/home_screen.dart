@@ -9,6 +9,7 @@ import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
@@ -107,7 +108,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           MaterialButton(
             child: Icon(Icons.exit_to_app, color: XHColors.pink),
-            onPressed: _homeScreenBloc.logout,
+            onPressed: () {
+              ConfirmDialog.show(
+                context,
+                'Logout',
+                'Are you sure you want to logout?',
+                _homeScreenBloc.logout,
+              );
+            },
             shape: CircleBorder(),
             minWidth: 0,
           ),
@@ -142,7 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
-              _homeScreenBloc.removeHabit(selectedHabit.habitId);
+              ConfirmDialog.show(
+                context,
+                'Delete habit',
+                'Are you sure you want to delete habit \'${selectedHabit.title}\' ?',
+                () => _homeScreenBloc.removeHabit(selectedHabit.habitId),
+              );
             },
             shape: CircleBorder(),
             minWidth: 0,
@@ -151,8 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
-          Map<int, String> daysWords) =>
-      Container(
+      Map<int, String> daysWords) {
+    if (habits.isNotEmpty) {
+      return Container(
           color: XHColors.darkGrey,
           child: Column(children: <Widget>[
             Container(
@@ -205,6 +219,30 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             _habitsList(habits, selectedHabit, weekDays),
           ]));
+    } else {
+      _homeScreenBloc.getHomeData();
+      return Container(
+          color: XHColors.darkGrey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'You don\'t have any habits yet.',
+                  style: TextStyle(color: XHColors.lightGrey, fontSize: 20.0),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _startAddingHabit(),
+                    Text(
+                      'adding a new habit!',
+                      style: TextStyle(fontSize: 20, color: XHColors.lightGrey),
+                    )
+                  ],
+                )
+              ]));
+    }
+  }
 
   Widget _habitsList(
           List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays) =>
@@ -254,6 +292,20 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
+
+  Widget _startAddingHabit() => Row(children: <Widget>[
+        InkWell(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => SaveHabit.create()));
+          },
+          child: Text('Start ',
+              style: TextStyle(
+                  color: XHColors.pink,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold)),
+        )
+      ]);
 
   BoxDecoration _habitRowDecoration(Habit currentHabit, Habit selectedHabit) =>
       BoxDecoration(
