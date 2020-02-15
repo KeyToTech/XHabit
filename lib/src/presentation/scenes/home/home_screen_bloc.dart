@@ -28,18 +28,17 @@ class HomeScreenBloc {
   RemoveHabitUseCase _removeUseCase;
 
   HomeScreenBloc(HomeScreenUseCase useCase, LogoutUseCase logoutUseCase,
-      RemoveHabitUseCase removeUseCase) {
+      RemoveHabitUseCase removeUseCase, bool notificationOn, BuildContext context) {
     _useCase = useCase;
+    if (notificationOn) {
+      _notificationsService = PushNotificationsService(context);
+    }
     _logoutUseCase = logoutUseCase;
     _removeUseCase = removeUseCase;
     _homeStateSubject = BehaviorSubject<HomeScreenResource>();
     _logoutStateSubject = BehaviorSubject<bool>();
     _appBarStateSubject =
         BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
-  }
-
-  void initPushNotificationService(BuildContext context) {
-    _notificationsService = PushNotificationsService(context);
   }
 
   void getHomeData() {

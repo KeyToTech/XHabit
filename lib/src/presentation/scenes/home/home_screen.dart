@@ -20,25 +20,28 @@ import 'package:xhabits/src/presentation/styles/screen_type.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
+  _HomeScreenState createState() => _HomeScreenState(
         DatabaseHomeScreenUseCase(
             HomeRepository(AppConfig.database, RealWeekDays())),
         SimpleLogoutUseCase(FirebaseAuthService()),
         SimpleRemoveHabitUseCase(AppConfig.database),
-      ));
+      );
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final HomeScreenBloc _homeScreenBloc;
+  HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
 
-  _HomeScreenState(this._homeScreenBloc);
+  _HomeScreenState(
+      DatabaseHomeScreenUseCase databaseUseCase,
+      SimpleLogoutUseCase logoutUseCase,
+      SimpleRemoveHabitUseCase removeHabitUseCase) {
+    _homeScreenBloc = HomeScreenBloc(
+        databaseUseCase, logoutUseCase, removeHabitUseCase, !kIsWeb, context);
+  }
 
   @override
   void initState() {
-    if(!kIsWeb) {
-      _homeScreenBloc.initPushNotificationService(context);
-    }
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
