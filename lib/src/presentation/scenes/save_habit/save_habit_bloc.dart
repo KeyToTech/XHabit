@@ -142,7 +142,12 @@ class SaveHabitBloc {
 
   DateTime pickerFirstDate(String dateHint) {
     if (dateHint == 'Start date') {
-      return startDate ?? _dateTimeNow();
+      if(startDate != null && startDate.isBefore(_dateTimeNow())){
+        return startDate;
+      }
+      else{
+        return _dateTimeNow();
+      }
     } else {
       DateTime currentStartDate = startDate ?? _dateTimeNow();
       return currentStartDate.add(Duration(days: 1));
