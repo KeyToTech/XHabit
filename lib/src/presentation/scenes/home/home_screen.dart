@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
@@ -32,6 +33,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
+  RefreshController _refreshController;
 
   _HomeScreenState(
       DatabaseHomeScreenUseCase databaseUseCase,
@@ -45,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
+    _refreshController = RefreshController(initialRefresh: false);
     super.initState();
   }
 
@@ -247,44 +250,52 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _habitsList(
           List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays) =>
       Expanded(
-        child: ListView.builder(
-          itemCount: habits.length,
-          itemBuilder: (BuildContext context, int index) {
-            if (!kIsWeb) {
-              if (habits[index].notificationTime != null) {
-                _homeScreenBloc.showDailyNotification(
-                  index,
-                  habits[index].title,
-                  _homeScreenBloc
-                      .parseTimeString(habits[index].notificationTime),
-                );
-              } else {
-                _homeScreenBloc.cancelNotification(index);
-              }
-            }
-            return Container(
-              decoration: _habitRowDecoration(habits[index], selectedHabit),
-              child: ListTile(
-                contentPadding: EdgeInsets.all(0.0),
-                title: HabitRow(
-                  habits[index].habitId,
-                  habits[index].title,
-                  habits[index].checkedDays,
-                  habits[index].startDate,
-                  habits[index].endDate,
-                  weekDays,
-                  key: habits[index].habitId ==
-                          _homeScreenBloc.lastSelectedHabit?.habitId
-                      ? UniqueKey()
-                      : ValueKey(index),
-                ),
-                onLongPress: () {
-                  _homeScreenBloc.selectHabit(habits[index]);
-                  _homeScreenBloc.changeLastSelected(habits[index]);
-                },
-              ),
-            );
+        child: SmartRefresher(
+          controller: _refreshController,
+          header: MaterialClassicHeader(),
+          onRefresh: () {
+            _homeScreenBloc.getHomeData();
+            _refreshController.refreshCompleted();
           },
+          child: ListView.builder(
+            itemCount: habits.length,
+            itemBuilder: (BuildContext context, int index) {
+              if (!kIsWeb) {
+                if (habits[index].notificationTime != null) {
+                  _homeScreenBloc.showDailyNotification(
+                    index,
+                    habits[index].title,
+                    _homeScreenBloc
+                        .parseTimeString(habits[index].notificationTime),
+                  );
+                } else {
+                  _homeScreenBloc.cancelNotification(index);
+                }
+              }
+              return Container(
+                decoration: _habitRowDecoration(habits[index], selectedHabit),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(0.0),
+                  title: HabitRow(
+                    habits[index].habitId,
+                    habits[index].title,
+                    habits[index].checkedDays,
+                    habits[index].startDate,
+                    habits[index].endDate,
+                    weekDays,
+                    key: habits[index].habitId ==
+                            _homeScreenBloc.lastSelectedHabit?.habitId
+                        ? UniqueKey()
+                        : ValueKey(index),
+                  ),
+                  onLongPress: () {
+                    _homeScreenBloc.selectHabit(habits[index]);
+                    _homeScreenBloc.changeLastSelected(habits[index]);
+                  },
+                ),
+              );
+            },
+          ),
         ),
       );
 
