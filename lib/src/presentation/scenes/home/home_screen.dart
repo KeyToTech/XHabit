@@ -11,7 +11,6 @@ import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
-import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
@@ -22,25 +21,28 @@ import 'package:xhabits/src/presentation/styles/screen_type.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState(HomeScreenBloc(
-      DatabaseHomeScreenUseCase(
-          HomeRepository(AppConfig.database, RealWeekDays())),
-      SimpleLogoutUseCase(FirebaseAuthService()),
-      SimpleRemoveHabitUseCase(AppConfig.database)));
+  _HomeScreenState createState() => _HomeScreenState(
+        DatabaseHomeScreenUseCase(
+            HomeRepository(AppConfig.database, RealWeekDays())),
+        SimpleLogoutUseCase(FirebaseAuthService()),
+        SimpleRemoveHabitUseCase(AppConfig.database),
+      );
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final HomeScreenBloc _homeScreenBloc;
+  HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
-  PushNotificationsService _notificationsService;
 
-  _HomeScreenState(this._homeScreenBloc);
+  _HomeScreenState(
+      DatabaseHomeScreenUseCase databaseUseCase,
+      SimpleLogoutUseCase logoutUseCase,
+      SimpleRemoveHabitUseCase removeHabitUseCase) {
+    _homeScreenBloc = HomeScreenBloc(
+        databaseUseCase, logoutUseCase, removeHabitUseCase, !kIsWeb, context);
+  }
 
   @override
   void initState() {
-    if (!kIsWeb) {
-      _notificationsService = PushNotificationsService(context);
-    }
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
@@ -250,14 +252,14 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (BuildContext context, int index) {
             if (!kIsWeb) {
               if (habits[index].notificationTime != null) {
-                _notificationsService.showDailyNotification(
+                _homeScreenBloc.showDailyNotification(
                   index,
                   habits[index].title,
                   _homeScreenBloc
                       .parseTimeString(habits[index].notificationTime),
                 );
               } else {
-                _notificationsService.cancelNotification(index);
+                _homeScreenBloc.cancelNotification(index);
               }
             }
             return Container(
