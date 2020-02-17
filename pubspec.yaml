@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   flutter_rounded_date_picker: 0.3.0
 
+  pull_to_refresh: ^1.5.8
+
   # Dependency for circular chart
   flutter_circular_chart: ^0.1.0
 
