@@ -15,7 +15,7 @@ class PushNotificationsService {
 
   void _init() {
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    var initializationSettingsAndroid = AndroidInitializationSettings('logo');
+    var initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
