@@ -64,7 +64,7 @@ class SaveHabitBloc {
               title,
               enableNotification,
               startDate.toString(),
-              endDate.toString(),
+              endDate: endDate.toString(),
               notificationTime: notificationTime,
             )
             .listen(_onSaveHabit);
@@ -75,8 +75,8 @@ class SaveHabitBloc {
               title,
               enableNotification,
               startDate.toString(),
-              endDate.toString(),
               checkedDays,
+              endDate: endDate.toString(),
               notificationTime: notificationTime,
             )
             .listen(_onSaveHabit);
@@ -106,8 +106,6 @@ class SaveHabitBloc {
       message = "Title can't be empty.";
     } else if (startDate == null) {
       message = 'Please, select start date.';
-    } else if (endDate == null) {
-      message = 'Please, select end date.';
     }
     return message;
   }
@@ -142,10 +140,9 @@ class SaveHabitBloc {
 
   DateTime pickerFirstDate(String dateHint) {
     if (dateHint == 'Start date') {
-      if(startDate != null && startDate.isBefore(_dateTimeNow())){
+      if (startDate != null && startDate.isBefore(_dateTimeNow())) {
         return startDate;
-      }
-      else{
+      } else {
         return _dateTimeNow();
       }
     } else {

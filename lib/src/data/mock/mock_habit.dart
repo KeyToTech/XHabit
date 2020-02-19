@@ -12,7 +12,7 @@ class MockHabitData implements DatabaseService {
 
   @override
   Stream<bool> createHabit(String habitId, String title, bool enableNotification,
-          String startDate, String endDate, {String notificationTime}) =>
+          String startDate, {String endDate, String notificationTime}) =>
       null;
 
   @override
@@ -48,6 +48,6 @@ class MockHabitData implements DatabaseService {
 
   @override
   Stream<bool> updateHabit(String habitId, String title, bool enableNotification,
-          String startDate, String endDate, List<DateTime> checkedDays, {String notificationTime}) =>
+          String startDate, List<DateTime> checkedDays, {String endDate, String notificationTime}) =>
       null;
 }

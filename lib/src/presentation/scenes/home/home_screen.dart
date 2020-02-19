@@ -283,11 +283,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     habits[index].title,
                     habits[index].checkedDays,
                     habits[index].startDate,
-                    habits[index].endDate,
                     weekDays,
                     key: _homeScreenBloc.rebuildHabitTile(habits[index])
                         ? UniqueKey()
                         : ValueKey(index),
+                    endDate: habits[index].endDate,
                   ),
                   onLongPress: () {
                     _homeScreenBloc.selectHabit(habits[index]);

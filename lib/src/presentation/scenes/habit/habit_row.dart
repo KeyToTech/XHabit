@@ -8,17 +8,24 @@ import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 import 'package:xhabits/src/presentation/styles/screen_type.dart';
 
 class HabitRow extends StatefulWidget {
-  final String _habitId;
-  final String title;
-  final List<DateTime> checkedDays;
-  final DateTime _startDate;
-  final DateTime _endDate;
-  final List<DateTime> _weekDays;
+  String _habitId;
+  String title;
+  List<DateTime> checkedDays;
+  DateTime _startDate;
+  DateTime _endDate;
+  List<DateTime> _weekDays;
 
-  const HabitRow(this._habitId, this.title, this.checkedDays, this._startDate,
-      this._endDate, this._weekDays,
-      {Key key})
-      : super(key: key);
+  HabitRow(String habitId, String title, List<DateTime> checkedDays,
+      DateTime startDate, List<DateTime> _weekDays,
+      {Key key, DateTime endDate})
+      : super(key: key) {
+    _habitId = habitId;
+    this.title = title;
+    this.checkedDays = checkedDays;
+    _startDate = startDate;
+    this._weekDays = _weekDays;
+    _endDate = endDate;
+  }
 
   @override
   _HabitRowState createState() => _HabitRowState(
@@ -26,8 +33,8 @@ class HabitRow extends StatefulWidget {
         title,
         checkedDays,
         _startDate,
-        _endDate,
         DatabaseHabitDataUseCase(_habitId, AppConfig.database),
+        endDate: _endDate,
       ),
       _weekDays);
 }
@@ -60,23 +67,22 @@ class _HabitRowState extends State<HabitRow> {
           ScreenType.screenWidth = _screenSize.width;
           _chartKey.currentState
               ?.updateData(_progressChartData(snapshot.data.progress));
-
           return buildUi(context, snapshot.data);
         },
       );
 
   Widget buildUi(BuildContext context, HabitState habitState) => Container(
-        padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
-        height: _screenSize.height * 0.07,
-        color: XHColors.darkGrey,
-        child: Row(
-          children: <Widget>[
-            _progressCircle(habitState.progress),
-            _habitTitle(habitState.habitTitle),
-            _marks(habitState.checkedDays, _weekDays),
-          ],
-        ),
-      );
+      padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
+      height: _screenSize.height * 0.07,
+      color: XHColors.darkGrey,
+      child: Row(
+        children: <Widget>[
+          _progressCircle(habitState.progress),
+          _habitTitle(habitState.habitTitle),
+          _marks(habitState.checkedDays, _weekDays),
+        ],
+      ),
+    );
 
   Widget _progressCircle(double progress) => Container(
         margin: EdgeInsets.only(right: _screenSize.width * 0.01),
@@ -98,7 +104,7 @@ class _HabitRowState extends State<HabitRow> {
               XHColors.pink,
             ),
             CircularSegmentEntry(
-              (100 - progress),
+              (100 - progress ?? 0.0),
               Colors.white,
             ),
           ],
