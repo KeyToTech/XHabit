@@ -84,11 +84,14 @@ class _HabitRowState extends State<HabitRow> {
         padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
         height: _screenSize.height * 0.07,
         color: XHColors.darkGrey,
-        child: Row(
-          children: <Widget>[
-            _habitTitle(habitState.habitTitle),
-            _marks(habitState.checkedDays, _weekDays),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(left: 40.0),
+          child: Row(
+            children: <Widget>[
+              _habitTitle(habitState.habitTitle),
+              _marks(habitState.checkedDays, _weekDays),
+            ],
+          ),
         ),
       );
     }
