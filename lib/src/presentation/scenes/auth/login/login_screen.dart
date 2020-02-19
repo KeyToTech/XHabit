@@ -92,9 +92,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: <Widget>[
                     Container(
                       alignment: Alignment.center,
-                      margin: const EdgeInsets.only(bottom: 40.0),
+                      margin: const EdgeInsets.only(bottom: 20.0),
                       child: Image(
                         alignment: Alignment.center,
+                        height: 100.0,
                         image: AssetImage("assets/images/Logo.png"),
                       ),
                     ),
