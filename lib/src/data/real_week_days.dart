@@ -16,7 +16,7 @@ class RealWeekDays implements WeekDays {
       result.add(currentDay);
       currentDay = currentDay.subtract(Duration(days: 1));
     }
-
+    result.sort((a, b) => a.compareTo(b));
     return result;
   }
 }
