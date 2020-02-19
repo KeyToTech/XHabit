@@ -52,13 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      StreamBuilder<Map<HomeScreenResource, AppBarState>>(
-        stream: Rx.combineLatest2(
+  Widget build(BuildContext context) => StreamBuilder(
+        stream: Rx.combineLatest3(
             _homeScreenBloc.homeScreenStateObservable,
             _homeScreenBloc.appBarStateObservable,
-            (first, second) =>
-                {first as HomeScreenResource: second as AppBarState}),
+            _homeScreenBloc.habitDeletedState,
+            (first, second, third) => [first, second, third]),
         builder: (context, snapshot) {
           if (snapshot.data == null) {
             return Container(
@@ -71,8 +70,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
           _screenSize = MediaQuery.of(context).size;
           ScreenType.screenWidth = _screenSize.width;
-          final HomeScreenResource homeState = snapshot.data.keys.first;
-          final AppBarState appBarState = snapshot.data.values.first;
+          final HomeScreenResource homeState =
+              snapshot.data[0] as HomeScreenResource;
+          final AppBarState appBarState = snapshot.data[1] as AppBarState;
+          final bool habitDeleted = snapshot.data[2] as bool;
 
           final List<Habit> habits = homeState.habits;
           final List<DateTime> weekDays = homeState.weekDays;
@@ -83,7 +84,8 @@ class _HomeScreenState extends State<HomeScreen> {
             appBar: appBarState.showEditingAppBar
                 ? editingAppBar(appBarState.selectedHabit)
                 : mainAppBar(),
-            body: body(habits, selectedHabit, weekDays, daysWords),
+            body:
+                body(habits, selectedHabit, weekDays, daysWords, habitDeleted),
           );
         },
       );
@@ -167,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
-      Map<int, String> daysWords) {
+      Map<int, String> daysWords, bool habitDeleted) {
     if (habits.isNotEmpty) {
       return Container(
           color: XHColors.darkGrey,
@@ -220,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            _habitsList(habits, selectedHabit, weekDays),
+            _habitsList(habits, selectedHabit, weekDays, habitDeleted),
           ]));
     } else {
       _homeScreenBloc.getHomeData();
@@ -247,8 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Widget _habitsList(
-          List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays) =>
+  Widget _habitsList(List<Habit> habits, Habit selectedHabit,
+          List<DateTime> weekDays, bool habitDeleted) =>
       Expanded(
         child: SmartRefresher(
           controller: _refreshController,
@@ -283,8 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     habits[index].startDate,
                     habits[index].endDate,
                     weekDays,
-                    key: habits[index].habitId ==
-                            _homeScreenBloc.lastSelectedHabit?.habitId
+                    key: _homeScreenBloc.rebuildHabitTile(habits[index])
                         ? UniqueKey()
                         : ValueKey(index),
                   ),

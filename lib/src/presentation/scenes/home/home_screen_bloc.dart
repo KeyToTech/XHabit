@@ -13,6 +13,7 @@ class HomeScreenBloc {
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
   BehaviorSubject<AppBarState> _appBarStateSubject;
+  BehaviorSubject<bool> _habitDeletedSubject;
   Habit lastSelectedHabit;
   PushNotificationsService _notificationsService;
 
@@ -23,12 +24,18 @@ class HomeScreenBloc {
 
   Stream<AppBarState> get appBarStateObservable => _appBarStateSubject.stream;
 
+  Stream<bool> get habitDeletedState => _habitDeletedSubject.stream;
+
   HomeScreenUseCase _useCase;
   LogoutUseCase _logoutUseCase;
   RemoveHabitUseCase _removeUseCase;
 
-  HomeScreenBloc(HomeScreenUseCase useCase, LogoutUseCase logoutUseCase,
-      RemoveHabitUseCase removeUseCase, bool notificationOn, BuildContext context) {
+  HomeScreenBloc(
+      HomeScreenUseCase useCase,
+      LogoutUseCase logoutUseCase,
+      RemoveHabitUseCase removeUseCase,
+      bool notificationOn,
+      BuildContext context) {
     _useCase = useCase;
     if (notificationOn) {
       _notificationsService = PushNotificationsService(context);
@@ -39,6 +46,7 @@ class HomeScreenBloc {
     _logoutStateSubject = BehaviorSubject<bool>();
     _appBarStateSubject =
         BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
+    _habitDeletedSubject = BehaviorSubject<bool>.seeded(false);
   }
 
   void getHomeData() {
@@ -65,16 +73,21 @@ class HomeScreenBloc {
 
   void removeHabit(String habitId) {
     _removeUseCase.removeHabit(habitId);
+    _habitDeletedSubject.sink.add(true);
     getHomeData();
     showMainAppBar();
   }
+
+  bool rebuildHabitTile(Habit currentHabit) =>
+      currentHabit.habitId == lastSelectedHabit?.habitId ||
+      _habitDeletedSubject.stream.value;
 
   void showDailyNotification(int pushId, String title, TimeOfDay habitTime) {
     _notificationsService.showDailyNotification(pushId, title, habitTime);
   }
 
-  void cancelNotification(int index)  {
-     _notificationsService.cancelNotification(index);
+  void cancelNotification(int index) {
+    _notificationsService.cancelNotification(index);
   }
 
   void showMainAppBar() {
@@ -82,6 +95,7 @@ class HomeScreenBloc {
   }
 
   void changeLastSelected(Habit selectedHabit) {
+    _habitDeletedSubject.sink.add(false);
     if (selectedHabit != null) {
       lastSelectedHabit = selectedHabit;
     }
