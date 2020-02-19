@@ -38,6 +38,8 @@ class HabitBloc {
     getHabitData();
   }
 
+  bool hasEndDate() => _endDate != null;
+
   bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
       checkedDays.contains(date);
 
