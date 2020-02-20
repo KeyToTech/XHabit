@@ -72,17 +72,19 @@ class _HabitRowState extends State<HabitRow> {
       );
 
   Widget buildUi(BuildContext context, HabitState habitState) => Container(
-      padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
-      height: _screenSize.height * 0.07,
-      color: XHColors.darkGrey,
-      child: Row(
-        children: <Widget>[
-          _progressCircle(habitState.progress),
-          _habitTitle(habitState.habitTitle),
-          _marks(habitState.checkedDays, _weekDays),
-        ],
-      ),
-    );
+        padding: EdgeInsets.symmetric(horizontal: _screenSize.width * 0.015),
+        height: _screenSize.height * 0.07,
+        color: XHColors.darkGrey,
+        child: Row(
+          children: <Widget>[
+            _habitBloc.hasEndDate()
+                ? _progressCircle(habitState.progress)
+                : SizedBox(width: _screenSize.width * 0.11),
+            _habitTitle(habitState.habitTitle),
+            _marks(habitState.checkedDays, _weekDays),
+          ],
+        ),
+      );
 
   Widget _progressCircle(double progress) => Container(
         margin: EdgeInsets.only(right: _screenSize.width * 0.01),
