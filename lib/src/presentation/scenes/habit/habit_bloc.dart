@@ -15,7 +15,8 @@ class HabitBloc {
   DateTime _endDate;
 
   HabitBloc(String title, List<DateTime> checkedDays, DateTime startDate,
-      DateTime endDate, HabitDataUseCase useCase) {
+      HabitDataUseCase useCase,
+      {DateTime endDate}) {
     _habitStateSubject = BehaviorSubject<HabitState>();
     _title = title;
     _checkedDays = checkedDays;
@@ -43,10 +44,12 @@ class HabitBloc {
   bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
       checkedDays.contains(date);
 
-  bool showCheckIcon(DateTime date) =>
-      date.compareTo(_startDate) >= 0 && date.compareTo(_endDate) <= 0;
+  bool showCheckIcon(DateTime date) => _endDate != null
+      ? date.compareTo(_startDate) >= 0 && date.compareTo(_endDate) <= 0
+      : date.compareTo(_startDate) >= 0;
 
-  double _progress() =>
-      (_checkedDays.length / (_endDate.difference(_startDate).inDays + 1)) *
-      100;
+  double _progress() => _endDate == null
+      ? 0
+      : (_checkedDays.length / (_endDate.difference(_startDate).inDays + 1)) *
+          100;
 }
