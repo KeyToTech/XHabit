@@ -71,7 +71,9 @@ class _HabitRowState extends State<HabitRow> {
         color: XHColors.darkGrey,
         child: Row(
           children: <Widget>[
-            _progressCircle(habitState.progress),
+            _habitBloc.hasEndDate()
+                ? _progressCircle(habitState.progress)
+                : SizedBox(width: _screenSize.width * 0.11),
             _habitTitle(habitState.habitTitle),
             _marks(habitState.checkedDays, _weekDays),
           ],
