@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/scenes/auth/register/register_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 class AuthInkWell {
-  static Widget inkWell(
-          BuildContext context, String inkText, StatefulWidget navigateTo) =>
+  static Widget inkWell(BuildContext context, String inkText,
+          {bool navigateToRegister}) =>
       InkWell(
         onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => navigateTo),
-          );
+          if (navigateToRegister) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterScreen()),
+            );
+          } else {
+            Navigator.of(context).pop();
+          }
         },
         child: Text(
           inkText,
