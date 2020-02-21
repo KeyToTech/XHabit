@@ -5,7 +5,7 @@ import 'package:xhabits/src/presentation/scenes/habit/habit_state.dart';
 class HabitBloc {
   BehaviorSubject<HabitState> _habitStateSubject;
 
-  Observable<HabitState> get habitStateObservable => _habitStateSubject.stream;
+  Stream<HabitState> get habitStateObservable => _habitStateSubject.stream;
 
   HabitDataUseCase _useCase;
 
@@ -15,7 +15,8 @@ class HabitBloc {
   DateTime _endDate;
 
   HabitBloc(String title, List<DateTime> checkedDays, DateTime startDate,
-      DateTime endDate, HabitDataUseCase useCase) {
+      HabitDataUseCase useCase,
+      {DateTime endDate}) {
     _habitStateSubject = BehaviorSubject<HabitState>();
     _title = title;
     _checkedDays = checkedDays;
@@ -38,9 +39,17 @@ class HabitBloc {
     getHabitData();
   }
 
+  bool hasEndDate() => _endDate != null;
+
   bool dayIsChecked(List<DateTime> checkedDays, DateTime date) =>
       checkedDays.contains(date);
 
-  double _progress() =>
-      (_checkedDays.length / _endDate.difference(_startDate).inDays) * 100;
+  bool showCheckIcon(DateTime date) => _endDate != null
+      ? date.compareTo(_startDate) >= 0 && date.compareTo(_endDate) <= 0
+      : date.compareTo(_startDate) >= 0;
+
+  double _progress() => _endDate == null
+      ? 0
+      : (_checkedDays.length / (_endDate.difference(_startDate).inDays + 1)) *
+          100;
 }

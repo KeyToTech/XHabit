@@ -1,7 +1,7 @@
 class Habit {
   final String habitId;
   final String title;
-  final String description;
+  final bool enableNotification;
   final List<DateTime> checkedDays;
   final DateTime startDate;
   final DateTime endDate;
@@ -9,11 +9,11 @@ class Habit {
 
   Habit(this.habitId, Map map)
       : title = map['title'] as String,
-        description = map['description'] as String,
+        enableNotification = map['enable_notification'] as bool,
         checkedDays = (map['checked_days'] as List<dynamic> ?? [])
             .map((item) => DateTime.parse(item.toString()))
             .toList(),
         startDate = DateTime.parse(map['start_date'] as String),
-        endDate = DateTime.parse(map['end_date'] as String),
+        endDate = map['end_date'] as String == 'null' ? null : DateTime.parse(map['end_date'] as String),
         notificationTime = map['notification_time'] as String;
 }

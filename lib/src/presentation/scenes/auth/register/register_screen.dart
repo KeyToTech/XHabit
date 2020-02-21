@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
+import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_bloc.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 @immutable
 class RegisterScreen extends StatefulWidget {
@@ -24,14 +27,13 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterBloc _registerBloc;
+  Size _screenSize;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
   final _usernameTextEditingController = TextEditingController();
 
   _RegisterScreenState(this._registerBloc);
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -54,18 +56,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _handleRedirect(Resource<RegisterState> registerState) {
     if (registerState.status == Status.SUCCESS) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (Route<dynamic> route) => false,
+      );
     }
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: StreamBuilder(
+  Widget build(BuildContext context) => Material(
+        child: StreamBuilder(
           stream: _registerBloc.registerStateObservable,
           builder: (context, AsyncSnapshot<Resource<RegisterState>> snapshot) {
             final registerState = snapshot.data.data;
@@ -73,45 +74,87 @@ class _RegisterScreenState extends State<RegisterScreen> {
               WidgetsBinding.instance.addPostFrameCallback((_) =>
                   InfoDialog().show(context, 'Error', snapshot.data.message));
             }
-            return buildUi(context, registerState);
-          }));
+            _screenSize = MediaQuery.of(context).size;
 
-  Widget buildUi(BuildContext context, RegisterState registerState) => Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24, right: 24),
-          children: <Widget>[
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
-                Widget>[
-              XHTextField('User name', _usernameTextEditingController, false)
-                  .field(),
-              XHErrorMessage(registerState
-                          .registerValidationsState.userNameValidation.isValid
-                      ? ''
-                      : registerState.registerValidationsState
-                          .userNameValidation.errorMessage)
-                  .messageError(),
-              const SizedBox(height: 16.0),
-              XHTextField('Email', _emailTextEditingController, false).field(),
-              XHErrorMessage(registerState
-                          .registerValidationsState.emailValidation.isValid
-                      ? ''
-                      : registerState.registerValidationsState.emailValidation
-                          .errorMessage)
-                  .messageError(),
-              const SizedBox(height: 16.0),
-              XHTextField('Password', _passwordTextEditingController, true)
-                  .field(),
-              XHErrorMessage(registerState
-                          .registerValidationsState.passwordValidation.isValid
-                      ? ''
-                      : registerState.registerValidationsState
-                          .passwordValidation.errorMessage)
-                  .messageError(),
-            ]),
-            XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
-                .materialButton()
-          ],
+            return buildUi(context, registerState);
+          },
+        ),
+      );
+
+  Widget buildUi(BuildContext context, RegisterState registerState) =>
+      Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/Background_image.png"),
+                fit: BoxFit.cover)),
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(
+                horizontal: _screenSize.width > 1000
+                    ? _screenSize.width * 0.3
+                    : _screenSize.width * 0.15),
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    child: Image(
+                      alignment: Alignment.center,
+                      height: 100.0,
+                      image: AssetImage("assets/images/Logo.png"),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 20.0),
+                    child: Text(
+                      'Sign up',
+                      style: TextStyle(
+                        fontSize: 30.0,
+                        fontFamily: "Montserrat",
+                        color: XHColors.lightGrey,
+                      ),
+                    ),
+                  ),
+                  XHTextField(
+                          'User name', _usernameTextEditingController, false)
+                      .field(),
+                  XHErrorMessage(registerState.registerValidationsState
+                              .userNameValidation.isValid
+                          ? ''
+                          : registerState.registerValidationsState
+                              .userNameValidation.errorMessage)
+                      .messageError(),
+                  XHTextField('Email', _emailTextEditingController, false)
+                      .field(),
+                  XHErrorMessage(registerState
+                              .registerValidationsState.emailValidation.isValid
+                          ? ''
+                          : registerState.registerValidationsState
+                              .emailValidation.errorMessage)
+                      .messageError(),
+                  XHTextField('Password', _passwordTextEditingController, true)
+                      .field(),
+                  XHErrorMessage(registerState.registerValidationsState
+                              .passwordValidation.isValid
+                          ? ''
+                          : registerState.registerValidationsState
+                              .passwordValidation.errorMessage)
+                      .messageError(),
+                ],
+              ),
+              XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
+                  .materialButton(),
+              AuthInkWell.inkWell(
+                context,
+                'Already have an account?',
+                LoginScreen(),
+              ),
+            ],
+          ),
         ),
       );
 

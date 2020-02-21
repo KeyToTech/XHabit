@@ -5,13 +5,11 @@ class XHErrorMessage {
 
   XHErrorMessage(this.message);
 
-  Widget messageError() {
-    return Padding(
+  Widget messageError() => Padding(
       padding: EdgeInsets.only(top: 5.0),
       child: Text(
         message,
         style: TextStyle(color: Colors.red),
       ),
     );
-  }
 }

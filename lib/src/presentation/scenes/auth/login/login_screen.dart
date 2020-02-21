@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
+import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -20,11 +22,10 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final LoginBloc _loginBloc;
+  Size _screenSize;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
-
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   _LoginScreenState(this._loginBloc);
 
@@ -54,12 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Sign in'),
-      ),
-      body: StreamBuilder(
+  Widget build(BuildContext context) => Material(
+        child: StreamBuilder(
           stream: _loginBloc.loginStateObservable,
           builder: (context, AsyncSnapshot<Resource<LoginState>> snapshot) {
             final loginState = snapshot.data.data;
@@ -67,62 +64,84 @@ class _LoginScreenState extends State<LoginScreen> {
               WidgetsBinding.instance.addPostFrameCallback((_) => InfoDialog()
                   .show(context, 'Could not login', snapshot.data.message));
             }
+            _screenSize = MediaQuery.of(context).size;
+
             return buildUi(
                 context, loginState, snapshot.data.status == Status.LOADING);
-          }));
+          },
+        ),
+      );
 
   Widget buildUi(
           BuildContext context, LoginState loginState, bool showLoading) =>
-      Center(
-        child: ListView(
-          shrinkWrap: true,
-          padding: EdgeInsets.only(left: 24, right: 24),
-          children: <Widget>[
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  XHTextField('Email', _emailTextEditingController, false)
-                      .field(),
-                  XHErrorMessage(loginState
-                              .loginValidationsState.emailValidation.isValid
-                          ? ''
-                          : loginState.loginValidationsState.emailValidation
-                              .errorMessage)
-                      .messageError(),
-                  const SizedBox(height: 16.0),
-                  XHTextField('Password', _passwordTextEditingController, true)
-                      .field(),
-                  XHErrorMessage(loginState
-                              .loginValidationsState.passwordValidation.isValid
-                          ? ''
-                          : loginState.loginValidationsState.passwordValidation
-                              .errorMessage)
-                      .messageError(),
-                ]),
-            showLoading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : XHButton('Sign in', loginState.signInButtonEnabled, _onSubmit)
-                    .materialButton(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Don't have an account?"),
-                const SizedBox(width: 8.0),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, RegisterScreen.routeName);
-                  },
-                  child: Text('Sign up',
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
-                )
-              ],
-            ),
-          ],
+      Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("assets/images/Background_image.png"),
+                fit: BoxFit.cover)),
+        child: Center(
+          child: ListView(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(
+                horizontal: _screenSize.width > 1000
+                    ? _screenSize.width * 0.3
+                    : _screenSize.width * 0.15),
+            children: <Widget>[
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                      child: Image(
+                        alignment: Alignment.center,
+                        height: 100.0,
+                        image: AssetImage("assets/images/Logo.png"),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.only(bottom: 20.0),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(
+                          fontSize: 30.0,
+                          fontFamily: "Montserrat",
+                          color: XHColors.lightGrey,
+                        ),
+                      ),
+                    ),
+                    XHTextField('Email', _emailTextEditingController, false)
+                        .field(),
+                    XHErrorMessage(loginState
+                                .loginValidationsState.emailValidation.isValid
+                            ? ''
+                            : loginState.loginValidationsState.emailValidation
+                                .errorMessage)
+                        .messageError(),
+                    XHTextField(
+                            'Password', _passwordTextEditingController, true)
+                        .field(),
+                    XHErrorMessage(loginState.loginValidationsState
+                                .passwordValidation.isValid
+                            ? ''
+                            : loginState.loginValidationsState
+                                .passwordValidation.errorMessage)
+                        .messageError(),
+                  ]),
+              showLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : XHButton('Login', loginState.signInButtonEnabled, _onSubmit)
+                      .materialButton(),
+              AuthInkWell.inkWell(
+                context,
+                "Don't have an account?",
+                RegisterScreen(),
+              ),
+            ],
+          ),
         ),
       );
 

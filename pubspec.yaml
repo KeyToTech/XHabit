@@ -19,27 +19,34 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_rounded_date_picker: 0.3.0
 
-  # Dependency for DateTimePicker
-  flutter_datetime_picker: ^1.2.6
+  pull_to_refresh: ^1.5.8
+
+  firebase_crashlytics: ^0.1.3
 
   # Dependency for circular chart
   flutter_circular_chart: ^0.1.0
 
   # Dependency for RXDart
-  rxdart: ^0.22.1+1
+  rxdart: ^0.23.1
 
   # Dependency for the Firebase Core Flutter SDK
-  firebase_core: ^0.4.0+8
+  firebase_core: ^0.4.3+2
 
   # Dependency for the FlutterFire plugin for Google Analytics
-  firebase_analytics: ^5.0.0
+  firebase_analytics: ^5.0.9
 
   # Dependency for the Firebase Authentication
-  firebase_auth: ^0.14.0+2
+  firebase_auth: ^0.15.3+1
 
   # Dependency for the Flutter plugin to use the Firebase Realtime Database
-  firebase_database: ^3.0.5
+  firebase_database: ^3.1.1
+
+  # Dependency to use Firebase in web
+  firebase: ^7.2.0
+
+  flutter_local_notifications: ^1.1.5+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -60,10 +67,13 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/Background_image.png
+    - assets/images/Logo.png
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
+
   #  - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -71,15 +81,20 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
 
   fonts:
-    - family: SFProDisplay
+    - family: Montserrat
       fonts:
-        - asset: fonts/SFProDisplay-Black.ttf
-        - asset: fonts/SFProDisplay-Bold.ttf
+        - asset:  fonts/Montserrat-Regular.ttf
+        - asset:  fonts/Montserrat-Bold.ttf
           weight: 700
-        - asset: fonts/SFProDisplay-Regular.ttf
-          weight: 400
-        - asset: fonts/SFProDisplay-Light.ttf
-        - asset: fonts/SFProDisplay-Thin.ttf
-        - asset: fonts/SFProDisplay-BlackItalic.ttf
-          weight: 300
-          style: italic
+#    - family: SFProDisplay
+#      fonts:
+#        - asset: fonts/SFProDisplay-Black.ttf
+#        - asset: fonts/SFProDisplay-Bold.ttf
+#          weight: 700
+#        - asset: fonts/SFProDisplay-Regular.ttf
+#          weight: 400
+#        - asset: fonts/SFProDisplay-Light.ttf
+#        - asset: fonts/SFProDisplay-Thin.ttf
+#        - asset: fonts/SFProDisplay-BlackItalic.ttf
+#          weight: 300
+#          style: italic

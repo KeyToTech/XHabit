@@ -1,35 +1,37 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_database_service.dart';
+import 'package:flutter_rounded_date_picker/rounded_picker.dart';
+import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
+import 'package:xhabits/src/presentation/styles/size_config.dart';
+import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
   final String _hint;
   Habit _selectedHabit;
 
-  SaveHabit.create() : _hint = 'Create habit';
+  SaveHabit.create() : _hint = 'New habit';
 
   SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
 
   @override
-  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(_hint,
-      _selectedHabit, SimpleCreateHabitUseCase(FirebaseDatabaseService())));
+  _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
+      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
 }
 
 class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
-  TextEditingController _descriptionController;
 
   final SaveHabitBloc _saveHabitBloc;
   Size _screenSize;
 
   _SaveHabitState(this._saveHabitBloc) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
-    _descriptionController =
-        TextEditingController(text: _saveHabitBloc.description);
   }
 
   @override
@@ -45,149 +47,231 @@ class _SaveHabitState extends State<SaveHabit> {
   }
 
   PreferredSizeWidget _appBar() => AppBar(
-        title: Text(
-          widget._hint,
-          style: TextStyle(fontSize: _screenSize.height * 0.03),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text(
-              'Save',
-              style: TextStyle(fontSize: _screenSize.height * 0.027),
-            ),
-            textColor: Colors.white,
-            onPressed: () {
-              _saveHabitBloc.saveHabit(
-                  _titleController.text, _descriptionController.text);
-            },
-          )
-        ],
-      );
-
-  Widget _body() => Container(
-        padding: EdgeInsets.symmetric(
-            vertical: _screenSize.height * 0.02,
-            horizontal: _screenSize.width * 0.035),
-        child: Column(
+        automaticallyImplyLeading: false,
+        backgroundColor: XHColors.darkGrey,
+        centerTitle: true,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            TextField(
-              controller: _titleController,
-              style: TextStyle(fontSize: _screenSize.height * 0.032),
-              decoration: InputDecoration(
-                hintText: 'Title',
-                hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
+            FlatButton(
+              padding: EdgeInsets.only(left: 0),
+              child: Text(
+                'Cancel',
+                style: TextStyle(fontSize: SizeConfig.appBarButtonText),
               ),
+              textColor: XHColors.pink,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
-            Expanded(
-              child: TextField(
-                controller: _descriptionController,
-                style: TextStyle(fontSize: _screenSize.height * 0.032),
-                decoration: InputDecoration(
-                  hintText: 'Description',
-                  hintStyle: TextStyle(fontSize: _screenSize.height * 0.032),
-                ),
-                maxLines: null,
+            Text(
+              widget._hint,
+              style: TextStyle(fontSize: SizeConfig.appBarTitle),
+            ),
+            FlatButton(
+              padding: EdgeInsets.only(right: 0),
+              child: Text(
+                'Save',
+                style: TextStyle(fontSize: SizeConfig.appBarButtonText),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                dateColumn('Start date'),
-                dateColumn('End date'),
-              ],
-            ),
-            _notificationRow(),
+              textColor: XHColors.pink,
+              onPressed: () {
+                String validationMessage =
+                    _saveHabitBloc.saveHabit(_titleController.text);
+                if (validationMessage != null) {
+                  InfoDialog().show(context, 'Invalid data', validationMessage);
+                }
+              },
+            )
           ],
         ),
       );
 
-  Widget dateColumn(String dateHint) => StreamBuilder<SelectedDates>(
-      stream: _saveHabitBloc.selectedDatesObservable,
-      builder: (context, snapshot) => Column(
+  Widget _body() => GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          color: XHColors.darkGrey,
+          padding: SizeConfig.saveScreenPadding,
+          child: ListView(
             children: <Widget>[
-              _dateText(dateHint, snapshot.data ?? SelectedDates('', '')),
-              _datePicker(dateHint),
+              Text(
+                'What do you want to accomplish?',
+                style: TextStyle(
+                  fontSize: SizeConfig.saveScreenLargeText,
+                  color: Colors.white,
+                ),
+              ),
+              Container(
+                margin: SizeConfig.saveScreenInputMargin,
+                child: TextField(
+                  controller: _titleController,
+                  style: TextStyle(
+                    fontSize: SizeConfig.saveScreenLargeText,
+                    color: Colors.white,
+                  ),
+                  decoration: InputDecoration(
+                    fillColor: XHColors.grey,
+                    filled: true,
+                    border: OutlineInputBorder(),
+                    hintText: 'Name your new habit',
+                    hintStyle: TextStyle(
+                      fontSize: SizeConfig.saveScreenSmallText,
+                      color: XHColors.lightGrey,
+                    ),
+                  ),
+                ),
+              ),
+              _reminderRow(),
+              _dateRow('Start date'),
+              _dateRow('End date'),
+              _notificationRow(),
             ],
-          ));
+          ),
+        ),
+      );
 
-  Text _dateText(String dateHint, SelectedDates selectedDates) => Text(
-        dateHint == 'Start date'
-            ? selectedDates.startDate
-            : selectedDates.endDate,
-        style: TextStyle(fontSize: _screenSize.width * 0.04),
+  Divider _pickersDivider() => Divider(
+        color: Colors.black,
+        thickness: SizeConfig.pickersDividerThickness,
+        height: SizeConfig.pickersDividerHeight,
+      );
+
+  Widget _reminderRow() => StreamBuilder<bool>(
+        stream: _saveHabitBloc.enableNotificationObservable,
+        builder: (context, snapshot) => Column(
+          children: <Widget>[
+            _pickersDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  padding: SizeConfig.pickerPadding,
+                  child: Text('Set reminder',
+                      style: TextStyle(
+                        fontSize: SizeConfig.pickerText,
+                        color: Colors.white,
+                      )),
+                ),
+                CupertinoSwitch(
+                  activeColor: XHColors.pink,
+                  value: _saveHabitBloc.enableNotification,
+                  onChanged: (value) {
+                    FocusScope.of(context).unfocus();
+                    _saveHabitBloc.setEnableNotification(value);
+                    _saveHabitBloc.switcherChanged();
+                    if (value) {
+                      _saveHabitBloc.notificationTime = '12:00';
+                    } else {
+                      _saveHabitBloc.notificationTime = null;
+                    }
+                    _saveHabitBloc.displayNotificationTime();
+                  },
+                )
+              ],
+            )
+          ],
+        ),
+      );
+
+  Widget _dateRow(String dateHint) => StreamBuilder<SelectedDates>(
+        stream: _saveHabitBloc.selectedDatesObservable,
+        builder: (context, snapshot) => Column(
+          children: <Widget>[
+            _pickersDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _datePicker(dateHint),
+                _dateText(dateHint, snapshot.data ?? SelectedDates('', '')),
+              ],
+            ),
+          ],
+        ),
+      );
+
+  Widget _dateText(String dateHint, SelectedDates selectedDates) => Container(
+        padding: SizeConfig.pickedTextPadding,
+        child: Text(
+          dateHint == 'Start date'
+              ? selectedDates.startDate
+              : selectedDates.endDate,
+          style: TextStyle(
+            fontSize: SizeConfig.saveScreenSmallText,
+            color: Colors.white,
+          ),
+        ),
       );
 
   FlatButton _datePicker(String dateHint) => FlatButton(
+        padding: SizeConfig.pickerPadding,
         child: Text(
           dateHint,
-          style: TextStyle(fontSize: _screenSize.height * 0.03),
+          style: TextStyle(
+            fontSize: SizeConfig.pickerText,
+            color: Colors.white,
+          ),
         ),
-        onPressed: () {
-          DatePicker.showDatePicker(
-            context,
-            minTime: DateTime(1970, 1, 1),
-            maxTime: DateTime(2030, 12, 31),
-            onConfirm: (date) {
-              if (dateHint == 'Start date') {
-                _saveHabitBloc.setStartDate(date);
-                _saveHabitBloc.displaySelectedDates();
-              } else {
-                _saveHabitBloc.setEndDate(date);
-                _saveHabitBloc.displaySelectedDates();
-              }
-            },
-            currentTime: _pickerCurrentTime(dateHint),
-          );
+        onPressed: () async {
+          FocusScope.of(context).unfocus();
+          final DateTime date = await showRoundedDatePicker(
+              context: context,
+              initialDate: _saveHabitBloc.pickerCurrentDate(dateHint),
+              firstDate: _saveHabitBloc.pickerFirstDate(dateHint),
+              lastDate: DateTime(2030, 12, 31),
+              theme: ThemeData(
+                primarySwatch: Colors.pink,
+                primaryColor: XHColors.darkGrey,
+                accentColor: XHColors.pink,
+                dialogBackgroundColor: XHColors.grey,
+                textTheme: TextTheme(
+                    body1: TextStyle(color: XHColors.lightGrey),
+                    caption: TextStyle(color: XHColors.lightGrey)),
+              ));
+
+          if (date != null) {
+            if (dateHint == 'Start date') {
+              _saveHabitBloc.setStartDate(date);
+            } else {
+              _saveHabitBloc.setEndDate(date);
+            }
+            _saveHabitBloc.displaySelectedDates();
+          }
         },
-      );
-
-  DateTime _pickerCurrentTime(String dateHint) {
-    if (dateHint == 'Start date') {
-      return _saveHabitBloc.startDate ?? _dateTimeNow();
-    } else {
-      return _saveHabitBloc.endDate ?? _dateTimeNow();
-    }
-  }
-
-  DateTime _dateTimeNow() => DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
       );
 
   Widget _notificationRow() => StreamBuilder<String>(
         stream: _saveHabitBloc.notificationTimeObservable,
-        builder: (context, snapshot) => Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        builder: (context, snapshot) => Column(
           children: <Widget>[
-            _timePicker(),
-            Text(
-              snapshot.data ?? '',
-              style: TextStyle(fontSize: _screenSize.height * 0.05),
+            _pickersDivider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                XHStatefulButton(
+                        'Reminder time',
+                        SizeConfig.pickerText,
+                        SizeConfig.pickerPadding,
+                        _saveHabitBloc.enableNotification,
+                        Colors.white,
+                        XHColors.grey,
+                        _onTimePicker)
+                    .statefulButton(),
+                Container(
+                  padding: SizeConfig.pickedTextPadding,
+                  child: Text(
+                    snapshot.data ?? '',
+                    style: TextStyle(
+                      fontSize: SizeConfig.saveScreenSmallText,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
+            _pickersDivider(),
           ],
-        ),
-      );
-
-  Widget _timePicker() => Container(
-        margin: EdgeInsets.symmetric(vertical: _screenSize.height * 0.01),
-        width: _screenSize.width * 0.18,
-        height: _screenSize.height * 0.1,
-        child: IconButton(
-          icon: Icon(Icons.alarm, size: _screenSize.width * 0.1),
-          onPressed: () async {
-            final TimeOfDay time = await showTimePicker(
-              context: context,
-              initialTime: _selectedTime(),
-              builder: (BuildContext context, Widget child) => MediaQuery(
-                data: MediaQuery.of(context)
-                    .copyWith(alwaysUse24HourFormat: true),
-                child: child,
-              ),
-            );
-            if (time != null) _saveHabitBloc.setNotificationTime(time);
-            _saveHabitBloc.displayNotificationTime();
-          },
         ),
       );
 
@@ -201,14 +285,39 @@ class _SaveHabitState extends State<SaveHabit> {
     }
   }
 
+  Theme _pickerTheme(Widget child) => Theme(
+        data: ThemeData(
+          primarySwatch: Colors.pink,
+          primaryColor: XHColors.grey,
+          accentColor: XHColors.pink,
+          dialogBackgroundColor: Colors.grey,
+        ),
+        child: child,
+      );
+
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop();
+  }
+
+  void _onTimePicker() async {
+    FocusScope.of(context).unfocus();
+    final TimeOfDay time = await showTimePicker(
+      context: context,
+      initialTime: _selectedTime(),
+      builder: (BuildContext context, Widget child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        child: _pickerTheme(child),
+      ),
+    );
+    if (time != null) {
+      _saveHabitBloc.setNotificationTime(time);
+      _saveHabitBloc.displayNotificationTime();
+    }
   }
 
   @override
   void dispose() {
     _titleController.dispose();
-    _descriptionController.dispose();
     _saveHabitBloc.dispose();
     super.dispose();
   }

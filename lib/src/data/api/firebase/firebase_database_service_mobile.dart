@@ -1,15 +1,14 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 
-class FirebaseDatabaseService implements DatabaseService {
+class FirebaseDatabaseServiceMobile implements DatabaseService {
   final _database = FirebaseDatabase.instance.reference();
   final _auth = FirebaseAuth.instance;
 
   @override
-  Observable<List<Habit>> getHabits() {
+  Stream<List<Habit>> getHabits() {
     getFuture() async {
       String userId = (await _auth.currentUser()).uid;
       List<Habit> result = ((await _database
@@ -25,17 +24,17 @@ class FirebaseDatabaseService implements DatabaseService {
       return result;
     }
 
-    return Observable.fromFuture(getFuture());
+    return Stream.fromFuture(getFuture());
   }
 
   @override
-  Observable<bool> createHabit(String habitId, String title, String description,
-      String startDate, String endDate, String notificationTime) {
+  Stream<bool> createHabit(String habitId, String title, bool enableNotification,
+      String startDate, {String endDate, String notificationTime}) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
         'title': title,
-        'description': description,
+        'enable_notification': enableNotification,
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
@@ -43,25 +42,26 @@ class FirebaseDatabaseService implements DatabaseService {
       return true;
     }
 
-    return Observable.fromFuture(getFuture());
+    return Stream.fromFuture(getFuture());
   }
 
   @override
-  Observable<bool> updateHabit(String habitId, String title, String description,
-      String startDate, String endDate,String notificationTime) {
+  Stream<bool> updateHabit(String habitId, String title, bool enableNotification,
+      String startDate, List<DateTime> checkedDays, {String endDate, String notificationTime}) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.child(user.uid).child('habits').child(habitId).set({
         'title': title,
-        'description': description,
+        'enable_notification': enableNotification,
         'start_date': startDate,
         'end_date': endDate,
         'notification_time': notificationTime,
+        'checked_days': checkedDays.map((item) => item.toString()).toList()
       });
       return true;
     }
 
-    return Observable.fromFuture(getFuture());
+    return Stream.fromFuture(getFuture());
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 class XHTextField {
   final TextEditingController textController;
@@ -7,12 +8,23 @@ class XHTextField {
 
   XHTextField(this.hint, this.textController, this.obscureText);
 
-  Widget field() {
-    return TextFormField(
-      decoration:
-          InputDecoration(labelText: hint, border: OutlineInputBorder()),
-      obscureText: obscureText,
-      controller: textController,
+  Widget field() => TextFormField(
+    style: TextStyle(
+      color: XHColors.lightGrey,
+    ),
+    decoration: InputDecoration(
+        fillColor: XHColors.grey,
+        filled: true,
+        contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 10.0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        hintText: hint,
+        hintStyle: TextStyle(
+            fontFamily: "Montserrat",
+            fontSize: 10.0,
+            color: XHColors.lightGrey)),
+    obscureText: obscureText,
+    controller: textController,
     );
-  }
 }

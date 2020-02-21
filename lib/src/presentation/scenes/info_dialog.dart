@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 class InfoDialog {
-
-  void show(BuildContext context, String title, String message) {
-    // flutter defined function
-    showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-        // return object of type Dialog
-        AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ));
+  void show(BuildContext context, String title, String message) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Close', style: TextStyle(color: XHColors.pink)),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
