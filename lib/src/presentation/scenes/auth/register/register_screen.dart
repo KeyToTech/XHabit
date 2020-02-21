@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               AuthInkWell.inkWell(
                 context,
                 'Already have an account?',
-                LoginScreen(),
+                navigateToRegister: false,
               ),
             ],
           ),

@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
               AuthInkWell.inkWell(
                 context,
                 "Don't have an account?",
-                RegisterScreen(),
+                navigateToRegister: true,
               ),
             ],
           ),
@@ -151,9 +151,5 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordTextEditingController.dispose();
     _loginBloc.closeStream;
     super.dispose();
-  }
-
-  void navigateToRegisterScreen() {
-    Navigator.pushNamed(context, RegisterScreen.routeName);
   }
 }
