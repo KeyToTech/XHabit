@@ -171,59 +171,62 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget body(List<Habit> habits, Habit selectedHabit, List<DateTime> weekDays,
       Map<int, String> daysWords, bool habitDeleted) {
     if (habits.isNotEmpty) {
-      return Container(
-          color: XHColors.darkGrey,
-          child: Column(children: <Widget>[
-            Container(
-              height: _screenSize.shortestSide * 0.09,
-              width: _screenSize.width * 0.5,
-              margin: EdgeInsets.only(
-                left: _screenSize.width * 0.485,
-                right: _screenSize.width * 0.015,
-                top: _screenSize.height * 0.018,
-              ),
-              padding: EdgeInsets.only(
-                  left: ScreenType.large
-                      ? _screenSize.width * 0.112
-                      : ScreenType.medium ? _screenSize.width * 0.032 : 0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: weekDays.length,
-                      itemBuilder: (context, index) => Container(
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              daysWords[weekDays[index].weekday],
-                              style: TextStyle(
-                                fontSize: _screenSize.shortestSide * 0.024,
-                                color: XHColors.lightGrey,
+      return WillPopScope(
+        onWillPop: _homeScreenBloc.onWillPop,
+        child: Container(
+            color: XHColors.darkGrey,
+            child: Column(children: <Widget>[
+              Container(
+                height: _screenSize.shortestSide * 0.09,
+                width: _screenSize.width * 0.5,
+                margin: EdgeInsets.only(
+                  left: _screenSize.width * 0.485,
+                  right: _screenSize.width * 0.015,
+                  top: _screenSize.height * 0.018,
+                ),
+                padding: EdgeInsets.only(
+                    left: ScreenType.large
+                        ? _screenSize.width * 0.112
+                        : ScreenType.medium ? _screenSize.width * 0.032 : 0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: weekDays.length,
+                        itemBuilder: (context, index) => Container(
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                daysWords[weekDays[index].weekday],
+                                style: TextStyle(
+                                  fontSize: _screenSize.shortestSide * 0.024,
+                                  color: XHColors.lightGrey,
+                                ),
                               ),
-                            ),
-                            Text(
-                              weekDays[index].day.toString(),
-                              style: TextStyle(
-                                fontSize: _screenSize.shortestSide * 0.033,
-                                color: XHColors.lightGrey,
-                              ),
-                            )
-                          ],
-                        ),
-                        margin: EdgeInsets.symmetric(
-                          horizontal: ScreenType.medium
-                              ? _screenSize.width * 0.025
-                              : _screenSize.width * 0.0235,
+                              Text(
+                                weekDays[index].day.toString(),
+                                style: TextStyle(
+                                  fontSize: _screenSize.shortestSide * 0.033,
+                                  color: XHColors.lightGrey,
+                                ),
+                              )
+                            ],
+                          ),
+                          margin: EdgeInsets.symmetric(
+                            horizontal: ScreenType.medium
+                                ? _screenSize.width * 0.025
+                                : _screenSize.width * 0.0235,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            _habitsList(habits, selectedHabit, weekDays, habitDeleted),
-          ]));
+              _habitsList(habits, selectedHabit, weekDays, habitDeleted),
+            ])),
+      );
     } else {
       _homeScreenBloc.getHomeData();
       return Container(

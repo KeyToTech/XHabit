@@ -94,6 +94,14 @@ class HomeScreenBloc {
     _appBarStateSubject.sink.add(AppBarState(false, null));
   }
 
+  Future<bool> onWillPop() async {
+    if (_appBarStateSubject.stream.value.showEditingAppBar) {
+      showMainAppBar();
+      return false;
+    }
+    return true;
+  }
+
   void changeLastSelected(Habit selectedHabit) {
     _habitDeletedSubject.sink.add(false);
     if (selectedHabit != null) {
