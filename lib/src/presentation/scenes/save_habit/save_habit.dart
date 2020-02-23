@@ -4,6 +4,7 @@ import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
@@ -91,43 +92,60 @@ class _SaveHabitState extends State<SaveHabit> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Container(
-          color: XHColors.darkGrey,
-          padding: SizeConfig.saveScreenPadding,
-          child: ListView(
-            children: <Widget>[
-              Text(
-                'What do you want to accomplish?',
-                style: TextStyle(
-                  fontSize: SizeConfig.saveScreenLargeText,
-                  color: Colors.white,
-                ),
-              ),
-              Container(
-                margin: SizeConfig.saveScreenInputMargin,
-                child: TextField(
-                  controller: _titleController,
+        child: WillPopScope(
+          onWillPop: () => Future(() {
+              if (_saveHabitBloc.dataEntered) {
+                ConfirmDialog.show(
+                    context,
+                    'Leave the screen?',
+                    'Do you want to leave the screen without saving?',
+                    () => Navigator.of(context).pop());
+                return false;
+              } else {
+                return true;
+              }
+            }),
+          child: Container(
+            color: XHColors.darkGrey,
+            padding: SizeConfig.saveScreenPadding,
+            child: ListView(
+              children: <Widget>[
+                Text(
+                  'What do you want to accomplish?',
                   style: TextStyle(
                     fontSize: SizeConfig.saveScreenLargeText,
                     color: Colors.white,
                   ),
-                  decoration: InputDecoration(
-                    fillColor: XHColors.grey,
-                    filled: true,
-                    border: OutlineInputBorder(),
-                    hintText: 'Name your new habit',
-                    hintStyle: TextStyle(
-                      fontSize: SizeConfig.saveScreenSmallText,
-                      color: XHColors.lightGrey,
+                ),
+                Container(
+                  margin: SizeConfig.saveScreenInputMargin,
+                  child: TextField(
+                    controller: _titleController,
+                    onSubmitted: (value) {
+                      _saveHabitBloc.title = value;
+                    },
+                    style: TextStyle(
+                      fontSize: SizeConfig.saveScreenLargeText,
+                      color: Colors.white,
+                    ),
+                    decoration: InputDecoration(
+                      fillColor: XHColors.grey,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                      hintText: 'Name your new habit',
+                      hintStyle: TextStyle(
+                        fontSize: SizeConfig.saveScreenSmallText,
+                        color: XHColors.lightGrey,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              _reminderRow(),
-              _dateRow('Start date'),
-              _dateRow('End date'),
-              _notificationRow(),
-            ],
+                _reminderRow(),
+                _dateRow('Start date'),
+                _dateRow('End date'),
+                _notificationRow(),
+              ],
+            ),
           ),
         ),
       );

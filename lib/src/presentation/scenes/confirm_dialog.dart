@@ -7,6 +7,7 @@ class ConfirmDialog {
     String title,
     String message,
     VoidCallback confirmedAction,
+    {VoidCallback canceledAction}
   ) async {
     await showDialog(
       context: context,
@@ -17,6 +18,9 @@ class ConfirmDialog {
           FlatButton(
             child: Text('Cancel', style: TextStyle(color: XHColors.pink)),
             onPressed: () {
+              if (canceledAction != null) {
+                canceledAction();
+              }
               Navigator.of(context).pop();
             },
           ),
