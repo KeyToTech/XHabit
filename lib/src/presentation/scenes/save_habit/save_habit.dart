@@ -222,7 +222,12 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  FlatButton _datePicker(String dateHint) => FlatButton(
+  FlatButton _datePicker(String dateHint) {
+    if (_saveHabitBloc.startDate == null) {
+      _saveHabitBloc.setDefaultStartDate();
+      _saveHabitBloc.displaySelectedDates();
+    } else {
+      return FlatButton(
         padding: SizeConfig.pickerPadding,
         child: Text(
           dateHint,
@@ -247,7 +252,6 @@ class _SaveHabitState extends State<SaveHabit> {
                     body1: TextStyle(color: XHColors.lightGrey),
                     caption: TextStyle(color: XHColors.lightGrey)),
               ));
-
           if (date != null) {
             if (dateHint == 'Start date') {
               _saveHabitBloc.setStartDate(date);
@@ -258,6 +262,8 @@ class _SaveHabitState extends State<SaveHabit> {
           }
         },
       );
+    }
+  }
 
   Widget _notificationRow() => StreamBuilder<String>(
         stream: _saveHabitBloc.notificationTimeObservable,

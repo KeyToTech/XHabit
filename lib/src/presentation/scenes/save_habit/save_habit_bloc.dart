@@ -91,6 +91,10 @@ class SaveHabitBloc {
     return message;
   }
 
+  void setDefaultStartDate(){
+    startDate = DateTime.now();
+  }
+
   void setStartDate(DateTime date) {
     startDate = date;
     if (endDate != null && startDate.compareTo(endDate) >= 0) {
