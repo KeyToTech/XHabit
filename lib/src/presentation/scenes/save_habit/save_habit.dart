@@ -94,17 +94,17 @@ class _SaveHabitState extends State<SaveHabit> {
         },
         child: WillPopScope(
           onWillPop: () => Future(() {
-              if (_saveHabitBloc.dataEntered) {
-                ConfirmDialog.show(
-                    context,
-                    'Leave without saving?',
-                    'Do you want to leave the screen without saving?',
-                    () => Navigator.of(context).pop());
-                return false;
-              } else {
-                return true;
-              }
-            }),
+            if (_saveHabitBloc.dataEntered) {
+              ConfirmDialog.show(
+                  context,
+                  'Leave without saving?',
+                  'Do you want to leave the screen without saving?',
+                  () => Navigator.of(context).pop());
+              return false;
+            } else {
+              return true;
+            }
+          }),
           child: Container(
             color: XHColors.darkGrey,
             padding: SizeConfig.saveScreenPadding,
@@ -222,12 +222,7 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  FlatButton _datePicker(String dateHint) {
-    if (_saveHabitBloc.startDate == null) {
-      _saveHabitBloc.setDefaultStartDate();
-      _saveHabitBloc.displaySelectedDates();
-    } else {
-      return FlatButton(
+  FlatButton _datePicker(String dateHint) => FlatButton(
         padding: SizeConfig.pickerPadding,
         child: Text(
           dateHint,
@@ -262,8 +257,6 @@ class _SaveHabitState extends State<SaveHabit> {
           }
         },
       );
-    }
-  }
 
   Widget _notificationRow() => StreamBuilder<String>(
         stream: _saveHabitBloc.notificationTimeObservable,

@@ -47,7 +47,7 @@ class SaveHabitBloc {
     } else {
       enableNotification = false;
     }
-    startDate = selectedHabit?.startDate;
+    startDate = selectedHabit?.startDate ?? DateTime.now();
     endDate = selectedHabit?.endDate;
     notificationTime = selectedHabit?.notificationTime;
     checkedDays = selectedHabit?.checkedDays;
@@ -89,10 +89,6 @@ class SaveHabitBloc {
       }
     }
     return message;
-  }
-
-  void setDefaultStartDate(){
-    startDate = DateTime.now();
   }
 
   void setStartDate(DateTime date) {
