@@ -97,7 +97,7 @@ class _SaveHabitState extends State<SaveHabit> {
               if (_saveHabitBloc.dataEntered) {
                 ConfirmDialog.show(
                     context,
-                    'Leave the screen?',
+                    'Leave without saving?',
                     'Do you want to leave the screen without saving?',
                     () => Navigator.of(context).pop());
                 return false;
