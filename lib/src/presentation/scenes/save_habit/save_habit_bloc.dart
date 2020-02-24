@@ -20,6 +20,12 @@ class SaveHabitBloc {
   BehaviorSubject<SelectedDates> _selectedDatesSubject;
   BehaviorSubject<String> _notificationTimeSubject;
 
+  bool get dataEntered =>
+      title != null ||
+      notificationTime != null ||
+      startDate != null ||
+      endDate != null;
+
   Stream<bool> get saveHabitObservable => _saveHabitSubject.stream;
 
   Stream<SelectedDates> get selectedDatesObservable =>
