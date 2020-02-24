@@ -54,7 +54,7 @@ class _SaveHabitState extends State<SaveHabit> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             FlatButton(
-              padding: EdgeInsets.only(right: 40),
+              padding: SizeConfig.appBarCancelButtonPadding,
               child: Text(
                 'Cancel',
                 style: TextStyle(fontSize: SizeConfig.appBarButtonText),
@@ -69,7 +69,7 @@ class _SaveHabitState extends State<SaveHabit> {
               style: TextStyle(fontSize: SizeConfig.appBarTitle),
             ),
             FlatButton(
-              padding: EdgeInsets.only(left: 50),
+              padding: SizeConfig.appBarSaveButtonPadding,
               child: Text(
                 'Save',
                 style: TextStyle(fontSize: SizeConfig.appBarButtonText),
