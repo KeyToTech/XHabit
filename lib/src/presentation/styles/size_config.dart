@@ -9,6 +9,11 @@ class SizeConfig {
     horizontal: screenSize.width * 0.035,
   );
   static final double saveScreenLargeText = screenSize.height * 0.03;
+  static final EdgeInsetsGeometry appBarCancelButtonPadding =
+      EdgeInsets.only(right: screenSize.width * 0.09);
+  static final EdgeInsetsGeometry appBarSaveButtonPadding =
+      EdgeInsets.only(left: screenSize.width * 0.1);
+  static final double saveScreenTitleText = screenSize.height * 0.04;
   static final EdgeInsetsGeometry saveScreenInputMargin =
       EdgeInsets.only(top: screenSize.height * 0.045);
   static final double saveScreenSmallText = screenSize.height * 0.02;
