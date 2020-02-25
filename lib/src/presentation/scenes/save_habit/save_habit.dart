@@ -94,17 +94,17 @@ class _SaveHabitState extends State<SaveHabit> {
         },
         child: WillPopScope(
           onWillPop: () => Future(() {
-              if (_saveHabitBloc.dataEntered) {
-                ConfirmDialog.show(
-                    context,
-                    'Leave without saving?',
-                    'Do you want to leave the screen without saving?',
-                    () => Navigator.of(context).pop());
-                return false;
-              } else {
-                return true;
-              }
-            }),
+            if (_saveHabitBloc.dataEntered) {
+              ConfirmDialog.show(
+                  context,
+                  'Leave without saving?',
+                  'Do you want to leave the screen without saving?',
+                  () => Navigator.of(context).pop());
+              return false;
+            } else {
+              return true;
+            }
+          }),
           child: Container(
             color: XHColors.darkGrey,
             padding: SizeConfig.saveScreenPadding,
@@ -247,7 +247,6 @@ class _SaveHabitState extends State<SaveHabit> {
                     body1: TextStyle(color: XHColors.lightGrey),
                     caption: TextStyle(color: XHColors.lightGrey)),
               ));
-
           if (date != null) {
             if (dateHint == 'Start date') {
               _saveHabitBloc.setStartDate(date);
