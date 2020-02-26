@@ -6,6 +6,7 @@ import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
+import 'package:xhabits/src/presentation/scenes/message_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
@@ -77,11 +78,15 @@ class _SaveHabitState extends State<SaveHabit> {
               ),
               textColor: XHColors.pink,
               onPressed: () {
-                String validationMessage =
-                    _saveHabitBloc.saveHabit(_titleController.text);
-                if (validationMessage != null) {
-                  InfoDialog().show(context, 'Invalid data', validationMessage);
-                }
+                showDialog(
+                    context: context, builder: (context) => messageDialog());
+
+//                String validationMessage =
+//                    _saveHabitBloc.saveHabit(_titleController.text);
+
+//                if (validationMessage != null) {
+//                  InfoDialog().show(context, 'Invalid data', validationMessage);
+//                }
               },
             )
           ],
@@ -112,17 +117,8 @@ class _SaveHabitState extends State<SaveHabit> {
               children: <Widget>[
                 Text(
                   'What do you want to accomplish?',
-                style: TextStyle(
-                  fontSize: SizeConfig.saveScreenTitleText,
-                  color: Colors.white,
-                ),
-              ),
-              Container(
-                margin: SizeConfig.saveScreenInputMargin,
-                child: TextField(
-                  controller: _titleController,
                   style: TextStyle(
-                    fontSize: SizeConfig.saveScreenLargeText,
+                    fontSize: SizeConfig.saveScreenTitleText,
                     color: Colors.white,
                   ),
                 ),
@@ -298,6 +294,53 @@ class _SaveHabitState extends State<SaveHabit> {
             ),
             _pickersDivider(),
           ],
+        ),
+      );
+
+  Widget messageDialog() => Dialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        child: SizedBox(
+          height: 270,
+          width: 200,
+          child: Container(
+            color: XHColors.darkGrey,
+            child: Column(
+              children: <Widget>[
+                Image(
+                  image: AssetImage("assets/images/icon.png"),
+                ),
+                Text(
+                  "New habit created!",
+                  style: TextStyle(
+                      fontSize: SizeConfig.messageDialogLargeText,
+                      color: XHColors.lightGrey),
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  "Your new habit has been created!",
+                  style: TextStyle(
+                    fontSize: SizeConfig.messageDialogSmallText,
+                    color: XHColors.grey,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Text('Ok', style: TextStyle(color: XHColors.pink)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       );
 

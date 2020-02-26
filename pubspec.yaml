@@ -71,6 +71,7 @@ flutter:
   assets:
     - assets/Background_image.png
     - assets/images/Logo.png
+    - assets/images/icon.png
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
 
