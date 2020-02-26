@@ -220,9 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           margin: EdgeInsets.symmetric(
-                            horizontal: ScreenType.medium
-                                ? _screenSize.width * 0.02
-                                : _screenSize.width * 0.02,
+                            horizontal: _screenSize.width * 0.02,
                           ),
                         ),
                       ),
