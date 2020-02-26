@@ -25,4 +25,11 @@ class SizeConfig {
   static final EdgeInsetsGeometry pickedTextPadding =
       EdgeInsets.only(right: screenSize.width * 0.04);
   static final double pickerText = screenSize.height * 0.025;
+  static final EdgeInsets authScreenPadding = EdgeInsets.symmetric(
+      horizontal: screenSize.width > 1000
+          ? screenSize.width * 0.3
+          : screenSize.width * 0.15);
+
+  static double authHandleKeyboardHeight(BuildContext context) =>
+      MediaQuery.of(context).viewInsets.bottom + 16.0;
 }

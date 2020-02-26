@@ -112,11 +112,11 @@ class _SaveHabitState extends State<SaveHabit> {
               children: <Widget>[
                 Text(
                   'What do you want to accomplish?',
-                style: TextStyle(
-                  fontSize: SizeConfig.saveScreenTitleText,
-                  color: Colors.white,
+                  style: TextStyle(
+                    fontSize: SizeConfig.saveScreenTitleText,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
                 Container(
                   margin: SizeConfig.saveScreenInputMargin,
                   child: TextField(
