@@ -5,26 +5,31 @@ class XHTextField {
   final TextEditingController textController;
   final String hint;
   final bool obscureText;
+  final FocusNode focusNode;
+  final void Function(String) onFieldSubmitted;
 
-  XHTextField(this.hint, this.textController, this.obscureText);
+  XHTextField(this.hint, this.textController,
+      {this.obscureText, this.focusNode, this.onFieldSubmitted});
 
   Widget field() => TextFormField(
-    style: TextStyle(
-      color: XHColors.lightGrey,
-    ),
-    decoration: InputDecoration(
-        fillColor: XHColors.grey,
-        filled: true,
-        contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 10.0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
+        focusNode: focusNode,
+        onFieldSubmitted: onFieldSubmitted,
+        style: TextStyle(
+          color: XHColors.lightGrey,
         ),
-        hintText: hint,
-        hintStyle: TextStyle(
-            fontFamily: "Montserrat",
-            fontSize: 10.0,
-            color: XHColors.lightGrey)),
-    obscureText: obscureText,
-    controller: textController,
-    );
+        decoration: InputDecoration(
+            fillColor: XHColors.grey,
+            filled: true,
+            contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 10.0),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            hintText: hint,
+            hintStyle: TextStyle(
+                fontFamily: 'Montserrat',
+                fontSize: 10.0,
+                color: XHColors.lightGrey)),
+        obscureText: obscureText,
+        controller: textController,
+      );
 }

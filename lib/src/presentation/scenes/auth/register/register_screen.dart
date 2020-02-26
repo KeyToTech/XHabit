@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
-import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
+import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
@@ -27,11 +27,13 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterBloc _registerBloc;
-  Size _screenSize;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
   final _usernameTextEditingController = TextEditingController();
+  final FocusNode _usernameFocus = FocusNode();
+  final FocusNode _emailFocus = FocusNode();
+  final FocusNode _passwordFocus = FocusNode();
 
   _RegisterScreenState(this._registerBloc);
 
@@ -69,12 +71,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: StreamBuilder(
           stream: _registerBloc.registerStateObservable,
           builder: (context, AsyncSnapshot<Resource<RegisterState>> snapshot) {
+            if (snapshot.data == null) {
+              return Container(
+                color: XHColors.darkGrey,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
+
             final registerState = snapshot.data.data;
             if (snapshot.data.status == Status.ERROR) {
               WidgetsBinding.instance.addPostFrameCallback((_) =>
                   InfoDialog().show(context, 'Error', snapshot.data.message));
             }
-            _screenSize = MediaQuery.of(context).size;
 
             return buildUi(context, registerState);
           },
@@ -82,20 +92,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
 
   Widget buildUi(BuildContext context, RegisterState registerState) =>
-      Container(
-        decoration: BoxDecoration(
+      GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage("assets/images/Background_image.png"),
-                fit: BoxFit.cover)),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            padding: EdgeInsets.symmetric(
-                horizontal: _screenSize.width > 1000
-                    ? _screenSize.width * 0.3
-                    : _screenSize.width * 0.15),
-            children: <Widget>[
-              Column(
+              image: AssetImage('assets/images/Background_image.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Center(
+            child: SingleChildScrollView(
+              padding: SizeConfig.authScreenPadding,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Container(
@@ -104,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Image(
                       alignment: Alignment.center,
                       height: 100.0,
-                      image: AssetImage("assets/images/Logo.png"),
+                      image: AssetImage('assets/images/Logo.png'),
                     ),
                   ),
                   Container(
@@ -114,49 +125,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       'Sign up',
                       style: TextStyle(
                         fontSize: 30.0,
-                        fontFamily: "Montserrat",
+                        fontFamily: 'Montserrat',
                         color: XHColors.lightGrey,
                       ),
                     ),
                   ),
                   XHTextField(
-                          'User name', _usernameTextEditingController, false)
-                      .field(),
-                  XHErrorMessage(registerState.registerValidationsState
-                              .userNameValidation.isValid
-                          ? ''
-                          : registerState.registerValidationsState
-                              .userNameValidation.errorMessage)
-                      .messageError(),
-                  XHTextField('Email', _emailTextEditingController, false)
-                      .field(),
-                  XHErrorMessage(registerState
-                              .registerValidationsState.emailValidation.isValid
-                          ? ''
-                          : registerState.registerValidationsState
-                              .emailValidation.errorMessage)
-                      .messageError(),
-                  XHTextField('Password', _passwordTextEditingController, true)
-                      .field(),
-                  XHErrorMessage(registerState.registerValidationsState
-                              .passwordValidation.isValid
-                          ? ''
-                          : registerState.registerValidationsState
-                              .passwordValidation.errorMessage)
-                      .messageError(),
+                    'User name',
+                    _usernameTextEditingController,
+                    obscureText: false,
+                    focusNode: _usernameFocus,
+                    onFieldSubmitted: (value) {
+                      _fieldFocusChange(context, _usernameFocus, _emailFocus);
+                    },
+                  ).field(),
+                  XHErrorMessage(
+                    registerState
+                            .registerValidationsState.userNameValidation.isValid
+                        ? ''
+                        : registerState.registerValidationsState
+                            .userNameValidation.errorMessage,
+                  ).messageError(),
+                  XHTextField(
+                    'Email',
+                    _emailTextEditingController,
+                    obscureText: false,
+                    focusNode: _emailFocus,
+                    onFieldSubmitted: (value) {
+                      _fieldFocusChange(context, _emailFocus, _passwordFocus);
+                    },
+                  ).field(),
+                  XHErrorMessage(
+                    registerState
+                            .registerValidationsState.emailValidation.isValid
+                        ? ''
+                        : registerState.registerValidationsState.emailValidation
+                            .errorMessage,
+                  ).messageError(),
+                  XHTextField(
+                    'Password',
+                    _passwordTextEditingController,
+                    obscureText: true,
+                    focusNode: _passwordFocus,
+                  ).field(),
+                  XHErrorMessage(
+                    registerState
+                            .registerValidationsState.passwordValidation.isValid
+                        ? ''
+                        : registerState.registerValidationsState
+                            .passwordValidation.errorMessage,
+                  ).messageError(),
+                  XHButton(
+                    'Sign up',
+                    registerState.signUpButtonEnabled,
+                    _onSubmit,
+                  ).materialButton(),
+                  AuthInkWell.inkWell(
+                    context,
+                    'Already have an account?',
+                    navigateToRegister: false,
+                  ),
+                  SizedBox(
+                    height: SizeConfig.authHandleKeyboardHeight(context),
+                  ),
                 ],
               ),
-              XHButton('Sign up', registerState.signUpButtonEnabled, _onSubmit)
-                  .materialButton(),
-              AuthInkWell.inkWell(
-                context,
-                'Already have an account?',
-                navigateToRegister: false,
-              ),
-            ],
+            ),
           ),
         ),
       );
+
+  void _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
 
   @override
   void dispose() {
