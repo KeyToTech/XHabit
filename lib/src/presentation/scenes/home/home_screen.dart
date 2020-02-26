@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -195,28 +196,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         scrollDirection: Axis.horizontal,
                         itemCount: weekDays.length,
                         itemBuilder: (context, index) => Container(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                daysWords[weekDays[index].weekday],
-                                style: TextStyle(
-                                  fontSize: _screenSize.shortestSide * 0.024,
-                                  color: XHColors.lightGrey,
+                          child: SizedBox(
+                            width: ScreenType.medium
+                                ? _screenSize.width * 0.032
+                                : _screenSize.width * 0.06,
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  daysWords[weekDays[index].weekday],
+                                  style: TextStyle(
+                                    fontSize: _screenSize.shortestSide * 0.024,
+                                    color: XHColors.lightGrey,
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                weekDays[index].day.toString(),
-                                style: TextStyle(
-                                  fontSize: _screenSize.shortestSide * 0.033,
-                                  color: XHColors.lightGrey,
-                                ),
-                              )
-                            ],
+                                Text(
+                                  weekDays[index].day.toString(),
+                                  style: TextStyle(
+                                    fontSize: _screenSize.shortestSide * 0.033,
+                                    color: XHColors.lightGrey,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                           margin: EdgeInsets.symmetric(
                             horizontal: ScreenType.medium
-                                ? _screenSize.width * 0.025
-                                : _screenSize.width * 0.0235,
+                                ? _screenSize.width * 0.02
+                                : _screenSize.width * 0.02,
                           ),
                         ),
                       ),

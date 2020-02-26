@@ -117,15 +117,6 @@ class _SaveHabitState extends State<SaveHabit> {
                   color: Colors.white,
                 ),
               ),
-              Container(
-                margin: SizeConfig.saveScreenInputMargin,
-                child: TextField(
-                  controller: _titleController,
-                  style: TextStyle(
-                    fontSize: SizeConfig.saveScreenLargeText,
-                    color: Colors.white,
-                  ),
-                ),
                 Container(
                   margin: SizeConfig.saveScreenInputMargin,
                   child: TextField(
