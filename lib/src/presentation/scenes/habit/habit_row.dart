@@ -152,9 +152,11 @@ class _HabitRowState extends State<HabitRow> {
 
   Widget _marksIcon(List<DateTime> checkedDays, DateTime weekday) => Container(
         margin:
-            EdgeInsets.symmetric(horizontal: _screenSize.shortestSide * 0.022),
+            EdgeInsets.symmetric(horizontal: _screenSize.shortestSide * 0.02),
         child: SizedBox(
-          width: _screenSize.width * 0.054,
+          width: ScreenType.medium
+              ? _screenSize.width * 0.051
+              : _screenSize.width * 0.06,
           child: _habitBloc.showCheckIcon(weekday)
               ? IconButton(
                   icon: _habitBloc.dayIsChecked(checkedDays, weekday)
