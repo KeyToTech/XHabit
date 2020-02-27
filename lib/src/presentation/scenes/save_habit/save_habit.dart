@@ -6,7 +6,6 @@ import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
-import 'package:xhabits/src/presentation/scenes/message_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
@@ -78,15 +77,11 @@ class _SaveHabitState extends State<SaveHabit> {
               ),
               textColor: XHColors.pink,
               onPressed: () {
-                showDialog(
-                    context: context, builder: (context) => messageDialog());
-
-//                String validationMessage =
-//                    _saveHabitBloc.saveHabit(_titleController.text);
-
-//                if (validationMessage != null) {
-//                  InfoDialog().show(context, 'Invalid data', validationMessage);
-//                }
+                String validationMessage =
+                    _saveHabitBloc.saveHabit(_titleController.text);
+                if (validationMessage != null) {
+                  InfoDialog().show(context, 'Invalid data', validationMessage);
+                }
               },
             )
           ],
@@ -161,11 +156,6 @@ class _SaveHabitState extends State<SaveHabit> {
         height: SizeConfig.pickersDividerHeight,
       );
 
-  Divider _messageWindowDivider() => Divider(
-        color: Colors.black,
-        thickness: SizeConfig.pickersDividerThickness,
-        height: 1,
-      );
 
   Widget _reminderRow() => StreamBuilder<bool>(
         stream: _saveHabitBloc.enableNotificationObservable,
@@ -303,59 +293,7 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  Widget messageDialog() => Dialog(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        backgroundColor: XHColors.darkGrey,
-        child: Container(
-          height: 250,
-          width: 350,
-          child: Column(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 50.0,
-                  bottom: 15.0,
-                ),
-                child: Image(
-                  image: AssetImage("assets/images/icon.png"),
-                ),
-              ),
-              Text(
-                "New habit created!",
-                style: TextStyle(
-                    fontSize: _screenSize.height * 0.025,
-                    color: XHColors.lightGrey),
-                textAlign: TextAlign.center,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 15.0, bottom: 40.0),
-                child: Text(
-                  "Your new habit has been created!",
-                  style: TextStyle(
-                    fontSize: _screenSize.height * 0.015,
-                    color: XHColors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  _messageWindowDivider(),
-                  FlatButton(
-                    child: Text('Ok',
-                        style: TextStyle(color: XHColors.pink, fontSize: 18)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
+
 
   TimeOfDay _selectedTime() {
     List<String> timeStrings = _saveHabitBloc.notificationTime?.split(':');

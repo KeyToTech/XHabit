@@ -16,9 +16,12 @@ class SizeConfig {
   static final double saveScreenTitleText = screenSize.height * 0.04;
   static final EdgeInsetsGeometry saveScreenInputMargin =
       EdgeInsets.only(top: screenSize.height * 0.045);
+  static final EdgeInsetsGeometry messageDialogTextPadding = EdgeInsets.only(
+      top: screenSize.height * 0.045, bottom: screenSize.height * 0.20);
   static final double saveScreenSmallText = screenSize.height * 0.02;
-  static final double messageDialogLargeText = screenSize.height * 0.04;
-  static final double messageDialogSmallText = screenSize.height * 0.05;
+  static final double messageDialogLargeText = screenSize.height * 0.025;
+  static final double messageDialogSmallText = screenSize.height * 0.015;
+  static final double messageDialogButtonText = screenSize.height * 0.027;
   static final double pickersDividerThickness =
       screenSize.shortestSide * 0.0015;
   static final double pickersDividerHeight = screenSize.height * 0.06;

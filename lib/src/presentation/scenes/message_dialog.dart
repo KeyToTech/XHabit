@@ -6,107 +6,69 @@ import 'package:xhabits/src/presentation/styles/size_config.dart';
 class MessageDialog {
   final String titleText;
   final String messageText;
-  final double titleTextfontSize;
-  final double messageTextfontSize;
 
-  MessageDialog(this.titleText, this.messageText, this.titleTextfontSize,
-      this.messageTextfontSize);
+  MessageDialog(this.titleText, this.messageText);
 
-  Widget messageDialog() => Dialog(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        child: Container(
-          color: XHColors.darkGrey,
-          child: Column(
-            children: <Widget>[
-              Container(
-                child: Image(
-                  image: AssetImage("assets/images/icon.png"),
+  static void show(BuildContext context, String title, String message) async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) => Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0)),
+              backgroundColor: XHColors.darkGrey,
+              child: Container(
+                height: 250,
+                width: 350,
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 50.0,
+                        bottom: 15.0,
+                      ),
+                      child: Image(
+                        image: AssetImage("assets/images/icon.png"),
+                      ),
+                    ),
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontSize: SizeConfig.messageDialogLargeText,
+                          color: XHColors.lightGrey),
+                      textAlign: TextAlign.center,
+                    ),
+                    Padding(
+                      padding: SizeConfig.messageDialogTextPadding,
+                      child: Text(
+                        message,
+                        style: TextStyle(
+                          fontSize: SizeConfig.messageDialogSmallText,
+                          color: XHColors.grey,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Divider(
+                          color: Colors.black,
+                          thickness: SizeConfig.pickersDividerThickness,
+                          height: 1,
+                        ),
+                        FlatButton(
+                          child: Text('Ok',
+                              style: TextStyle(
+                                  color: XHColors.pink, fontSize: SizeConfig.messageDialogButtonText)),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Text(
-                  "New habit created!",
-                  style: TextStyle(
-                      fontSize: SizeConfig.messageDialogLargeText,
-                      color: XHColors.lightGrey),
-                ),
-              ),
-              Container(
-                child: Text(
-                  "Your new habit has been created!",
-                  style: TextStyle(
-                    fontSize: SizeConfig.messageDialogSmallText,
-                    color: XHColors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    child: Text('Ok', style: TextStyle(color: XHColors.pink)),
-                    onPressed: () {
-//   Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-//
-//  void show(BuildContext context) async {
-//    await showDialog(
-//      context: context,
-//      builder: (BuildContext context) => AlertDialog(
-//        backgroundColor: XHColors.darkGrey,
-//        shape:
-//            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-//        title: Column(
-//          children: <Widget>[
-//            Container(
-//              child: Image(
-//                image: AssetImage("assets/images/icon.png"),
-//              ),
-//            ),
-//            Padding(
-//              padding: const EdgeInsets.all(12.0),
-//              child: Text(
-//                "New habit created!",
-//                style: TextStyle(
-//                    fontSize: SizeConfig.messageDialogLargeText,
-//                    color: XHColors.lightGrey),
-//              ),
-//            ),
-//            Container(
-//              child: Text(
-//                "Your new habit has been created!",
-//                style: TextStyle(
-//                  fontSize: SizeConfig.messageDialogSmallText,
-//                  color: XHColors.grey,
-//                ),
-//                textAlign: TextAlign.center,
-//              ),
-//            ),
-//          ],
-//        ),
-//        actions: <Widget>[
-//          Row(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              FlatButton(
-//                child: Text('Ok', style: TextStyle(color: XHColors.pink)),
-//                onPressed: () {
-//                  Navigator.of(context).pop();
-//                },
-//              ),
-//            ],
-//          ),
-//        ],
-//      ),
-//    );
-//  }
+            ));
+  }
 }
