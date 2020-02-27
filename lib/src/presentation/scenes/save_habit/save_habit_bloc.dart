@@ -26,6 +26,8 @@ class SaveHabitBloc {
       startDate != null ||
       endDate != null;
 
+  bool get isNewHabit => _hint == 'New habit';
+
   Stream<bool> get saveHabitObservable => _saveHabitSubject.stream;
 
   Stream<SelectedDates> get selectedDatesObservable =>
@@ -63,7 +65,7 @@ class SaveHabitBloc {
   String saveHabit(String title) {
     String message = _validationMessage(title, startDate, endDate);
     if (message == null) {
-      if (_hint == 'New habit') {
+      if (isNewHabit) {
         _useCase
             .createHabit(
               DateTime.now().toString().split('.')[0],

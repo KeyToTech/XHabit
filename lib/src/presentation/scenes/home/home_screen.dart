@@ -32,7 +32,7 @@ class HomeScreen extends StatefulWidget {
       );
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> implements SaveHabitDelegate {
   HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
   TrackingScrollController _dateScroll;
@@ -109,10 +109,9 @@ class _HomeScreenState extends State<HomeScreen> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SaveHabit.create(),
+                  builder: (context) => SaveHabit.create(this),
                 ),
               );
-              MessageDialog.show(context, "New habit created!", "Your new habit has been created!");
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
@@ -150,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SaveHabit.update(selectedHabit),
+                  builder: (context) => SaveHabit.update(selectedHabit, this),
                 ),
               );
               _homeScreenBloc.getHomeData();
@@ -333,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
         InkWell(
           onTap: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SaveHabit.create()));
+                MaterialPageRoute(builder: (context) => SaveHabit.create(this)));
           },
           child: Text('Start ',
               style: TextStyle(
@@ -364,5 +363,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _homeScreenBloc.dispose();
     super.dispose();
+  }
+
+  @override
+  void habitSaved() {
+    MessageDialog.show(context, "New habit created!", "Your new habit has been created!");
   }
 }

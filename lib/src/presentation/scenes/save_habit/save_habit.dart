@@ -12,26 +12,32 @@ import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
+class SaveHabitDelegate {
+  void habitSaved() {}
+}
+
 class SaveHabit extends StatefulWidget {
   final String _hint;
   Habit _selectedHabit;
+  final SaveHabitDelegate _delegate;
 
-  SaveHabit.create() : _hint = 'New habit';
+  SaveHabit.create(this._delegate) : _hint = 'New habit';
 
-  SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
+  SaveHabit.update(this._selectedHabit, this._delegate) : _hint = 'Edit habit';
 
   @override
   _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
-      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
+      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)), _delegate);
 }
 
 class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
 
   final SaveHabitBloc _saveHabitBloc;
+  final SaveHabitDelegate _delegate;
   Size _screenSize;
 
-  _SaveHabitState(this._saveHabitBloc) {
+  _SaveHabitState(this._saveHabitBloc, this._delegate) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
   }
 
@@ -314,6 +320,10 @@ class _SaveHabitState extends State<SaveHabit> {
 
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop();
+
+    if (_saveHabitBloc.isNewHabit && _delegate != null) {
+      _delegate.habitSaved();
+    }
   }
 
   void _onTimePicker() async {
