@@ -8,9 +8,9 @@ class SimpleHomeScreenUseCase extends HomeScreenUseCase {
   SimpleHomeScreenUseCase(this._homeRepository);
 
   @override
-  List<DateTime> weekDays() => _homeRepository.weekDays();
+  List<DateTime> weekDays(List<Habit> habits) =>
+      _homeRepository.weekDays(habits);
 
   @override
-  Stream<List<Habit>> getHabits() =>_homeRepository.getHabits();
-
+  Stream<List<Habit>> getHabits() => _homeRepository.getHabits();
 }

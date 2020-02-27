@@ -8,7 +8,7 @@ class HomeRepository {
 
   HomeRepository(this._service, this._weekDays);
 
-  List<DateTime> weekDays() => _weekDays.weekDays();
+  List<DateTime> weekDays(List<Habit> habits) => _weekDays.weekDays(habits);
 
   Stream<List<Habit>> getHabits() => _service.getHabits();
 }

@@ -55,7 +55,7 @@ class HomeScreenBloc {
 
   void handleHomeData(List<Habit> habits) {
     _homeStateSubject.sink.add(HomeScreenResource(
-        habits, _useCase.weekDays(), _useCase.daysWords(), false));
+        habits, _useCase.weekDays(habits), _useCase.daysWords(), false));
   }
 
   void logout() {

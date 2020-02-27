@@ -34,6 +34,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
+  TrackingScrollController _dateScroll;
+  TrackingScrollController _habitScroll;
   RefreshController _refreshController;
 
   _HomeScreenState(
@@ -48,6 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
+    _dateScroll = TrackingScrollController();
+    _habitScroll = TrackingScrollController();
     _refreshController = RefreshController(initialRefresh: false);
     super.initState();
   }
@@ -176,60 +180,70 @@ class _HomeScreenState extends State<HomeScreen> {
         onWillPop: _homeScreenBloc.onWillPop,
         child: Container(
             color: XHColors.darkGrey,
-            child: Column(children: <Widget>[
-              Container(
-                height: _screenSize.shortestSide * 0.09,
-                width: _screenSize.width * 0.5,
-                margin: EdgeInsets.only(
-                  left: _screenSize.width * 0.485,
-                  right: _screenSize.width * 0.015,
-                  top: _screenSize.height * 0.018,
-                ),
-                padding: EdgeInsets.only(
-                    left: ScreenType.large
-                        ? _screenSize.width * 0.112
-                        : ScreenType.medium ? _screenSize.width * 0.032 : 0),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: weekDays.length,
-                        itemBuilder: (context, index) => Container(
-                          child: SizedBox(
-                            width: ScreenType.medium
-                                ? _screenSize.width * 0.032
-                                : _screenSize.width * 0.06,
-                            child: Column(
-                              children: <Widget>[
-                                Text(
-                                  daysWords[weekDays[index].weekday],
-                                  style: TextStyle(
-                                    fontSize: _screenSize.shortestSide * 0.024,
-                                    color: XHColors.lightGrey,
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                _habitScroll.jumpTo(_dateScroll.offset);
+                return true;
+              },
+              child: Column(children: <Widget>[
+                Container(
+                  height: _screenSize.shortestSide * 0.09,
+                  width: _screenSize.width * 0.5,
+                  margin: EdgeInsets.only(
+                    left: _screenSize.width * 0.485,
+                    right: _screenSize.width * 0.015,
+                    top: _screenSize.height * 0.018,
+                  ),
+                  padding: EdgeInsets.only(
+                      left: ScreenType.large
+                          ? _screenSize.width * 0.112
+                          : ScreenType.medium ? _screenSize.width * 0.032 : 0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListView.builder(
+                          controller: _dateScroll,
+                          reverse: true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: weekDays.length,
+                          itemBuilder: (context, index) => Container(
+                            child: SizedBox(
+                              width: ScreenType.medium
+                                  ? _screenSize.width * 0.032
+                                  : _screenSize.width * 0.06,
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    daysWords[weekDays[index].weekday],
+                                    style: TextStyle(
+                                      fontSize:
+                                          _screenSize.shortestSide * 0.024,
+                                      color: XHColors.lightGrey,
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  weekDays[index].day.toString(),
-                                  style: TextStyle(
-                                    fontSize: _screenSize.shortestSide * 0.033,
-                                    color: XHColors.lightGrey,
-                                  ),
-                                )
-                              ],
+                                  Text(
+                                    weekDays[index].day.toString(),
+                                    style: TextStyle(
+                                      fontSize:
+                                          _screenSize.shortestSide * 0.033,
+                                      color: XHColors.lightGrey,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                            horizontal: _screenSize.width * 0.02,
+                            margin: EdgeInsets.symmetric(
+                              horizontal: _screenSize.width * 0.02,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              _habitsList(habits, selectedHabit, weekDays, habitDeleted),
-            ])),
+                _habitsList(habits, selectedHabit, weekDays, habitDeleted),
+              ]),
+            )),
       );
     } else {
       _homeScreenBloc.getHomeData();
@@ -295,6 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? UniqueKey()
                         : ValueKey(index),
                     endDate: habits[index].endDate,
+                    scrollController: _habitScroll,
                   ),
                   onLongPress: () {
                     _homeScreenBloc.selectHabit(habits[index]);
