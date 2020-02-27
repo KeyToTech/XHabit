@@ -10,10 +10,14 @@ import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 
 class RegisterBloc {
+  bool visiblePassword;
   BehaviorSubject<Resource<RegisterState>> _registerStateSubject;
+  BehaviorSubject<bool> _visiblePasswordSubject;
 
   Stream<Resource<RegisterState>> get registerStateObservable =>
       _registerStateSubject.stream;
+
+  Stream<bool> get visiblePasswordObservable => _visiblePasswordSubject.stream;
 
   Future<dynamic> get closeStream => _registerStateSubject.close();
 
@@ -27,6 +31,7 @@ class RegisterBloc {
   RegisterState _initialState;
 
   RegisterBloc(this._registerUseCase) {
+    visiblePassword = false;
     _initialState = RegisterState(
         RegisterValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
@@ -34,9 +39,16 @@ class RegisterBloc {
         false);
     _registerStateSubject = BehaviorSubject<Resource<RegisterState>>.seeded(
         Resource.initial(_initialState));
+    _visiblePasswordSubject =
+    BehaviorSubject<bool>.seeded(visiblePassword);
     _userNameValidation = UserNameValidation();
     _emailValidation = EmailValidation();
     _passwordValidation = PasswordValidation();
+  }
+
+  void passwordVisibilityChanged() {
+    visiblePassword = !visiblePassword;
+    _visiblePasswordSubject.sink.add(visiblePassword);
   }
 
   void validate(String userName, String email, String password) {

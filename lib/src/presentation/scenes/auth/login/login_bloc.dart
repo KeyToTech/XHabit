@@ -9,10 +9,14 @@ import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 
 class LoginBloc {
+  bool visiblePassword;
   BehaviorSubject<Resource<LoginState>> _loginStateSubject;
+  BehaviorSubject<bool> _visiblePasswordSubject;
 
   Stream<Resource<LoginState>> get loginStateObservable =>
       _loginStateSubject.stream;
+
+  Stream<bool> get visiblePasswordObservable => _visiblePasswordSubject.stream;
 
   Future<dynamic> get closeStream => _loginStateSubject.close();
 
@@ -25,6 +29,7 @@ class LoginBloc {
   LoginState _initialState;
 
   LoginBloc(this._loginUseCase) {
+    visiblePassword = false;
     _initialState = LoginState(
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState),
         false);
@@ -32,6 +37,8 @@ class LoginBloc {
     _passwordValidation = PasswordValidation();
     _loginStateSubject = BehaviorSubject<Resource<LoginState>>.seeded(
         Resource.initial(_initialState));
+    _visiblePasswordSubject =
+    BehaviorSubject<bool>.seeded(visiblePassword);
     _defaultValidationState =
         LoginValidationsState(_defaultTextInputState, _defaultTextInputState);
   }
@@ -57,6 +64,11 @@ class LoginBloc {
                 isNotEmptyPassword
             ? true
             : false)));
+  }
+
+  void passwordVisibilityChanged() {
+    visiblePassword = !visiblePassword;
+    _visiblePasswordSubject.sink.add(visiblePassword);
   }
 
   void login(String email, String password) {

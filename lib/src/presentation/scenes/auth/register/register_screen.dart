@@ -7,6 +7,7 @@ import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
+import 'package:xhabits/src/presentation/widgets/xh_password_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -91,6 +92,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       );
 
+  Widget _passwordField() => StreamBuilder<bool>(
+    stream: _registerBloc.visiblePasswordObservable,
+    builder: (context, snapshot) => XHPasswordTextField(
+      'Password',
+      _passwordTextEditingController,
+      _registerBloc.visiblePassword,
+      _registerBloc.passwordVisibilityChanged,
+      focusNode: _passwordFocus,
+    ).field(),
+  );
+
   Widget buildUi(BuildContext context, RegisterState registerState) =>
       GestureDetector(
         onTap: () {
@@ -162,12 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : registerState.registerValidationsState.emailValidation
                             .errorMessage,
                   ).messageError(),
-                  XHTextField(
-                    'Password',
-                    _passwordTextEditingController,
-                    obscureText: true,
-                    focusNode: _passwordFocus,
-                  ).field(),
+                  _passwordField(),
                   XHErrorMessage(
                     registerState
                             .registerValidationsState.passwordValidation.isValid
