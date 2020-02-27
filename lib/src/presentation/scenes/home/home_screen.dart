@@ -34,8 +34,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
-  ScrollController _dateScroll;
-  ScrollController _habitScroll;
+  TrackingScrollController _dateScroll;
+  TrackingScrollController _habitScroll;
   RefreshController _refreshController;
 
   _HomeScreenState(
@@ -50,8 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _homeScreenBloc.getHomeData();
     _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
-    _dateScroll = ScrollController();
-    _habitScroll = ScrollController();
+    _dateScroll = TrackingScrollController();
+    _habitScroll = TrackingScrollController();
     _refreshController = RefreshController(initialRefresh: false);
     super.initState();
   }
