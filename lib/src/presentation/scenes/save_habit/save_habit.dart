@@ -161,6 +161,12 @@ class _SaveHabitState extends State<SaveHabit> {
         height: SizeConfig.pickersDividerHeight,
       );
 
+  Divider _messageWindowDivider() => Divider(
+        color: Colors.black,
+        thickness: SizeConfig.pickersDividerThickness,
+        height: 1,
+      );
+
   Widget _reminderRow() => StreamBuilder<bool>(
         stream: _saveHabitBloc.enableNotificationObservable,
         builder: (context, snapshot) => Column(
@@ -300,46 +306,53 @@ class _SaveHabitState extends State<SaveHabit> {
   Widget messageDialog() => Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        child: SizedBox(
-          height: 270,
-          width: 200,
-          child: Container(
-            color: XHColors.darkGrey,
-            child: Column(
-              children: <Widget>[
-                Image(
+        backgroundColor: XHColors.darkGrey,
+        child: Container(
+          height: 250,
+          width: 350,
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 50.0,
+                  bottom: 15.0,
+                ),
+                child: Image(
                   image: AssetImage("assets/images/icon.png"),
                 ),
-                Text(
-                  "New habit created!",
-                  style: TextStyle(
-                      fontSize: SizeConfig.messageDialogLargeText,
-                      color: XHColors.lightGrey),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
+              ),
+              Text(
+                "New habit created!",
+                style: TextStyle(
+                    fontSize: _screenSize.height * 0.025,
+                    color: XHColors.lightGrey),
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0, bottom: 40.0),
+                child: Text(
                   "Your new habit has been created!",
                   style: TextStyle(
-                    fontSize: SizeConfig.messageDialogSmallText,
+                    fontSize: _screenSize.height * 0.015,
                     color: XHColors.grey,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      FlatButton(
-                        child: Text('Ok', style: TextStyle(color: XHColors.pink)),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  _messageWindowDivider(),
+                  FlatButton(
+                    child: Text('Ok',
+                        style: TextStyle(color: XHColors.pink, fontSize: 18)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         ),
       );
