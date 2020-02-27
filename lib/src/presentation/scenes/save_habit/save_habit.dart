@@ -156,7 +156,6 @@ class _SaveHabitState extends State<SaveHabit> {
         height: SizeConfig.pickersDividerHeight,
       );
 
-
   Widget _reminderRow() => StreamBuilder<bool>(
         stream: _saveHabitBloc.enableNotificationObservable,
         builder: (context, snapshot) => Column(
@@ -292,9 +291,7 @@ class _SaveHabitState extends State<SaveHabit> {
           ],
         ),
       );
-
-
-
+  
   TimeOfDay _selectedTime() {
     List<String> timeStrings = _saveHabitBloc.notificationTime?.split(':');
     if (timeStrings != null) {

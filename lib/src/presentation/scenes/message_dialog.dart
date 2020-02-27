@@ -17,15 +17,12 @@ class MessageDialog {
                   borderRadius: BorderRadius.circular(20.0)),
               backgroundColor: XHColors.darkGrey,
               child: Container(
-                height: 250,
-                width: 350,
+                height: SizeConfig.messageDialogHeight,
+                width: SizeConfig.messageDialogWidth,
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(
-                        top: 50.0,
-                        bottom: 15.0,
-                      ),
+                      padding: SizeConfig.messageDialogIconPadding,
                       child: Image(
                         image: AssetImage("assets/images/icon.png"),
                       ),
@@ -59,7 +56,9 @@ class MessageDialog {
                         FlatButton(
                           child: Text('Ok',
                               style: TextStyle(
-                                  color: XHColors.pink, fontSize: SizeConfig.messageDialogButtonText)),
+                                  color: XHColors.pink,
+                                  fontSize:
+                                      SizeConfig.messageDialogButtonText)),
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
