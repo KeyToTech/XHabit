@@ -14,10 +14,11 @@ class HabitRow extends StatefulWidget {
   DateTime _startDate;
   DateTime _endDate;
   List<DateTime> _weekDays;
+  ScrollController _scrollController;
 
   HabitRow(String habitId, String title, List<DateTime> checkedDays,
       DateTime startDate, List<DateTime> _weekDays,
-      {Key key, DateTime endDate})
+      {Key key, DateTime endDate, ScrollController scrollController})
       : super(key: key) {
     _habitId = habitId;
     this.title = title;
@@ -25,6 +26,7 @@ class HabitRow extends StatefulWidget {
     _startDate = startDate;
     this._weekDays = _weekDays;
     _endDate = endDate;
+    _scrollController = scrollController;
   }
 
   @override
@@ -141,6 +143,9 @@ class _HabitRowState extends State<HabitRow> {
           children: <Widget>[
             Expanded(
               child: ListView.builder(
+                  controller: widget._scrollController,
+                  reverse: true,
+                  physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemCount: weekdays.length,
                   itemBuilder: (context, index) =>

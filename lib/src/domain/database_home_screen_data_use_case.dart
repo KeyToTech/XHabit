@@ -8,7 +8,7 @@ class DatabaseHomeScreenUseCase extends HomeScreenUseCase {
   DatabaseHomeScreenUseCase(this._repository);
 
   @override
-  List<DateTime> weekDays() => _repository.weekDays();
+  List<DateTime> weekDays(List<Habit> habits) => _repository.weekDays(habits);
 
   @override
   Stream<List<Habit>> getHabits() => _repository.getHabits();
