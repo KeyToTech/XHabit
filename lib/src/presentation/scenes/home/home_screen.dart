@@ -20,6 +20,7 @@ import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
 import 'package:xhabits/src/presentation/styles/screen_type.dart';
+import 'package:xhabits/src/presentation/scenes/message_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -111,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context) => SaveHabit.create(),
                 ),
               );
+              MessageDialog.show(context, "New habit created!", "Your new habit has been created!");
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
