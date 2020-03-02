@@ -32,7 +32,7 @@ class HomeScreen extends StatefulWidget {
       );
 }
 
-class _HomeScreenState extends State<HomeScreen> implements SaveHabitDelegate {
+class _HomeScreenState extends State<HomeScreen> {
   HomeScreenBloc _homeScreenBloc;
   Size _screenSize;
   TrackingScrollController _dateScroll;
@@ -106,12 +106,15 @@ class _HomeScreenState extends State<HomeScreen> implements SaveHabitDelegate {
           MaterialButton(
             child: Icon(Icons.add, color: XHColors.pink),
             onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SaveHabit.create(this),
-                ),
-              );
+              bool habitSaved = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SaveHabit.create()),
+                  ) ??
+                  false;
+              if (habitSaved) {
+                MessageDialog.show(context, "New habit created!",
+                    "Your new habit has been created!");
+              }
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
@@ -149,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> implements SaveHabitDelegate {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SaveHabit.update(selectedHabit, this),
+                  builder: (context) => SaveHabit.update(selectedHabit),
                 ),
               );
               _homeScreenBloc.getHomeData();
@@ -330,9 +333,16 @@ class _HomeScreenState extends State<HomeScreen> implements SaveHabitDelegate {
 
   Widget _startAddingHabit() => Row(children: <Widget>[
         InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SaveHabit.create(this)));
+          onTap: () async {
+            bool habitSaved = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SaveHabit.create()),
+            ) ??
+                false;
+            if (habitSaved) {
+              MessageDialog.show(context, "New habit created!",
+                  "Your new habit has been created!");
+            }
           },
           child: Text('Start ',
               style: TextStyle(
@@ -363,10 +373,5 @@ class _HomeScreenState extends State<HomeScreen> implements SaveHabitDelegate {
   void dispose() {
     _homeScreenBloc.dispose();
     super.dispose();
-  }
-
-  @override
-  void habitSaved() {
-    MessageDialog.show(context, "New habit created!", "Your new habit has been created!");
   }
 }
