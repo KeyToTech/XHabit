@@ -105,16 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           MaterialButton(
             child: Icon(Icons.add, color: XHColors.pink),
-            onPressed: () async {
-              bool habitSaved = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SaveHabit.create()),
-                  ) ??
-                  false;
-              if (habitSaved) {
-                MessageDialog.show(context, "New habit created!",
-                    "Your new habit has been created!");
-              }
+            onPressed: () {
+              onHabitAdd();
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
@@ -326,6 +318,18 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
 
+  void onHabitAdd() async {
+    bool habitSaved = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SaveHabit.create()),
+    ) ??
+        false;
+    if (habitSaved) {
+      MessageDialog.show(context, "New habit created!",
+          "Your new habit has been created!");
+    }
+  }
+
   void _handleLogoutRedirect(bool wasLoggedOut) {
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
@@ -333,17 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _startAddingHabit() => Row(children: <Widget>[
         InkWell(
-          onTap: () async {
-            bool habitSaved = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SaveHabit.create()),
-            ) ??
-                false;
-            if (habitSaved) {
-              MessageDialog.show(context, "New habit created!",
-                  "Your new habit has been created!");
-            }
-          },
+          onTap: onHabitAdd,
           child: Text('Start ',
               style: TextStyle(
                   color: XHColors.pink,
