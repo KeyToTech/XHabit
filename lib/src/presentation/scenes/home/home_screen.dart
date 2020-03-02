@@ -177,10 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
             color: XHColors.darkGrey,
             child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                _habitScroll.jumpTo(_dateScroll.offset);
-                return true;
-              },
+              onNotification: _onScrollNotification,
               child: Column(children: <Widget>[
                 Container(
                   height: _screenSize.shortestSide * 0.09,
@@ -194,47 +191,39 @@ class _HomeScreenState extends State<HomeScreen> {
                       left: ScreenType.large
                           ? _screenSize.width * 0.112
                           : ScreenType.medium ? _screenSize.width * 0.032 : 0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: ListView.builder(
-                          controller: _dateScroll,
-                          reverse: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: weekDays.length,
-                          itemBuilder: (context, index) => Container(
-                            child: SizedBox(
-                              width: ScreenType.medium
-                                  ? _screenSize.width * 0.032
-                                  : _screenSize.width * 0.06,
-                              child: Column(
-                                children: <Widget>[
-                                  Text(
-                                    daysWords[weekDays[index].weekday],
-                                    style: TextStyle(
-                                      fontSize:
-                                          _screenSize.shortestSide * 0.024,
-                                      color: XHColors.lightGrey,
-                                    ),
-                                  ),
-                                  Text(
-                                    weekDays[index].day.toString(),
-                                    style: TextStyle(
-                                      fontSize:
-                                          _screenSize.shortestSide * 0.033,
-                                      color: XHColors.lightGrey,
-                                    ),
-                                  )
-                                ],
+                  child: ListView.builder(
+                    controller: _dateScroll,
+                    reverse: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: weekDays.length,
+                    itemBuilder: (context, index) => Container(
+                      child: SizedBox(
+                        width: ScreenType.medium
+                            ? _screenSize.width * 0.032
+                            : _screenSize.width * 0.06,
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              daysWords[weekDays[index].weekday],
+                              style: TextStyle(
+                                fontSize: _screenSize.shortestSide * 0.024,
+                                color: XHColors.lightGrey,
                               ),
                             ),
-                            margin: EdgeInsets.symmetric(
-                              horizontal: _screenSize.width * 0.02,
-                            ),
-                          ),
+                            Text(
+                              weekDays[index].day.toString(),
+                              style: TextStyle(
+                                fontSize: _screenSize.shortestSide * 0.033,
+                                color: XHColors.lightGrey,
+                              ),
+                            )
+                          ],
                         ),
                       ),
-                    ],
+                      margin: EdgeInsets.symmetric(
+                        horizontal: _screenSize.width * 0.02,
+                      ),
+                    ),
                   ),
                 ),
                 _habitsList(habits, selectedHabit, weekDays, habitDeleted),
@@ -317,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
-
+  
   void onHabitAdd() async {
     bool habitSaved = await Navigator.push(
       context,
@@ -328,6 +317,11 @@ class _HomeScreenState extends State<HomeScreen> {
       MessageDialog.show(context, "New habit created!",
           "Your new habit has been created!");
     }
+  
+  bool _onScrollNotification(ScrollNotification scrollInfo) {
+    double jumpTo = _dateScroll.offset - 0.0001;
+    _habitScroll.jumpTo(jumpTo > 0 ? jumpTo : _dateScroll.offset);
+    return true;
   }
 
   void _handleLogoutRedirect(bool wasLoggedOut) {

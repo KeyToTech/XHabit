@@ -139,19 +139,16 @@ class _HabitRowState extends State<HabitRow> {
             left: ScreenType.large
                 ? _screenSize.width * 0.11
                 : ScreenType.medium ? _screenSize.width * 0.03 : 0),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: ListView.builder(
-                  controller: widget._scrollController,
-                  reverse: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: weekdays.length,
-                  itemBuilder: (context, index) =>
-                      _marksIcon(checkedDays, weekdays[index])),
-            ),
-          ],
+        child: ListView.builder(
+          controller: widget._scrollController,
+          reverse: true,
+          physics: NeverScrollableScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          itemCount: weekdays.length,
+          itemBuilder: (context, index) => _marksIcon(
+            checkedDays,
+            weekdays[index],
+          ),
         ),
       );
 
