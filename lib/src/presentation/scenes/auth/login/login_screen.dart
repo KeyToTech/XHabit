@@ -73,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (snapshot.data.status == Status.ERROR) {
               WidgetsBinding.instance.addPostFrameCallback((_) => InfoDialog()
                   .show(context, 'Could not login', snapshot.data.message));
+              _loginBloc.initialState();
             }
 
             return buildUi(

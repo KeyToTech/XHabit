@@ -81,6 +81,10 @@ class LoginBloc {
     }
   }
 
+  void initialState() {
+    _loginStateSubject.sink.add(Resource.initial(_initialState));
+  }
+
   void handleError(PlatformException error) {
     print('ERR ${error.toString()}');
     _loginStateSubject.sink
