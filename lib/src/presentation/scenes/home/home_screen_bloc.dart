@@ -68,6 +68,17 @@ class HomeScreenBloc {
   }
 
   void selectHabit(Habit selectedHabit) {
+    selectedHabit.isSelected = true;
+    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
+  }
+
+  void unselectHabit(Habit selectedHabit) {
+    selectedHabit.isSelected = false;
+    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
+  }
+
+  void toggleHabit(Habit selectedHabit) {
+    selectedHabit.isSelected = !selectedHabit.isSelected;
     _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
   }
 

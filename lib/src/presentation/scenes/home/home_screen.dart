@@ -85,6 +85,8 @@ class _HomeScreenState extends State<HomeScreen> {
           final List<DateTime> weekDays = homeState.weekDays;
           final Map<int, String> daysWords = homeState.daysWords;
 
+          habits.forEach((element) => element.isSelected = false);
+          
           final Habit selectedHabit = appBarState.selectedHabit;
           return Scaffold(
             appBar: appBarState.showEditingAppBar
