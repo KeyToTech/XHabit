@@ -16,6 +16,4 @@ class PasswordTextFieldBloc{
     visiblePassword = !visiblePassword;
     _visiblePasswordSubject.sink.add(visiblePassword);
   }
-
-
 }

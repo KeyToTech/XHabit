@@ -25,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final LoginBloc _loginBloc;
   XHPasswordTextField _xhPasswordTextField;
 
-
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
   final FocusNode _emailFocus = FocusNode();
