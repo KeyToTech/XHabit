@@ -12,6 +12,7 @@ import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
+
 class SaveHabit extends StatefulWidget {
   final String _hint;
   Habit _selectedHabit;
@@ -322,7 +323,8 @@ class _SaveHabitState extends State<SaveHabit> {
       );
 
   void _handleSaveHabit(bool onSaveHabit) {
-    Navigator.of(context).pop();
+    Navigator.of(context).pop(true);
+
   }
 
   void _onTimePicker() async {

@@ -105,14 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           MaterialButton(
             child: Icon(Icons.add, color: XHColors.pink),
-            onPressed: () async {
-              await Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SaveHabit.create(),
-                ),
-              );
-              MessageDialog.show(context, "New habit created!", "Your new habit has been created!");
+            onPressed: () {
+              onHabitAdd();
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
@@ -312,7 +306,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
-
+  
+  void onHabitAdd() async {
+    bool habitSaved = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SaveHabit.create()),
+    ) ??
+        false;
+    if (habitSaved) {
+      MessageDialog.show(context, "New habit created!",
+          "Your new habit has been created!");
+    }
+  
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;
     _habitScroll.jumpTo(jumpTo > 0 ? jumpTo : _dateScroll.offset);
@@ -326,10 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _startAddingHabit() => Row(children: <Widget>[
         InkWell(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SaveHabit.create()));
-          },
+          onTap: onHabitAdd,
           child: Text('Start ',
               style: TextStyle(
                   color: XHColors.pink,
