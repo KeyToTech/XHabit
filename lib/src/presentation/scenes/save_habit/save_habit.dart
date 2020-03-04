@@ -62,7 +62,16 @@ class _SaveHabitState extends State<SaveHabit> {
               ),
               textColor: XHColors.pink,
               onPressed: () {
-                Navigator.of(context).pop();
+                if (_saveHabitBloc.dataEntered) {
+                  ConfirmDialog.show(
+                      context,
+                      'Leave without saving?',
+                      'Do you want to leave the screen without saving?',
+                          () => Navigator.of(context).pop());
+                  return false;
+                } else {
+                  return true;
+                }
               },
             ),
             Text(

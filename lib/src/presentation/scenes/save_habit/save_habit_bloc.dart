@@ -23,7 +23,6 @@ class SaveHabitBloc {
   bool get dataEntered =>
       title != null ||
       notificationTime != null ||
-      startDate != null ||
       endDate != null;
 
   Stream<bool> get saveHabitObservable => _saveHabitSubject.stream;
