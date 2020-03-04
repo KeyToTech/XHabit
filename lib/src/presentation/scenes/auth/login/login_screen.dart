@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
@@ -16,8 +17,8 @@ import '../../info_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() =>
-      _LoginScreenState(LoginBloc(LoginUseCase(FirebaseAuthService())));
+  _LoginScreenState createState() => _LoginScreenState(
+      LoginBloc(LoginUseCase(UserRepository(FirebaseAuthService()))));
 }
 
 class _LoginScreenState extends State<LoginScreen> {

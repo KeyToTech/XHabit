@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
@@ -22,7 +23,7 @@ class RegisterScreen extends StatefulWidget {
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState(
-      RegisterBloc(RegisterUseCase(FirebaseAuthService())));
+      RegisterBloc(RegisterUseCase(UserRepository(FirebaseAuthService()))));
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {

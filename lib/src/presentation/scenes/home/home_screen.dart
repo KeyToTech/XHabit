@@ -8,6 +8,7 @@ import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/data/real_week_days.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
@@ -27,7 +28,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState(
         DatabaseHomeScreenUseCase(
             HomeRepository(AppConfig.database, RealWeekDays())),
-        SimpleLogoutUseCase(FirebaseAuthService()),
+        SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
         SimpleRemoveHabitUseCase(AppConfig.database),
       );
 }
@@ -316,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (habitSaved) {
       MessageDialog.show(context, "New habit created!",
           "Your new habit has been created!");
-    }
+    }}
   
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;

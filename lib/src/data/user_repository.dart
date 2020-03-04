@@ -1,12 +1,18 @@
-import 'package:xhabits/src/domain/check_user_is_signed_use_case.dart';
+import 'package:xhabits/src/data/api/auth_service.dart';
+import 'package:xhabits/src/data/entities/user.dart';
 
 class UserRepository {
-  final CheckUserIsSignedInUseCase _useCase;
+  final AuthService _authService;
 
-  UserRepository(this._useCase);
+  UserRepository(this._authService);
 
-  bool isUserSignedIn() {
-    // TODO: implement isUserSignedIn https://trello.com/c/RF95DP0n/37-implement-isusersignedin
-    return true;
-  }
+  Stream<User> signUp(String email, String password) =>
+      _authService.signUp(email, password);
+
+  Stream<User> signIn(String email, String password) =>
+      _authService.signIn(email, password);
+
+  Stream<bool> isSignedIn() => _authService.isSignedIn();
+
+  Stream<bool> logout() => _authService.logout();
 }

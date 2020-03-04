@@ -1,11 +1,11 @@
-import 'package:xhabits/src/data/api/auth_service.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
 
 class SimpleLogoutUseCase extends LogoutUseCase {
-  final AuthService _authService;
+  final UserRepository _repository;
 
-  SimpleLogoutUseCase(this._authService);
+  SimpleLogoutUseCase(this._repository);
 
   @override
-  Stream<bool> logout() => _authService.logout();
+  Stream<bool> logout() => _repository.logout();
 }
