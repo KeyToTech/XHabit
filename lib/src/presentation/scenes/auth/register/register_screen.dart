@@ -28,6 +28,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterBloc _registerBloc;
+  XHPasswordTextField _xhPasswordTextField;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -44,6 +45,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _usernameTextEditingController.addListener(_textChange);
     _emailTextEditingController.addListener(_textChange);
     _passwordTextEditingController.addListener(_textChange);
+    _xhPasswordTextField = XHPasswordTextField('Password',
+        _passwordTextEditingController,
+        true,
+        focusNode: _passwordFocus);
   }
 
   void _textChange() {
@@ -91,17 +96,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           },
         ),
       );
-
-  Widget _passwordField() => StreamBuilder<bool>(
-    stream: _registerBloc.visiblePasswordObservable,
-    builder: (context, snapshot) => XHPasswordTextField(
-      'Password',
-      _passwordTextEditingController,
-      _registerBloc.visiblePassword,
-      _registerBloc.passwordVisibilityChanged,
-      focusNode: _passwordFocus,
-    ).field(),
-  );
 
   Widget buildUi(BuildContext context, RegisterState registerState) =>
       GestureDetector(
@@ -174,7 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : registerState.registerValidationsState.emailValidation
                             .errorMessage,
                   ).messageError(),
-                  _passwordField(),
+                  _xhPasswordTextField.passwordField(),
                   XHErrorMessage(
                     registerState
                             .registerValidationsState.passwordValidation.isValid

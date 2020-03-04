@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
+import 'package:xhabits/src/presentation/widgets/xh_password_text_field_bloc.dart';
 
 class XHPasswordTextField {
-  final TextEditingController textController;
-  final String hint;
-  final FocusNode focusNode;
-  final void Function(String) onFieldSubmitted;
-  final bool visibleText;
-  final void Function() submit;
+  PasswordTextFieldBloc _passwordTextFieldBloc;
+  TextEditingController textController;
+  String hint;
+  FocusNode focusNode;
+  void Function(String) onFieldSubmitted;
 
-  XHPasswordTextField(
-      this.hint, this.textController, this.visibleText, this.submit,
-      {this.focusNode, this.onFieldSubmitted});
+  XHPasswordTextField(String hint, TextEditingController textController, bool visibleText,
+      {FocusNode focusNode, Function(String) onFieldSubmitted}){
+    this.hint = hint;
+    this.textController = textController;
+    this.focusNode = focusNode;
+    this.onFieldSubmitted = onFieldSubmitted;
+    this._passwordTextFieldBloc = PasswordTextFieldBloc(visibleText);
+  }
 
-  Widget field() => Container(
+  Widget passwordField() => StreamBuilder<bool>(
+    stream: _passwordTextFieldBloc.visiblePasswordObservable,
+    builder: (context, snapshot) => Container(
         child: Column(
           children: <Widget>[
             TextFormField(
@@ -26,10 +33,11 @@ class XHPasswordTextField {
                   fillColor: XHColors.grey,
                   filled: true,
                   suffixIcon: IconButton(
-                      icon: Icon(!visibleText
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                      onPressed: submit),
+                      icon: Icon(_passwordTextFieldBloc.visiblePassword
+                      ? Icons.visibility_off
+                      : Icons.visibility
+                      ),
+                      onPressed: _passwordTextFieldBloc.passwordVisibilityChanged),
                   contentPadding: EdgeInsets.fromLTRB(10.0, 30.0, 10.0, 10.0),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -39,10 +47,11 @@ class XHPasswordTextField {
                       fontFamily: 'Montserrat',
                       fontSize: 10.0,
                       color: XHColors.lightGrey)),
-              obscureText: !visibleText,
+              obscureText: !_passwordTextFieldBloc.visiblePassword,
               controller: textController,
             ),
           ],
         ),
-      );
+      ),
+  );
 }

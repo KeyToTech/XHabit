@@ -23,6 +23,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final LoginBloc _loginBloc;
+  XHPasswordTextField _xhPasswordTextField;
+
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -36,6 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailTextEditingController.addListener(_textChange);
     _passwordTextEditingController.addListener(_textChange);
+    _xhPasswordTextField = XHPasswordTextField('Password',
+        _passwordTextEditingController,
+        true,
+        focusNode: _passwordFocus);
   }
 
   void _textChange() {
@@ -81,18 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
       );
-
-  Widget _passwordField() => StreamBuilder<bool>(
-    stream: _loginBloc.visiblePasswordObservable,
-      builder: (context, snapshot) => XHPasswordTextField(
-        'Password',
-        _passwordTextEditingController,
-        _loginBloc.visiblePassword,
-        _loginBloc.passwordVisibilityChanged,
-        focusNode: _passwordFocus,
-      ).field(),
-  );
-
 
   Widget buildUi(
           BuildContext context, LoginState loginState, bool showLoading) =>
@@ -150,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         : loginState
                             .loginValidationsState.emailValidation.errorMessage,
                   ).messageError(),
-                  _passwordField(),
+                  _xhPasswordTextField.passwordField(),
                   XHErrorMessage(
                     loginState.loginValidationsState.passwordValidation.isValid
                         ? ''
