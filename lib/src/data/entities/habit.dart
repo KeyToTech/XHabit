@@ -6,7 +6,7 @@ class Habit {
   final DateTime startDate;
   final DateTime endDate;
   final String notificationTime;
-  bool isSelected = false;
+  bool isSelected;
 
   Habit(this.habitId, Map map)
       : title = map['title'] as String,
@@ -19,5 +19,5 @@ class Habit {
             ? null
             : DateTime.parse(map['end_date'] as String),
         notificationTime = map['notification_time'] as String,
-        isSelected = map['is_selected'] as bool;
+        isSelected = map['is_selected'] as bool ?? false;
 }

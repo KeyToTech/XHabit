@@ -310,6 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     habits[index].checkedDays,
                     habits[index].startDate,
                     weekDays,
+                    habits[index].isSelected,
                     key: _homeScreenBloc.rebuildHabitTile(habits[index])
                         ? UniqueKey()
                         : ValueKey(index),

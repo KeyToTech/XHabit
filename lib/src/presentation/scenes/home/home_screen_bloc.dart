@@ -70,21 +70,10 @@ class HomeScreenBloc {
   void onLogout(bool result) {
     _logoutStateSubject.sink.add(result);
   }
-//
-//  void selectHabit(Habit selectedHabit) {
-//    selectedHabit.isSelected = true;
-//    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
-//  }
-//
-//  void unselectHabit(Habit selectedHabit) {
-//    selectedHabit.isSelected = false;
-//    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
-//  }
 
   void toggleHabit(Habit selectedHabit) {
-    selectedHabit.isSelected = selectedHabit.isSelected == null
-        ? true
-        : !selectedHabit.isSelected;
+    selectedHabit.isSelected =
+        selectedHabit.isSelected == null ? true : !selectedHabit.isSelected;
     selectedHabits.add(selectedHabit);
     _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
   }
@@ -95,6 +84,8 @@ class HomeScreenBloc {
     getHomeData();
     showMainAppBar();
   }
+
+  bool isSelected() => selectedHabits.isNotEmpty ? true : false;
 
   void removeHabits(List<String> habitIds) {
     _removeHabitsUseCase.removeHabits(habitIds);

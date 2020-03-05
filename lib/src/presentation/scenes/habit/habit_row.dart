@@ -15,9 +15,10 @@ class HabitRow extends StatefulWidget {
   DateTime _endDate;
   List<DateTime> _weekDays;
   ScrollController _scrollController;
+  bool isSelected;
 
   HabitRow(String habitId, String title, List<DateTime> checkedDays,
-      DateTime startDate, List<DateTime> _weekDays,
+      DateTime startDate, List<DateTime> _weekDays, bool isSelected,
       {Key key, DateTime endDate, ScrollController scrollController})
       : super(key: key) {
     _habitId = habitId;
@@ -27,18 +28,21 @@ class HabitRow extends StatefulWidget {
     this._weekDays = _weekDays;
     _endDate = endDate;
     _scrollController = scrollController;
+    this.isSelected = isSelected;
   }
 
   @override
   _HabitRowState createState() => _HabitRowState(
-      HabitBloc(
-        title,
-        checkedDays,
-        _startDate,
-        DatabaseHabitDataUseCase(_habitId, AppConfig.database),
-        endDate: _endDate,
-      ),
-      _weekDays);
+        HabitBloc(
+          title,
+          checkedDays,
+          _startDate,
+          isSelected,
+          DatabaseHabitDataUseCase(_habitId, AppConfig.database),
+          endDate: _endDate,
+        ),
+        _weekDays,
+      );
 }
 
 class _HabitRowState extends State<HabitRow> {
@@ -79,14 +83,31 @@ class _HabitRowState extends State<HabitRow> {
         color: XHColors.darkGrey,
         child: Row(
           children: <Widget>[
-            _habitBloc.hasEndDate()
-                ? _progressCircle(habitState.progress)
-                : SizedBox(width: _screenSize.width * 0.11),
+            _leftWidget(habitState),
             _habitTitle(habitState.habitTitle),
             _marks(habitState.checkedDays, _weekDays),
           ],
         ),
       );
+
+  Widget _leftWidget(HabitState habitState) {
+    Widget result;
+    if (_habitBloc.isSelected) {
+      result = Container(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(
+            Icons.check,
+            color: XHColors.lightGrey,
+          ));
+    } else {
+      if (_habitBloc.hasEndDate()) {
+        result = _progressCircle(habitState.progress);
+      } else {
+        result = SizedBox(width: _screenSize.width * 0.11);
+      }
+    }
+    return result;
+  }
 
   Widget _progressCircle(double progress) => Container(
         margin: EdgeInsets.only(right: _screenSize.width * 0.01),
