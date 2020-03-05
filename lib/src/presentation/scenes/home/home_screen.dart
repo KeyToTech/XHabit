@@ -316,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (habitSaved) {
       MessageDialog.show(context, "New habit created!",
           "Your new habit has been created!");
-    }
+    }}
   
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;
