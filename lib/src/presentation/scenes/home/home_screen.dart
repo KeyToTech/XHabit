@@ -105,8 +105,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           MaterialButton(
             child: Icon(Icons.add, color: XHColors.pink),
-            onPressed: () {
-              onHabitAdd();
+            onPressed: () async {
+              await onHabitAdd();
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
@@ -307,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
   
-  void onHabitAdd() async {
+  Future<void> onHabitAdd() async {
     bool habitSaved = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SaveHabit.create()),
