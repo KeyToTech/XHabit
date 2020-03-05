@@ -11,6 +11,7 @@ import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
+import 'package:xhabits/src/domain/simple_remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
@@ -29,6 +30,7 @@ class HomeScreen extends StatefulWidget {
             HomeRepository(AppConfig.database, RealWeekDays())),
         SimpleLogoutUseCase(FirebaseAuthService()),
         SimpleRemoveHabitUseCase(AppConfig.database),
+    SimpleRemoveHabitsUseCase(AppConfig.database),
       );
 }
 
@@ -42,9 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
   _HomeScreenState(
       DatabaseHomeScreenUseCase databaseUseCase,
       SimpleLogoutUseCase logoutUseCase,
-      SimpleRemoveHabitUseCase removeHabitUseCase) {
+      SimpleRemoveHabitUseCase removeHabitUseCase,
+      SimpleRemoveHabitsUseCase removeHabitsUseCase) {
     _homeScreenBloc = HomeScreenBloc(
-        databaseUseCase, logoutUseCase, removeHabitUseCase, !kIsWeb, context);
+        databaseUseCase, logoutUseCase, removeHabitUseCase, removeHabitsUseCase, !kIsWeb, context);
   }
 
   @override
@@ -84,13 +87,11 @@ class _HomeScreenState extends State<HomeScreen> {
           final List<Habit> habits = homeState.habits;
           final List<DateTime> weekDays = homeState.weekDays;
           final Map<int, String> daysWords = homeState.daysWords;
-
-          habits.forEach((element) => element.isSelected = false);
           
           final Habit selectedHabit = appBarState.selectedHabit;
           return Scaffold(
             appBar: appBarState.showEditingAppBar
-                ? editingAppBar(appBarState.selectedHabit)
+                ? editingAppBar(appBarState.selectedHabit, habits)
                 : mainAppBar(),
             body:
                 body(habits, selectedHabit, weekDays, daysWords, habitDeleted),
@@ -136,11 +137,15 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       );
 
-  PreferredSizeWidget editingAppBar(Habit selectedHabit) => AppBar(
+  PreferredSizeWidget editingAppBar(Habit selectedHabit, List<Habit> habits) => AppBar(
         backgroundColor: XHColors.darkGrey,
         leading: MaterialButton(
           child: Icon(Icons.arrow_back, color: XHColors.pink),
-          onPressed: _homeScreenBloc.showMainAppBar,
+          onPressed: () {
+            _homeScreenBloc.showMainAppBar();
+            habits.forEach((element) => element.isSelected = false);
+            _homeScreenBloc.selectedHabits.clear();
+          },
           shape: CircleBorder(),
           minWidth: 0,
         ),
@@ -164,12 +169,19 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
-              ConfirmDialog.show(
-                context,
-                'Delete habit',
-                'Are you sure you want to delete habit \'${selectedHabit.title}\' ?',
-                () => _homeScreenBloc.removeHabit(selectedHabit.habitId),
-              );
+              if (_homeScreenBloc.selectedHabits.length == 1) {
+                ConfirmDialog.show(
+                  context,
+                  'Delete habit',
+                  'Are you sure you want to delete habit \'${selectedHabit
+                      .title}\' ?',
+                      () => _homeScreenBloc.removeHabit(selectedHabit.habitId),
+                );
+              }
+              else{
+                List<String> habitIds = _homeScreenBloc.selectedHabits.map((f) => f.habitId).toList();
+                ConfirmDialog.show(context, 'Delete habits', 'Are you sure you want to delete these habits?', () => _homeScreenBloc.removeHabits(habitIds));
+              }
             },
             shape: CircleBorder(),
             minWidth: 0,
@@ -305,7 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     scrollController: _habitScroll,
                   ),
                   onLongPress: () {
-                    _homeScreenBloc.selectHabit(habits[index]);
+                    _homeScreenBloc.toggleHabit(habits[index]);
                     _homeScreenBloc.changeLastSelected(habits[index]);
                   },
                 ),
@@ -316,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
-    double jumpTo = _dateScroll.offset - 0.0001;
+    double jumpTo = _dateScroll.offset ?? 0.0 - 0.0001;
     _habitScroll.jumpTo(jumpTo > 0 ? jumpTo : _dateScroll.offset);
     return true;
   }

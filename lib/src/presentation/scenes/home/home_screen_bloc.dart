@@ -4,9 +4,9 @@ import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
 import 'package:xhabits/src/domain/remove_habit_use_case.dart';
+import 'package:xhabits/src/domain/remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
-
 import 'home_screen_state.dart';
 
 class HomeScreenBloc {
@@ -15,6 +15,7 @@ class HomeScreenBloc {
   BehaviorSubject<AppBarState> _appBarStateSubject;
   BehaviorSubject<bool> _habitDeletedSubject;
   Habit lastSelectedHabit;
+  List<Habit> selectedHabits = <Habit>[];
   PushNotificationsService _notificationsService;
 
   Stream<HomeScreenResource> get homeScreenStateObservable =>
@@ -29,11 +30,13 @@ class HomeScreenBloc {
   HomeScreenUseCase _useCase;
   LogoutUseCase _logoutUseCase;
   RemoveHabitUseCase _removeUseCase;
+  RemoveHabitsUseCase _removeHabitsUseCase;
 
   HomeScreenBloc(
       HomeScreenUseCase useCase,
       LogoutUseCase logoutUseCase,
       RemoveHabitUseCase removeUseCase,
+      RemoveHabitsUseCase removeHabitsUseCase,
       bool notificationOn,
       BuildContext context) {
     _useCase = useCase;
@@ -42,6 +45,7 @@ class HomeScreenBloc {
     }
     _logoutUseCase = logoutUseCase;
     _removeUseCase = removeUseCase;
+    _removeHabitsUseCase = removeHabitsUseCase;
     _homeStateSubject = BehaviorSubject<HomeScreenResource>();
     _logoutStateSubject = BehaviorSubject<bool>();
     _appBarStateSubject =
@@ -66,24 +70,34 @@ class HomeScreenBloc {
   void onLogout(bool result) {
     _logoutStateSubject.sink.add(result);
   }
-
-  void selectHabit(Habit selectedHabit) {
-    selectedHabit.isSelected = true;
-    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
-  }
-
-  void unselectHabit(Habit selectedHabit) {
-    selectedHabit.isSelected = false;
-    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
-  }
+//
+//  void selectHabit(Habit selectedHabit) {
+//    selectedHabit.isSelected = true;
+//    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
+//  }
+//
+//  void unselectHabit(Habit selectedHabit) {
+//    selectedHabit.isSelected = false;
+//    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
+//  }
 
   void toggleHabit(Habit selectedHabit) {
-    selectedHabit.isSelected = !selectedHabit.isSelected;
+    selectedHabit.isSelected = selectedHabit.isSelected == null
+        ? true
+        : !selectedHabit.isSelected;
+    selectedHabits.add(selectedHabit);
     _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
   }
 
   void removeHabit(String habitId) {
     _removeUseCase.removeHabit(habitId);
+    _habitDeletedSubject.sink.add(true);
+    getHomeData();
+    showMainAppBar();
+  }
+
+  void removeHabits(List<String> habitIds) {
+    _removeHabitsUseCase.removeHabits(habitIds);
     _habitDeletedSubject.sink.add(true);
     getHomeData();
     showMainAppBar();
