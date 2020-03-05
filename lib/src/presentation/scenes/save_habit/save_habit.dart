@@ -12,7 +12,6 @@ import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
-
 class SaveHabit extends StatefulWidget {
   final String _hint;
   Habit _selectedHabit;
@@ -30,7 +29,6 @@ class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
 
   final SaveHabitBloc _saveHabitBloc;
-  Size _screenSize;
 
   _SaveHabitState(this._saveHabitBloc) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
@@ -43,10 +41,8 @@ class _SaveHabitState extends State<SaveHabit> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    _screenSize = MediaQuery.of(context).size;
-    return Scaffold(appBar: _appBar(), body: _body());
-  }
+  Widget build(BuildContext context) =>
+      Scaffold(appBar: _appBar(), body: _body());
 
   PreferredSizeWidget _appBar() => AppBar(
         automaticallyImplyLeading: false,
@@ -63,15 +59,8 @@ class _SaveHabitState extends State<SaveHabit> {
               ),
               textColor: XHColors.pink,
               onPressed: () {
-                if (_saveHabitBloc.dataEntered) {
-                  ConfirmDialog.show(
-                      context,
-                      'Leave without saving?',
-                      'Do you want to leave the screen without saving?',
-                          () => Navigator.of(context).pop());
-                  return false;
-                } else {
-                  return true;
+                if (_confirmCancelSaving()) {
+                  Navigator.of(context).pop();
                 }
               },
             ),
@@ -103,18 +92,7 @@ class _SaveHabitState extends State<SaveHabit> {
           FocusScope.of(context).unfocus();
         },
         child: WillPopScope(
-          onWillPop: () => Future(() {
-            if (_saveHabitBloc.dataEntered) {
-              ConfirmDialog.show(
-                  context,
-                  'Leave without saving?',
-                  'Do you want to leave the screen without saving?',
-                  () => Navigator.of(context).pop());
-              return false;
-            } else {
-              return true;
-            }
-          }),
+          onWillPop: () async => _confirmCancelSaving(),
           child: Container(
             color: XHColors.darkGrey,
             padding: SizeConfig.saveScreenPadding,
@@ -131,7 +109,7 @@ class _SaveHabitState extends State<SaveHabit> {
                   margin: SizeConfig.saveScreenInputMargin,
                   child: TextField(
                     controller: _titleController,
-                    onSubmitted: (value) {
+                    onChanged: (value) {
                       _saveHabitBloc.title = value;
                     },
                     style: TextStyle(
@@ -301,7 +279,7 @@ class _SaveHabitState extends State<SaveHabit> {
           ],
         ),
       );
-  
+
   TimeOfDay _selectedTime() {
     List<String> timeStrings = _saveHabitBloc.notificationTime?.split(':');
     if (timeStrings != null) {
@@ -324,7 +302,6 @@ class _SaveHabitState extends State<SaveHabit> {
 
   void _handleSaveHabit(bool onSaveHabit) {
     Navigator.of(context).pop(true);
-
   }
 
   void _onTimePicker() async {
@@ -340,6 +317,19 @@ class _SaveHabitState extends State<SaveHabit> {
     if (time != null) {
       _saveHabitBloc.setNotificationTime(time);
       _saveHabitBloc.displayNotificationTime();
+    }
+  }
+
+  bool _confirmCancelSaving() {
+    if (_saveHabitBloc.dataEntered) {
+      ConfirmDialog.show(
+          context,
+          'Leave without saving?',
+          'Do you want to leave the screen without saving?',
+              () => Navigator.of(context).pop());
+      return false;
+    } else {
+      return true;
     }
   }
 
