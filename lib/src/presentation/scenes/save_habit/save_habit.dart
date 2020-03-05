@@ -57,6 +57,8 @@ class _SaveHabitState extends State<SaveHabit> {
                 'Cancel',
                 style: TextStyle(fontSize: SizeConfig.appBarButtonText),
               ),
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               textColor: XHColors.pink,
               onPressed: () {
                 if (_confirmCancelSaving()) {
@@ -74,6 +76,8 @@ class _SaveHabitState extends State<SaveHabit> {
                 'Save',
                 style: TextStyle(fontSize: SizeConfig.appBarButtonText),
               ),
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
               textColor: XHColors.pink,
               onPressed: () {
                 String validationMessage =
