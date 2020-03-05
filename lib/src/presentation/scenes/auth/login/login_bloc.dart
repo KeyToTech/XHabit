@@ -9,6 +9,7 @@ import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 
 class LoginBloc {
+
   BehaviorSubject<Resource<LoginState>> _loginStateSubject;
 
   Stream<Resource<LoginState>> get loginStateObservable =>

@@ -7,6 +7,7 @@ import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
+import 'package:xhabits/src/presentation/widgets/xh_password_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
@@ -27,6 +28,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final RegisterBloc _registerBloc;
+  XHPasswordTextField _xhPasswordTextField;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -43,6 +45,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _usernameTextEditingController.addListener(_textChange);
     _emailTextEditingController.addListener(_textChange);
     _passwordTextEditingController.addListener(_textChange);
+    _xhPasswordTextField = XHPasswordTextField('Password',
+        _passwordTextEditingController,
+        true,
+        focusNode: _passwordFocus);
   }
 
   void _textChange() {
@@ -162,12 +168,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : registerState.registerValidationsState.emailValidation
                             .errorMessage,
                   ).messageError(),
-                  XHTextField(
-                    'Password',
-                    _passwordTextEditingController,
-                    obscureText: true,
-                    focusNode: _passwordFocus,
-                  ).field(),
+                  _xhPasswordTextField.passwordField(),
                   XHErrorMessage(
                     registerState
                             .registerValidationsState.passwordValidation.isValid
