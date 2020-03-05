@@ -8,6 +8,7 @@ import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/data/real_week_days.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
@@ -27,7 +28,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState(
         DatabaseHomeScreenUseCase(
             HomeRepository(AppConfig.database, RealWeekDays())),
-        SimpleLogoutUseCase(FirebaseAuthService()),
+        SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
         SimpleRemoveHabitUseCase(AppConfig.database),
       );
 }
@@ -105,8 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: <Widget>[
           MaterialButton(
             child: Icon(Icons.add, color: XHColors.pink),
-            onPressed: () {
-              onHabitAdd();
+            onPressed: () async {
+              await onHabitAdd();
               _homeScreenBloc.getHomeData();
             },
             shape: CircleBorder(),
@@ -307,7 +308,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
   
-  void onHabitAdd() async {
+  Future<void> onHabitAdd() async {
     bool habitSaved = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => SaveHabit.create()),
