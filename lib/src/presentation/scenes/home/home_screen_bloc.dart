@@ -95,7 +95,7 @@ class HomeScreenBloc {
   }
 
   bool rebuildHabitTile(Habit currentHabit) =>
-      currentHabit.habitId == lastSelectedHabit?.habitId ||
+      selectedHabits.where((element) => element.habitId == currentHabit.habitId).isNotEmpty ||
       _habitDeletedSubject.stream.value;
 
   void showDailyNotification(int pushId, String title, TimeOfDay habitTime) {

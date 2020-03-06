@@ -15,10 +15,11 @@ class HabitRow extends StatefulWidget {
   DateTime _endDate;
   List<DateTime> _weekDays;
   ScrollController _scrollController;
-  bool isSelected;
+  bool isSelectedHabit;
 
   HabitRow(String habitId, String title, List<DateTime> checkedDays,
-      DateTime startDate, List<DateTime> _weekDays, bool isSelected,
+      DateTime startDate, List<DateTime> _weekDays,
+      bool isSelected,
       {Key key, DateTime endDate, ScrollController scrollController})
       : super(key: key) {
     _habitId = habitId;
@@ -28,7 +29,7 @@ class HabitRow extends StatefulWidget {
     this._weekDays = _weekDays;
     _endDate = endDate;
     _scrollController = scrollController;
-    this.isSelected = isSelected;
+    isSelectedHabit = isSelected;
   }
 
   @override
@@ -37,7 +38,7 @@ class HabitRow extends StatefulWidget {
           title,
           checkedDays,
           _startDate,
-          isSelected,
+          isSelectedHabit,
           DatabaseHabitDataUseCase(_habitId, AppConfig.database),
           endDate: _endDate,
         ),
@@ -92,7 +93,7 @@ class _HabitRowState extends State<HabitRow> {
 
   Widget _leftWidget(HabitState habitState) {
     Widget result;
-    if (_habitBloc.isSelected) {
+    if (_habitBloc.isHabitSelected) {
       result = Container(
           padding: EdgeInsets.all(8.0),
           child: Icon(
