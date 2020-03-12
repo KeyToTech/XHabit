@@ -1,10 +1,11 @@
-import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 
 class LoginUseCase {
-  final AuthService _service;
+  final UserRepository _repository;
 
-  LoginUseCase(this._service);
+  LoginUseCase(this._repository);
 
-  Stream<User> login(String email, String password) => _service.signIn(email, password);
+  Stream<User> login(String email, String password) =>
+      _repository.signIn(email, password);
 }

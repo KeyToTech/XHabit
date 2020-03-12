@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
+import 'package:xhabits/src/presentation/widgets/xh_password_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
 import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_bloc.dart';
@@ -16,12 +18,13 @@ import '../../info_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() =>
-      _LoginScreenState(LoginBloc(LoginUseCase(FirebaseAuthService())));
+  _LoginScreenState createState() => _LoginScreenState(
+      LoginBloc(LoginUseCase(UserRepository(FirebaseAuthService()))));
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final LoginBloc _loginBloc;
+  XHPasswordTextField _xhPasswordTextField;
 
   final _emailTextEditingController = TextEditingController();
   final _passwordTextEditingController = TextEditingController();
@@ -35,6 +38,10 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _emailTextEditingController.addListener(_textChange);
     _passwordTextEditingController.addListener(_textChange);
+    _xhPasswordTextField = XHPasswordTextField('Password',
+        _passwordTextEditingController,
+        true,
+        focusNode: _passwordFocus);
   }
 
   void _textChange() {
@@ -73,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (snapshot.data.status == Status.ERROR) {
               WidgetsBinding.instance.addPostFrameCallback((_) => InfoDialog()
                   .show(context, 'Could not login', snapshot.data.message));
+              _loginBloc.initialState();
             }
 
             return buildUi(
@@ -137,12 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         : loginState
                             .loginValidationsState.emailValidation.errorMessage,
                   ).messageError(),
-                  XHTextField(
-                    'Password',
-                    _passwordTextEditingController,
-                    obscureText: true,
-                    focusNode: _passwordFocus,
-                  ).field(),
+                  _xhPasswordTextField.passwordField(),
                   XHErrorMessage(
                     loginState.loginValidationsState.passwordValidation.isValid
                         ? ''

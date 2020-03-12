@@ -1,12 +1,12 @@
-import 'package:xhabits/src/data/api/auth_service.dart';
+import 'package:xhabits/src/data/user_repository.dart';
 
 import 'check_user_is_signed_use_case.dart';
 
 class SimpleCheckUserIsSignedInUseCase implements CheckUserIsSignedInUseCase {
-  final AuthService _service;
+  final UserRepository _repository;
 
-  SimpleCheckUserIsSignedInUseCase(this._service);
+  SimpleCheckUserIsSignedInUseCase(this._repository);
 
   @override
-  Stream<bool> isUserSignedIn() => _service.isSignedIn();
+  Stream<bool> isUserSignedIn() => _repository.isSignedIn();
 }

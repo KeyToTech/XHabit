@@ -9,6 +9,7 @@ import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 
 class LoginBloc {
+
   BehaviorSubject<Resource<LoginState>> _loginStateSubject;
 
   Stream<Resource<LoginState>> get loginStateObservable =>
@@ -79,6 +80,10 @@ class LoginBloc {
     } else {
       _loginStateSubject.sink.add(Resource.error('Could not login'));
     }
+  }
+
+  void initialState() {
+    _loginStateSubject.sink.add(Resource.initial(_initialState));
   }
 
   void handleError(PlatformException error) {
