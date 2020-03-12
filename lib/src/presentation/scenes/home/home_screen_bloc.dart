@@ -14,7 +14,7 @@ class HomeScreenBloc {
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
   BehaviorSubject<AppBarState> _appBarStateSubject;
   BehaviorSubject<bool> _habitDeletedSubject;
-  Habit lastSelectedHabit;
+  BehaviorSubject<bool> _habitEditedSubject;
   List<Habit> selectedHabits = <Habit>[];
   PushNotificationsService _notificationsService;
 
@@ -51,6 +51,7 @@ class HomeScreenBloc {
     _appBarStateSubject =
         BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
     _habitDeletedSubject = BehaviorSubject<bool>.seeded(false);
+    _habitEditedSubject = BehaviorSubject<bool>.seeded(false);
   }
 
   void getHomeData() {
@@ -71,8 +72,11 @@ class HomeScreenBloc {
     _logoutStateSubject.sink.add(result);
   }
 
+  void onEdit() => _habitEditedSubject.sink.add(true);
+
   void toggleHabit(Habit selectedHabit) {
     updateHabitSelectedList(selectedHabit);
+    selectionChanged();
     if (selectedHabits.isNotEmpty) {
       _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
     } else {
@@ -108,7 +112,8 @@ class HomeScreenBloc {
       selectedHabits
           .where((element) => element.habitId == currentHabit.habitId)
           .isNotEmpty ||
-      _habitDeletedSubject.stream.value;
+      _habitDeletedSubject.stream.value ||
+      _habitEditedSubject.stream.value;
 
   void showDailyNotification(int pushId, String title, TimeOfDay habitTime) {
     _notificationsService.showDailyNotification(pushId, title, habitTime);
@@ -130,11 +135,9 @@ class HomeScreenBloc {
     return true;
   }
 
-  void changeLastSelected(Habit selectedHabit) {
+  void selectionChanged() {
     _habitDeletedSubject.sink.add(false);
-    if (selectedHabit != null) {
-      lastSelectedHabit = selectedHabit;
-    }
+    _habitEditedSubject.sink.add(false);
   }
 
   TimeOfDay parseTimeString(String timeString) {

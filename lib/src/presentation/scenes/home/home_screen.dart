@@ -150,6 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context) => SaveHabit.update(selectedHabit),
             ),
           );
+          _homeScreenBloc.onEdit();
           _homeScreenBloc.selectedHabits.clear();
           _homeScreenBloc.getHomeData();
           _homeScreenBloc.showMainAppBar();
