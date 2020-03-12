@@ -339,11 +339,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   onLongPress: () {
                     _homeScreenBloc.toggleHabit(habits[index]);
                   },
-//                  onTap: (){
-//                    if(_homeScreenBloc.selectedHabits.isNotEmpty){
-//                      _homeScreenBloc.toggleHabit(habits[index]);
-//                    }
-//                  },
+                  onTap: (){
+                    if(_homeScreenBloc.selectedHabits.isNotEmpty){
+                      _homeScreenBloc.toggleHabit(habits[index]);
+                    }
+                  },
                 ),
               );
             },
