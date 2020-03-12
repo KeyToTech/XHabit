@@ -43,6 +43,7 @@ class MockHabitData implements DatabaseService {
   @override
   void removeHabit(String habitId) {}
 
+  @override
   void removeHabits(List<String> habitIds) {}
 
   @override

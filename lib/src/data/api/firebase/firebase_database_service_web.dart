@@ -71,6 +71,7 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
     await _database.ref(user.uid).child('habits').child(habitId).remove();
   }
 
+  @override
   void removeHabits(List<String> habitIds) async {
     habitIds.forEach(removeHabit);
   }
