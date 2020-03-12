@@ -70,7 +70,6 @@ class SaveHabitBloc {
               title,
               enableNotification,
               startDate.toString(),
-              isSelected,
               endDate: endDate.toString(),
               notificationTime: notificationTime,
             )
@@ -82,7 +81,6 @@ class SaveHabitBloc {
               title,
               enableNotification,
               startDate.toString(),
-              isSelected,
               checkedDays,
               endDate: endDate.toString(),
               notificationTime: notificationTime,
