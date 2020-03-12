@@ -72,10 +72,20 @@ class HomeScreenBloc {
   }
 
   void toggleHabit(Habit selectedHabit) {
-    selectedHabit.isSelected =
-        selectedHabit.isSelected == null ? true : !selectedHabit.isSelected;
-    selectedHabits.add(selectedHabit);
-    _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
+    updateHabitSelectedList(selectedHabit);
+    if (selectedHabits.isNotEmpty) {
+      _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
+    } else {
+      _appBarStateSubject.sink.add(AppBarState(false, null));
+    }
+  }
+
+  void updateHabitSelectedList(Habit selectedHabit) {
+    if (!selectedHabits.contains(selectedHabit)) {
+      selectedHabits.add(selectedHabit);
+    } else {
+      selectedHabits.remove(selectedHabit);
+    }
   }
 
   void removeHabit(String habitId) {
@@ -85,7 +95,7 @@ class HomeScreenBloc {
     showMainAppBar();
   }
 
-  bool isSelected() => selectedHabits.isNotEmpty ? true : false;
+  bool isHabitSelected(selectedHabit) => selectedHabits.contains(selectedHabit);
 
   void removeHabits(List<String> habitIds) {
     _removeHabitsUseCase.removeHabits(habitIds);
@@ -95,7 +105,9 @@ class HomeScreenBloc {
   }
 
   bool rebuildHabitTile(Habit currentHabit) =>
-      selectedHabits.where((element) => element.habitId == currentHabit.habitId).isNotEmpty ||
+      selectedHabits
+          .where((element) => element.habitId == currentHabit.habitId)
+          .isNotEmpty ||
       _habitDeletedSubject.stream.value;
 
   void showDailyNotification(int pushId, String title, TimeOfDay habitTime) {
