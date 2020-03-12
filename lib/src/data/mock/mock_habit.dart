@@ -22,14 +22,14 @@ class MockHabitData implements DatabaseService {
           'checked_days': [],
           'start_date': '2019-09-20 00:00:00.000',
           'end_date': '2019-09-30 00:00:00.000',
-          'notification_time': '17:25'
+          'notification_time': '17:25',
         }),
         Habit('mockId2', {
           'title': 'mock title2',
           'checked_days': [],
           'start_date': '2019-09-20 00:00:00.000',
           'end_date': '2019-09-30 00:00:00.000',
-          'notification_time': '17:25'
+          'notification_time': '17:25',
         }),
         Habit('mockId3', {
           'title': 'mock title3',
@@ -42,6 +42,9 @@ class MockHabitData implements DatabaseService {
 
   @override
   void removeHabit(String habitId) {}
+
+  @override
+  void removeHabits(List<String> habitIds) {}
 
   @override
   void updateCheckedDays(String habitId, List<DateTime> checkedDays) {}

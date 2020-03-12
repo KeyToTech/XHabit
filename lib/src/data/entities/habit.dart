@@ -14,6 +14,8 @@ class Habit {
             .map((item) => DateTime.parse(item.toString()))
             .toList(),
         startDate = DateTime.parse(map['start_date'] as String),
-        endDate = map['end_date'] as String == 'null' ? null : DateTime.parse(map['end_date'] as String),
+        endDate = map['end_date'] as String == 'null'
+            ? null
+            : DateTime.parse(map['end_date'] as String),
         notificationTime = map['notification_time'] as String;
 }

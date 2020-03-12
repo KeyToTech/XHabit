@@ -71,6 +71,11 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
+  void removeHabits(List<String> habitIds) async {
+    habitIds.forEach(removeHabit);
+  }
+
+  @override
   void updateCheckedDays(String habitId, List<DateTime> checkedDays) async {
     FirebaseUser user = await _auth.currentUser();
     await _database

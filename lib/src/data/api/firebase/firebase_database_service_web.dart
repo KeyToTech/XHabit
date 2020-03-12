@@ -48,7 +48,7 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
 
   @override
   Stream<bool> updateHabit(String habitId, String title, bool enableNotification,
-      String startDate,  List<DateTime> checkedDays, {String endDate, String notificationTime}) {
+      String startDate, List<DateTime> checkedDays, {String endDate, String notificationTime}) {
     getFuture() async {
       FirebaseUser user = await _auth.currentUser();
       await _database.ref(user.uid).child('habits').child(habitId).set({
@@ -69,6 +69,11 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
   void removeHabit(String habitId) async {
     FirebaseUser user = await _auth.currentUser();
     await _database.ref(user.uid).child('habits').child(habitId).remove();
+  }
+
+  @override
+  void removeHabits(List<String> habitIds) async {
+    habitIds.forEach(removeHabit);
   }
 
   @override

@@ -13,8 +13,9 @@ class HabitBloc {
   List<DateTime> _checkedDays;
   DateTime _startDate;
   DateTime _endDate;
+  bool isHabitSelected;
 
-  HabitBloc(String title, List<DateTime> checkedDays, DateTime startDate,
+  HabitBloc(String title, List<DateTime> checkedDays, DateTime startDate, bool isHabitSelected,
       HabitDataUseCase useCase,
       {DateTime endDate}) {
     _habitStateSubject = BehaviorSubject<HabitState>();
@@ -23,6 +24,7 @@ class HabitBloc {
     _startDate = startDate;
     _endDate = endDate;
     _useCase = useCase;
+    this.isHabitSelected = isHabitSelected;
   }
 
   void getHabitData() {
