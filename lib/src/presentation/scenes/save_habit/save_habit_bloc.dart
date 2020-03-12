@@ -10,7 +10,6 @@ class SaveHabitBloc {
   String title;
   bool enableNotification;
   String description;
-  bool isSelected;
   DateTime startDate;
   DateTime endDate;
   String notificationTime;
