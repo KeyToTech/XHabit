@@ -156,6 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   XHTextField(
                     'Email',
                     _emailTextEditingController,
+                    keyboardType: TextInputType.emailAddress,
                     obscureText: false,
                     focusNode: _emailFocus,
                     onFieldSubmitted: (value) {
