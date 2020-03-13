@@ -229,6 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller: _dateScroll,
                     reverse: true,
                     scrollDirection: Axis.horizontal,
+                    physics: ClampingScrollPhysics(),
                     itemCount: weekDays.length,
                     itemBuilder: (context, index) => Container(
                       child: SizedBox(

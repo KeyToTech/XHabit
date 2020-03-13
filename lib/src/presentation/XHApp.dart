@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'scenes/auth/register/register_screen.dart';
@@ -21,6 +22,9 @@ class XHApp extends StatelessWidget {
           textTheme: TextTheme(
             title: TextStyle(color: Colors.white),
             subhead: TextStyle(color: Colors.white),
+          ),
+          cupertinoOverrideTheme: CupertinoThemeData(
+            primaryColor: XHColors.pink,
           ),
         ),
         home: SplashScreen(),
