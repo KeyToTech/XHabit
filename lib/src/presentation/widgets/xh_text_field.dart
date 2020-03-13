@@ -7,11 +7,16 @@ class XHTextField {
   final bool obscureText;
   final FocusNode focusNode;
   final void Function(String) onFieldSubmitted;
+  final TextInputType keyboardType;
 
   XHTextField(this.hint, this.textController,
-      {this.obscureText, this.focusNode, this.onFieldSubmitted});
+      {this.keyboardType,
+      this.obscureText,
+      this.focusNode,
+      this.onFieldSubmitted});
 
   Widget field() => TextFormField(
+        keyboardType: keyboardType ?? TextInputType.text,
         focusNode: focusNode,
         onFieldSubmitted: onFieldSubmitted,
         style: TextStyle(

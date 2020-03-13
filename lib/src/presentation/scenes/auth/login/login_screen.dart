@@ -132,6 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   XHTextField(
                     'Email',
                     _emailTextEditingController,
+                    keyboardType: TextInputType.emailAddress,
                     obscureText: false,
                     focusNode: _emailFocus,
                     onFieldSubmitted: (value) {
