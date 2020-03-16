@@ -128,6 +128,7 @@ class HomeScreenBloc {
   }
 
   Future<bool> onWillPop() async {
+    selectedHabits.clear();
     if (_appBarStateSubject.stream.value.showEditingAppBar) {
       showMainAppBar();
       return false;
