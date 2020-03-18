@@ -3,6 +3,7 @@ import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
+import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_button.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
@@ -188,6 +189,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     'Already have an account?',
                     navigateToRegister: false,
                   ),
+                  FacebookLoginButton(),
                   SizedBox(
                     height: SizeConfig.authHandleKeyboardHeight(context),
                   ),

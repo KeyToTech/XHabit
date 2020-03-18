@@ -12,6 +12,8 @@ class UserRepository {
   Stream<User> signIn(String email, String password) =>
       _authService.signIn(email, password);
 
+  Stream<User> loginWithFacebook() => _authService.loginWithFacebook();
+
   Stream<bool> isSignedIn() => _authService.isSignedIn();
 
   Stream<bool> logout() => _authService.logout();
