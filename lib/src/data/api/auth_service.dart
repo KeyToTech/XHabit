@@ -5,6 +5,8 @@ abstract class AuthService {
 
   Stream<User> signIn(String email, String password);
 
+  Stream<User> loginWithFacebook();
+
   Stream<bool> isSignedIn();
 
   Stream<bool> logout();

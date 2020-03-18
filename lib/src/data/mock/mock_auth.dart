@@ -13,4 +13,7 @@ class MockAuth implements AuthService {
 
   @override
   Stream<bool> logout() => Stream.value(true);
+
+  @override
+  Stream<User> loginWithFacebook() => null;
 }
