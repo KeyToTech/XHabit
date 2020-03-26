@@ -12,4 +12,8 @@ class ProfileScreenBloc {
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
   }
 
+  void doSomth(){
+    print('e!');
+  }
+
 }

@@ -3,6 +3,8 @@ import 'package:xhabits/src/presentation/scenes/profile/profile_screen_bloc.dart
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
+import 'package:xhabits/src/presentation/widgets/xh_divider.dart';
+import 'package:xhabits/src/presentation/widgets/xh_icon_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -57,7 +59,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         CircleAvatar(
                           radius: 70.0,
@@ -85,9 +86,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             fontSize: SizeConfig.profileScreenUserEmail,
                             fontFamily: 'Montserrat',
                           ),
-                        )
+                        ),
                       ],
                     ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 60),
+                      child: XHIconButton('Rate this application', Icons.star,
+                              Colors.amber, _profileScreenBloc.doSomth)
+                          .IconButton(),
+                    ),
+                    XHDivider().drowPickersDivider(),
+                    XHIconButton('Send feedback', Icons.feedback, Colors.green,
+                            _profileScreenBloc.doSomth)
+                        .IconButton(),
+                    XHDivider().drowPickersDivider(),
+                    XHIconButton('Logout', null, null, _profileScreenBloc.doSomth).IconButton(),
                   ],
                 ),
               ],

@@ -10,6 +10,7 @@ import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
+import 'package:xhabits/src/presentation/widgets/xh_divider.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
@@ -142,17 +143,13 @@ class _SaveHabitState extends State<SaveHabit> {
         ),
       );
 
-  Divider _pickersDivider() => Divider(
-        color: Colors.black,
-        thickness: SizeConfig.pickersDividerThickness,
-        height: SizeConfig.pickersDividerHeight,
-      );
+
 
   Widget _reminderRow() => StreamBuilder<bool>(
         stream: _saveHabitBloc.enableNotificationObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            _pickersDivider(),
+            XHDivider().drowPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -189,7 +186,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.selectedDatesObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            _pickersDivider(),
+            XHDivider().drowPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -254,7 +251,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.notificationTimeObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            _pickersDivider(),
+            XHDivider().drowPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -279,7 +276,7 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
               ],
             ),
-            _pickersDivider(),
+            XHDivider().drowPickersDivider(),
           ],
         ),
       );
