@@ -61,11 +61,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Column(
                       children: <Widget>[
                         CircleAvatar(
-                          radius: 70.0,
+                          radius: SizeConfig.profileScreenAvatarBorderRadius,
                           backgroundColor: Color.fromRGBO(42, 43, 47, 1),
                           child: CircleAvatar(
                             backgroundImage: NetworkImage(resourse.imageUrl),
-                            radius: 62.0,
+                            radius: SizeConfig.profileScreenAvatarRadius,
                           ),
                         ),
                         Padding(
@@ -95,11 +95,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(top: 60),
+                      padding: SizeConfig.profileScreenFirstButtonPadding,
                       child: XHIconButton('Allow notifications', Icons.cached,
                           Colors.deepPurple, true, false, _profileScreenBloc.doSomth)
                           .IconButton(),
                     ),
+                    XHDivider().drowPickersDivider(),
                     XHIconButton('Rate this application', Icons.star,
                         Colors.amber, false, false, _profileScreenBloc.doSomth)
                         .IconButton(),
