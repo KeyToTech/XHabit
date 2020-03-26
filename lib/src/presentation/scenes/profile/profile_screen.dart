@@ -96,16 +96,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 60),
-                      child: XHIconButton('Rate this application', Icons.star,
-                              Colors.amber, _profileScreenBloc.doSomth)
+                      child: XHIconButton('Allow notifications', Icons.cached,
+                          Colors.deepPurple, true, false, _profileScreenBloc.doSomth)
                           .IconButton(),
                     ),
+                    XHIconButton('Rate this application', Icons.star,
+                        Colors.amber, false, false, _profileScreenBloc.doSomth)
+                        .IconButton(),
                     XHDivider().drowPickersDivider(),
-                    XHIconButton('Send feedback', Icons.feedback, Colors.green,
+                    XHIconButton('Send feedback', Icons.swap_vert, Colors.green, false, false,
                             _profileScreenBloc.doSomth)
                         .IconButton(),
                     XHDivider().drowPickersDivider(),
-                    XHIconButton('Logout', null, null, _profileScreenBloc.doSomth).IconButton(),
+                    XHIconButton('Logout', null, null, false, false, _profileScreenBloc.doSomth).IconButton(),
                   ],
                 ),
               ],
