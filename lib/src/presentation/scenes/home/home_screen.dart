@@ -14,6 +14,7 @@ import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
+import 'package:xhabits/src/presentation/scenes/profile/profile_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
@@ -347,17 +348,23 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
   
+//  Future<void> onHabitAdd() async {
+//    bool habitSaved = await Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => SaveHabit.create()),
+//    ) ??
+//        false;
+//    if (habitSaved) {
+//      MessageDialog.show(context, "New habit created!",
+//          "Your new habit has been created!");
+//      _homeScreenBloc.selectedHabits.clear();
+//    }
+//  }
   Future<void> onHabitAdd() async {
-    bool habitSaved = await Navigator.push(
+    await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SaveHabit.create()),
-    ) ??
-        false;
-    if (habitSaved) {
-      MessageDialog.show(context, "New habit created!",
-          "Your new habit has been created!");
-      _homeScreenBloc.selectedHabits.clear();
-    }
+      MaterialPageRoute(builder: (context) => ProfileScreen()),
+    );
   }
   
   bool _onScrollNotification(ScrollNotification scrollInfo) {

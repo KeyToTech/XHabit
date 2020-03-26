@@ -1,0 +1,96 @@
+import 'package:flutter/material.dart';
+import 'package:xhabits/src/presentation/scenes/profile/profile_screen_bloc.dart';
+import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
+import 'package:xhabits/src/presentation/styles/XHColors.dart';
+import 'package:xhabits/src/presentation/styles/size_config.dart';
+
+class ProfileScreen extends StatefulWidget {
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState(ProfileScreenBloc());
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileScreenBloc _profileScreenBloc;
+
+  _ProfileScreenState(this._profileScreenBloc);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(body: _body(context));
+
+  Widget _body(BuildContext context) => StreamBuilder<ProfileScreenResourse>(
+      stream: _profileScreenBloc.ProfileScreenStateObservable,
+      builder: (context, snapshot) {
+        ProfileScreenResourse resourse;
+        if (snapshot.data == null) {
+          resourse = ProfileScreenResourse(
+              'Profile',
+              'https://picsum.photos/250?image=9',
+              'Hello',
+              'World',
+              'helloworld@hello.hey');
+        } else {
+          resourse = snapshot.data;
+        }
+        return Container(
+            color: XHColors.darkGrey,
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: SizeConfig.profileScreenTitlePadding,
+                  child: Text(
+                    resourse.screenTitle,
+                    style: TextStyle(
+                      fontSize: SizeConfig.profileScreenTitle,
+                      fontFamily: 'Montserrat',
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        CircleAvatar(
+                          radius: 70.0,
+                          backgroundColor: Color.fromRGBO(42, 43, 47, 1),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(resourse.imageUrl),
+                            radius: 62.0,
+                          ),
+                        ),
+                        Padding(
+                          padding: SizeConfig.profileScreenUserTextPadding,
+                          child: Text(
+                            resourse.userName + ' ' + resourse.userSurname,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: SizeConfig.profileScreenUserName,
+                              fontFamily: 'Montserrat',
+                            ),
+                          ),
+                        ),
+                        Text(
+                          resourse.userEmail,
+                          style: TextStyle(
+                            color: XHColors.lightGrey,
+                            fontSize: SizeConfig.profileScreenUserEmail,
+                            fontFamily: 'Montserrat',
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ));
+      });
+}
