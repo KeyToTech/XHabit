@@ -55,5 +55,5 @@ class SizeConfig {
       left: screenSize.width * 0.05, right: screenSize.width * 0.05);
   static final double profileScreenButtonText = screenSize.height * 0.02;
   static final EdgeInsetsGeometry profileScreenSwitcherPadding = EdgeInsets.only(
-      left: screenSize.width * 0.26);
+      right: screenSize.width * 0.03);
 }

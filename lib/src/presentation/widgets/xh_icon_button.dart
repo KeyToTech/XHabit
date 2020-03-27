@@ -10,46 +10,53 @@ class XHIconButton {
   Color _color;
   bool _withSwitcher;
   void Function() action;
+  void Function() onSwitcherAction;
   XHIconButtonBloc xhIconButtonBloc;
 
-  XHIconButton(String text, IconData icon, Color color, bool withSwitcher,
-      bool switcherValue, Function() action) {
+  XHIconButton(String text, IconData icon, Color color, bool withSwitcher, Function() action,
+  {bool switcherValue, Function() onSwitcherAction}) {
     this._text = text;
     this._icon = icon;
     this._color = color;
     this._withSwitcher = withSwitcher;
     this.action = action;
+    this.onSwitcherAction = onSwitcherAction;
     this.xhIconButtonBloc = XHIconButtonBloc(switcherValue);
   }
 
   Widget _mainRow(bool switcherValue) {
-    List<Widget> children = new List();
-    children.add(Padding(
-      padding: SizeConfig.profileScreenIconOnButtonPadding,
-      child: Icon(
-        _icon,
-        color: _color,
-      ),
+    List<Widget> children = List();
+    children.add(Row(
+      children: <Widget>[
+        Padding(
+          padding: SizeConfig.profileScreenIconOnButtonPadding,
+          child: Icon(
+            _icon,
+            color: _color,
+          ),
+        ),
+        Text(_text,
+            style: TextStyle(
+              fontFamily: 'Montserrat',
+              fontSize: SizeConfig.profileScreenButtonText,
+              color: XHColors.lightGrey,
+            )),
+      ],
     ));
-    children.add(Text(_text,
-        style: TextStyle(
-          fontFamily: 'Montserrat',
-          fontSize: SizeConfig.profileScreenButtonText,
-          color: XHColors.lightGrey,
-        )));
     if (_withSwitcher) {
       children.add(Padding(
-        padding:  SizeConfig.profileScreenSwitcherPadding,
+        padding: SizeConfig.profileScreenSwitcherPadding,
         child: CupertinoSwitch(
             activeColor: XHColors.pink,
             value: switcherValue,
             onChanged: (value) {
-              action();
+              onSwitcherAction();
               xhIconButtonBloc.switcherChanged();
             }),
       ));
     }
-    return Row(children: children);
+    return Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: children);
   }
 
   Widget IconButton() => StreamBuilder<bool>(

@@ -97,19 +97,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Padding(
                       padding: SizeConfig.profileScreenFirstButtonPadding,
                       child: XHIconButton('Allow notifications', Icons.cached,
-                          Colors.deepPurple, true, false, _profileScreenBloc.doSomth)
+                              Colors.deepPurple, true, null,
+                              switcherValue: false,
+                              onSwitcherAction: _profileScreenBloc.doSomth)
                           .IconButton(),
                     ),
                     XHDivider().drowPickersDivider(),
                     XHIconButton('Rate this application', Icons.star,
-                        Colors.amber, false, false, _profileScreenBloc.doSomth)
+                            Colors.amber, false, _profileScreenBloc.doSomth)
                         .IconButton(),
                     XHDivider().drowPickersDivider(),
-                    XHIconButton('Send feedback', Icons.swap_vert, Colors.green, false, false,
+                    XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
+                            false, _profileScreenBloc.doSomth)
+                        .IconButton(),
+                    XHDivider().drowPickersDivider(),
+                    XHIconButton('Logout', null, null, false,
                             _profileScreenBloc.doSomth)
                         .IconButton(),
-                    XHDivider().drowPickersDivider(),
-                    XHIconButton('Logout', null, null, false, false, _profileScreenBloc.doSomth).IconButton(),
                   ],
                 ),
               ],
