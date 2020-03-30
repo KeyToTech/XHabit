@@ -23,6 +23,8 @@ dependencies:
 
   pull_to_refresh: ^1.5.8
 
+  store_redirect: ^1.0.2
+
   firebase_crashlytics: ^0.1.3
 
   # Dependency for circular chart

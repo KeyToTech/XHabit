@@ -34,7 +34,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'https://picsum.photos/250?image=9',
               'Hello',
               'World',
-              'helloworld@hello.hey');
+              'helloworld@hello.hey',
+              false);
         } else {
           resourse = snapshot.data;
         }
@@ -104,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     XHDivider().drowPickersDivider(),
                     XHIconButton('Rate this application', Icons.star,
-                            Colors.amber, false, _profileScreenBloc.doSomth)
+                            Colors.amber, false, _profileScreenBloc.onRateApp)
                         .IconButton(),
                     XHDivider().drowPickersDivider(),
                     XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
