@@ -4,8 +4,8 @@ import 'config/app_config.dart';
 import 'config/firebase_config.dart';
 import 'src/presentation/XHApp.dart';
 
-void main() {
-  firebaseWebConfig();
-  AppConfig.database = FirebaseDatabaseServiceWeb();
-  runApp(XHApp());
-}
+//void main() {
+//  firebaseWebConfig();
+//  AppConfig.database = FirebaseDatabaseServiceWeb();
+//  runApp(XHApp());
+//}
