@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/user_repository.dart';
+import 'package:xhabits/src/domain/logout_use_case.dart';
+import 'package:xhabits/src/domain/simple_logout_use_case.dart';
+import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
@@ -8,16 +13,19 @@ import 'package:xhabits/src/presentation/widgets/xh_icon_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
-  _ProfileScreenState createState() => _ProfileScreenState(ProfileScreenBloc());
+  _ProfileScreenState createState() => _ProfileScreenState(SimpleLogoutUseCase(UserRepository(FirebaseAuthService())));
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ProfileScreenBloc _profileScreenBloc;
+  ProfileScreenBloc _profileScreenBloc;
 
-  _ProfileScreenState(this._profileScreenBloc);
+  _ProfileScreenState(SimpleLogoutUseCase logoutUseCase){
+    _profileScreenBloc = ProfileScreenBloc(logoutUseCase);
+  }
 
   @override
   void initState() {
+    _profileScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     super.initState();
   }
 
@@ -109,15 +117,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         .IconButton(),
                     XHDivider().drowPickersDivider(),
                     XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
-                            false, _profileScreenBloc.doSomth)
+                            false, _profileScreenBloc.onSendFeedback)
                         .IconButton(),
                     XHDivider().drowPickersDivider(),
                     XHIconButton('Logout', null, null, false,
-                            _profileScreenBloc.doSomth)
+                            _profileScreenBloc.logout)
                         .IconButton(),
                   ],
                 ),
               ],
             ));
       });
+
+  void _handleLogoutRedirect(bool wasLoggedOut) {
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+  }
 }
