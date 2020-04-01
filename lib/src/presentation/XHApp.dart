@@ -8,7 +8,7 @@ class XHApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'XHab',
+        title: 'XHabit',
         theme: ThemeData(
           accentColor: XHColors.pink,
           primaryColor: XHColors.pink,
