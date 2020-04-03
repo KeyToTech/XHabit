@@ -46,6 +46,17 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
+  Stream<bool> updateGlobalNotifications(bool notificationsOn){
+    getFuture() async {
+      FirebaseUser user = await _auth.currentUser();
+      await _database.child(user.uid).child('notificationsOn').set(
+        notificationsOn);
+      return true;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
+  @override
   Stream<bool> updateHabit(String habitId, String title, bool enableNotification,
       String startDate, List<DateTime> checkedDays, {String endDate, String notificationTime}) {
     getFuture() async {

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:xhabits/config/app_config.dart';
+import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
+import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
+import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_bloc.dart';
@@ -13,14 +17,17 @@ import 'package:xhabits/src/presentation/widgets/xh_icon_button.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
-  _ProfileScreenState createState() => _ProfileScreenState(SimpleLogoutUseCase(UserRepository(FirebaseAuthService())));
+  _ProfileScreenState createState() => _ProfileScreenState(
+      SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
+      SimpleGlobalNotificationsUpdateUseCase(AppConfig.database));
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileScreenBloc _profileScreenBloc;
 
-  _ProfileScreenState(SimpleLogoutUseCase logoutUseCase){
-    _profileScreenBloc = ProfileScreenBloc(logoutUseCase);
+  _ProfileScreenState(SimpleLogoutUseCase logoutUseCase,
+      GlobalNotificationsUpdateUseCase useCase) {
+    _profileScreenBloc = ProfileScreenBloc(logoutUseCase, useCase);
   }
 
   @override
@@ -107,8 +114,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: SizeConfig.profileScreenFirstButtonPadding,
                       child: XHIconButton('Allow notifications', Icons.cached,
                               Colors.deepPurple, true, null,
-                              switcherValue: false,
-                              onSwitcherAction: _profileScreenBloc.doSomth)
+                              switcherValue:
+                                  _profileScreenBloc.globalEnableNotifications,
+                              onSwitcherAction:
+                                  _profileScreenBloc.onNotificationsSwitcher)
                           .IconButton(),
                     ),
                     XHDivider().drowPickersDivider(),

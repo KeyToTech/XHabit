@@ -389,22 +389,25 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ]);
 
-  BoxDecoration _habitRowDecoration(Habit selectedHabit) =>
-      BoxDecoration(
-        border: _homeScreenBloc.isHabitSelected(selectedHabit)
-            ? Border.symmetric(
-                vertical: BorderSide(
-                  color: XHColors.lightGrey,
-                  width: _screenSize.shortestSide * 0.003,
-                ),
-              )
-            : Border(
-                bottom: BorderSide(
-                  color: Colors.black,
-                  width: _screenSize.shortestSide * 0.0015,
-                ),
-              ),
-      );
+  BoxDecoration _habitRowDecoration(Habit selectedHabit) => BoxDecoration(
+    border: _homeScreenBloc.isHabitSelected(selectedHabit)
+        ? Border(
+      bottom: BorderSide(
+        color: XHColors.lightGrey,
+        width: _screenSize.shortestSide * 0.003,
+      ),
+      top: BorderSide(
+        color: XHColors.lightGrey,
+        width: _screenSize.shortestSide * 0.003,
+      ),
+    )
+        : Border(
+      bottom: BorderSide(
+        color: Colors.black,
+        width: _screenSize.shortestSide * 0.0015,
+      ),
+    ),
+  );
 
   @override
   void dispose() {

@@ -16,4 +16,6 @@ abstract class DatabaseService {
   void removeHabits(List<String> habitIds);
 
   void updateCheckedDays(String habitId, List<DateTime> checkedDays);
+
+  Stream<bool> updateGlobalNotifications(bool notificationsOn);
 }
