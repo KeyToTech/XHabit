@@ -15,7 +15,7 @@ class HomeScreenBloc {
   BehaviorSubject<AppBarState> _appBarStateSubject;
   BehaviorSubject<bool> _habitDeletedSubject;
   BehaviorSubject<bool> _habitEditedSubject;
-  List<Habit> selectedHabits = <Habit>[];
+  Map<Habit, int> selectedHabits = <Habit, int>{};
   PushNotificationsService _notificationsService;
 
   Stream<HomeScreenResource> get homeScreenStateObservable =>
@@ -72,10 +72,15 @@ class HomeScreenBloc {
     _logoutStateSubject.sink.add(result);
   }
 
-  void onEdit() => _habitEditedSubject.sink.add(true);
+  void onEdit() {
+    _habitEditedSubject.sink.add(true);
+    selectedHabits.clear();
+    getHomeData();
+    showMainAppBar();
+  }
 
-  void toggleHabit(Habit selectedHabit) {
-    updateHabitSelectedList(selectedHabit);
+  void toggleHabit(Habit selectedHabit, int index) {
+    updateHabitSelectedList(selectedHabit, index);
     selectionChanged();
     if (selectedHabits.isNotEmpty) {
       _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
@@ -84,24 +89,27 @@ class HomeScreenBloc {
     }
   }
 
-  void updateHabitSelectedList(Habit selectedHabit) {
-    if (!selectedHabits.contains(selectedHabit)) {
-      selectedHabits.add(selectedHabit);
+  void updateHabitSelectedList(Habit selectedHabit, int index) {
+    if (!selectedHabits.containsKey(selectedHabit)) {
+      selectedHabits[selectedHabit] = index;
     } else {
       selectedHabits.remove(selectedHabit);
     }
   }
 
   void removeHabit(String habitId) {
+    _cancelDeletedNotifications();
     _removeUseCase.removeHabit(habitId);
     _habitDeletedSubject.sink.add(true);
     getHomeData();
     showMainAppBar();
   }
 
-  bool isHabitSelected(selectedHabit) => selectedHabits.contains(selectedHabit);
+  bool isHabitSelected(selectedHabit) =>
+      selectedHabits.containsKey(selectedHabit);
 
   void removeHabits(List<String> habitIds) {
+    _cancelDeletedNotifications();
     _removeHabitsUseCase.removeHabits(habitIds);
     _habitDeletedSubject.sink.add(true);
     getHomeData();
@@ -109,9 +117,7 @@ class HomeScreenBloc {
   }
 
   bool rebuildHabitTile(Habit currentHabit) =>
-      selectedHabits
-          .where((element) => element.habitId == currentHabit.habitId)
-          .isNotEmpty ||
+      selectedHabits.containsKey(currentHabit) ||
       _habitDeletedSubject.stream.value ||
       _habitEditedSubject.stream.value;
 
@@ -121,6 +127,10 @@ class HomeScreenBloc {
 
   void cancelNotification(int index) {
     _notificationsService.cancelNotification(index);
+  }
+
+  void _cancelDeletedNotifications() {
+    selectedHabits.values.forEach(cancelNotification);
   }
 
   void showMainAppBar() {
