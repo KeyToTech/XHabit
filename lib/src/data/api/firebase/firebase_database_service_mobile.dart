@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_database/firebase_database.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
@@ -8,7 +9,7 @@ import 'package:xhabits/src/data/entities/habit.dart';
 class FirebaseDatabaseServiceMobile implements DatabaseService {
   final _database = FirebaseDatabase.instance.reference();
   final _auth = FirebaseAuth.instance;
-  final StreamController<bool> _globalNotificationsStreamController = StreamController.broadcast();
+  final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
 
   FirebaseDatabaseServiceMobile() {
     getFuture() async {
@@ -16,9 +17,14 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
       _database.reference().child(userId).onChildChanged.listen((event) {
         print('info that changed: ${event.snapshot.key}: ${event.snapshot.value}');
         if (event.snapshot.key == 'notificationsOn') {
-          _globalNotificationsStreamController.add(event.snapshot.value as bool);
+          _globalNotificationsSubject.add(event.snapshot.value as bool);
         }
       });
+      _globalNotificationsSubject.sink.add((await _database
+          .child(userId)
+          .child('notificationsOn')
+          .once())
+          .value as bool);
     }
     getFuture();
   }
@@ -44,7 +50,7 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
-  Stream<bool> getGlobalNotificationsStatus() => _globalNotificationsStreamController.stream;
+  BehaviorSubject<bool> getGlobalNotificationsStatus() => _globalNotificationsSubject;
 
   @override
   Stream<bool> createHabit(String habitId, String title, bool enableNotification,

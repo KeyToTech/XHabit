@@ -1,3 +1,4 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 
@@ -44,7 +45,7 @@ class MockHabitData implements DatabaseService {
   Stream<bool> updateGlobalNotifications(bool notificationsOn) {}
 
   @override
-  Stream<bool> getGlobalNotificationsStatus() {}
+  BehaviorSubject<bool> getGlobalNotificationsStatus() {}
 
   @override
   void removeHabit(String habitId) {}

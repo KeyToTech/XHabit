@@ -10,6 +10,7 @@ class SaveHabitBloc {
   String habitId;
   String title;
   bool enableNotification;
+  bool globalEnableNotifications;
   String description;
   DateTime startDate;
   DateTime endDate;
@@ -40,11 +41,19 @@ class SaveHabitBloc {
 
   SaveHabitBloc(this._hint, Habit selectedHabit, CreateHabitUseCase useCase,
       GlobalNotificationsUpdateUseCase globalNotificationsUpdateUseCase) {
+
+    _globalNotificationsUpdateUseCase = globalNotificationsUpdateUseCase;
+    updateGlobalNotificationStatus();
     habitId = selectedHabit?.habitId;
     title = selectedHabit?.title;
-    if (selectedHabit?.enableNotification != null) {
-      enableNotification = selectedHabit?.enableNotification;
-    } else {
+    if(globalEnableNotifications) {
+      if (selectedHabit?.enableNotification != null) {
+        enableNotification = selectedHabit?.enableNotification;
+      } else {
+        enableNotification = false;
+      }
+    }
+    else{
       enableNotification = false;
     }
     startDate = selectedHabit?.startDate ?? _dateTimeNow();
@@ -58,7 +67,7 @@ class SaveHabitBloc {
         SelectedDates(_dateString(startDate), _dateString(endDate)));
     _notificationTimeSubject = BehaviorSubject<String>.seeded(notificationTime);
     _useCase = useCase;
-    _globalNotificationsUpdateUseCase = globalNotificationsUpdateUseCase;
+
   }
 
   String saveHabit(String title) {
@@ -104,7 +113,12 @@ class SaveHabitBloc {
   void setNotificationTime(TimeOfDay time) => notificationTime =
       '${time.hour}:${time.minute < 10 ? '0' : ''}${time.minute}';
 
-  void setEnableNotification(bool value) => enableNotification = value;
+  void setEnableNotification(bool value) {
+    enableNotification = value;
+    if (!globalEnableNotifications) {
+      changeGlobalNotificationStatus(enableNotification);
+    }
+  }
 
   String _validationMessage(
       String title, DateTime startDate, DateTime endDate) {
@@ -117,12 +131,17 @@ class SaveHabitBloc {
     return message;
   }
 
-  void getGlobalNotificationStatus(){
+  void changeGlobalNotificationStatus(bool notificationsOn){
+    _globalNotificationsUpdateUseCase.updateGlobalNotifications(notificationsOn);
+  }
+
+  void updateGlobalNotificationStatus(){
     _globalNotificationsUpdateUseCase.getGlobalNotificationsStatus().listen(handleGlobalNotificationsData);
+    globalEnableNotifications = _globalNotificationsUpdateUseCase.getGlobalNotificationsStatus().value;
   }
 
   void handleGlobalNotificationsData(bool status){
-
+      globalEnableNotifications = status;
   }
 
   void _onSaveHabit(bool onSaveHabit) {

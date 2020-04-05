@@ -1,3 +1,4 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 
@@ -11,6 +12,6 @@ class SimpleGlobalNotificationsUpdateUseCase implements GlobalNotificationsUpdat
   Stream<bool> updateGlobalNotifications(bool notificationsOn) => _service.updateGlobalNotifications(notificationsOn);
 
   @override
-  Stream<bool> getGlobalNotificationsStatus() => _service.getGlobalNotificationsStatus();
+  BehaviorSubject<bool> getGlobalNotificationsStatus() => _service.getGlobalNotificationsStatus();
 
 }

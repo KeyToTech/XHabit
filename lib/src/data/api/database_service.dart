@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 
 abstract class DatabaseService {
@@ -20,5 +21,5 @@ abstract class DatabaseService {
 
   Stream<bool> updateGlobalNotifications(bool notificationsOn);
 
-  Stream<bool> getGlobalNotificationsStatus();
+  BehaviorSubject<bool> getGlobalNotificationsStatus();
 }

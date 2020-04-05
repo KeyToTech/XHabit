@@ -17,15 +17,14 @@ import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 class SaveHabit extends StatefulWidget {
   final String _hint;
   Habit _selectedHabit;
-  bool _globalNotificationsStatus;
 
-  SaveHabit.create(this._globalNotificationsStatus) : _hint = 'New habit';
+  SaveHabit.create() : _hint = 'New habit';
 
-  SaveHabit.update(this._selectedHabit, this._globalNotificationsStatus) : _hint = 'Edit habit';
+  SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
 
   @override
   _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
-      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database), SimpleGlobalNotificationsUpdateUseCase(AppConfig.database)), _globalNotificationsStatus);
+      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database), SimpleGlobalNotificationsUpdateUseCase(AppConfig.database)));
 }
 
 class _SaveHabitState extends State<SaveHabit> {
@@ -34,7 +33,7 @@ class _SaveHabitState extends State<SaveHabit> {
   bool globalNotificationsStatus;
   final SaveHabitBloc _saveHabitBloc;
 
-  _SaveHabitState(this._saveHabitBloc, this.globalNotificationsStatus) {
+  _SaveHabitState(this._saveHabitBloc) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
   }
 
@@ -166,8 +165,8 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
                 CupertinoSwitch(
                   activeColor: XHColors.pink,
-                  value: globalNotificationsStatus ? _saveHabitBloc.enableNotification : false,
-                  onChanged: globalNotificationsStatus ? (value) {
+                  value: _saveHabitBloc.enableNotification,
+                  onChanged: (value) {
                     FocusScope.of(context).unfocus();
                     _saveHabitBloc.setEnableNotification(value);
                     _saveHabitBloc.switcherChanged();
@@ -177,7 +176,7 @@ class _SaveHabitState extends State<SaveHabit> {
                       _saveHabitBloc.notificationTime = null;
                     }
                     _saveHabitBloc.displayNotificationTime();
-                  } : null,
+                  }
                 )
               ],
             )

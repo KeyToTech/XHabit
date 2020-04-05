@@ -144,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SaveHabit.update(selectedHabit, globalNotificationsStatus),
+              builder: (context) => SaveHabit.update(selectedHabit),
             ),
           );
           _homeScreenBloc.onEdit();
@@ -358,7 +358,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> onHabitAdd() async {
     bool habitSaved = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SaveHabit.create(_homeScreenBloc.globalNotificationsStatus)),
+      MaterialPageRoute(builder: (context) => SaveHabit.create()),
     ) ??
         false;
     if (habitSaved) {
