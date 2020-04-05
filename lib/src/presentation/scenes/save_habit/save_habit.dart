@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
+import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
@@ -16,22 +17,24 @@ import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 class SaveHabit extends StatefulWidget {
   final String _hint;
   Habit _selectedHabit;
+  bool _globalNotificationsStatus;
 
-  SaveHabit.create() : _hint = 'New habit';
+  SaveHabit.create(this._globalNotificationsStatus) : _hint = 'New habit';
 
-  SaveHabit.update(this._selectedHabit) : _hint = 'Edit habit';
+  SaveHabit.update(this._selectedHabit, this._globalNotificationsStatus) : _hint = 'Edit habit';
 
   @override
   _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
-      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
+      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database), SimpleGlobalNotificationsUpdateUseCase(AppConfig.database)), _globalNotificationsStatus);
 }
 
 class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
 
+  bool globalNotificationsStatus;
   final SaveHabitBloc _saveHabitBloc;
 
-  _SaveHabitState(this._saveHabitBloc) {
+  _SaveHabitState(this._saveHabitBloc, this.globalNotificationsStatus) {
     _titleController = TextEditingController(text: _saveHabitBloc.title);
   }
 
@@ -163,8 +166,8 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
                 CupertinoSwitch(
                   activeColor: XHColors.pink,
-                  value: _saveHabitBloc.enableNotification,
-                  onChanged: (value) {
+                  value: globalNotificationsStatus ? _saveHabitBloc.enableNotification : false,
+                  onChanged: globalNotificationsStatus ? (value) {
                     FocusScope.of(context).unfocus();
                     _saveHabitBloc.setEnableNotification(value);
                     _saveHabitBloc.switcherChanged();
@@ -174,7 +177,7 @@ class _SaveHabitState extends State<SaveHabit> {
                       _saveHabitBloc.notificationTime = null;
                     }
                     _saveHabitBloc.displayNotificationTime();
-                  },
+                  } : null,
                 )
               ],
             )

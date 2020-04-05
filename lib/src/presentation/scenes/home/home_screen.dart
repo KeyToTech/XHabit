@@ -10,6 +10,7 @@ import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/data/real_week_days.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
+import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habits_use_case.dart';
@@ -33,6 +34,7 @@ class HomeScreen extends StatefulWidget {
         SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
         SimpleRemoveHabitUseCase(AppConfig.database),
         SimpleRemoveHabitsUseCase(AppConfig.database),
+    SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
       );
 }
 
@@ -47,9 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
       DatabaseHomeScreenUseCase databaseUseCase,
       SimpleLogoutUseCase logoutUseCase,
       SimpleRemoveHabitUseCase removeHabitUseCase,
-      SimpleRemoveHabitsUseCase removeHabitsUseCase) {
+      SimpleRemoveHabitsUseCase removeHabitsUseCase, SimpleGlobalNotificationsUpdateUseCase GlobalNotificationsUpdateUseCase) {
     _homeScreenBloc = HomeScreenBloc(databaseUseCase, logoutUseCase,
-        removeHabitUseCase, removeHabitsUseCase, !kIsWeb, context);
+        removeHabitUseCase, removeHabitsUseCase, GlobalNotificationsUpdateUseCase, !kIsWeb, context);
   }
 
   @override
@@ -133,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       );
 
-  Widget editHabitButton(Habit selectedHabit){
+  Widget editHabitButton(Habit selectedHabit, bool globalNotificationsStatus){
     Widget editButton;
     if(_homeScreenBloc.selectedHabits.length == 1){
       editButton = MaterialButton(
@@ -142,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
           await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SaveHabit.update(selectedHabit),
+              builder: (context) => SaveHabit.update(selectedHabit, globalNotificationsStatus),
             ),
           );
           _homeScreenBloc.onEdit();
@@ -174,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: Text('Edit / remove habit'),
         actions: <Widget>[
-          editHabitButton(selectedHabit),
+          editHabitButton(selectedHabit, _homeScreenBloc.globalNotificationsStatus),
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
@@ -305,15 +307,20 @@ class _HomeScreenState extends State<HomeScreen> {
             itemCount: habits.length,
             itemBuilder: (BuildContext context, int index) {
               if (!kIsWeb) {
-                if (habits[index].notificationTime != null) {
-                  _homeScreenBloc.showDailyNotification(
-                    index,
-                    habits[index].title,
-                    _homeScreenBloc
-                        .parseTimeString(habits[index].notificationTime),
-                  );
-                } else {
-                  _homeScreenBloc.cancelNotification(index);
+                if (_homeScreenBloc.globalNotificationsStatus) {
+                  if (habits[index].notificationTime != null) {
+                    _homeScreenBloc.showDailyNotification(
+                      index,
+                      habits[index].title,
+                      _homeScreenBloc
+                          .parseTimeString(habits[index].notificationTime),
+                    );
+                  } else {
+                    _homeScreenBloc.cancelNotification(index);
+                  }
+                }
+                else{
+                  _homeScreenBloc.cancelAllNotification();
                 }
               }
               return Container(
@@ -348,24 +355,24 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
   
-//  Future<void> onHabitAdd() async {
-//    bool habitSaved = await Navigator.push(
-//      context,
-//      MaterialPageRoute(builder: (context) => SaveHabit.create()),
-//    ) ??
-//        false;
-//    if (habitSaved) {
-//      MessageDialog.show(context, "New habit created!",
-//          "Your new habit has been created!");
-//      _homeScreenBloc.selectedHabits.clear();
-//    }
-//  }
   Future<void> onHabitAdd() async {
-    await Navigator.push(
+    bool habitSaved = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ProfileScreen()),
-    );
+      MaterialPageRoute(builder: (context) => SaveHabit.create(_homeScreenBloc.globalNotificationsStatus)),
+    ) ??
+        false;
+    if (habitSaved) {
+      MessageDialog.show(context, "New habit created!",
+          "Your new habit has been created!");
+      _homeScreenBloc.selectedHabits.clear();
+    }
   }
+//  Future<void> onHabitAdd() async {
+//    await Navigator.push(
+//      context,
+//      MaterialPageRoute(builder: (context) => ProfileScreen()),
+//    );
+//  }
   
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;
@@ -374,8 +381,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _handleLogoutRedirect(bool wasLoggedOut) {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+//    Navigator.pushReplacement(
+//        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProfileScreen(_homeScreenBloc.globalNotificationsStatus)),
+    );
   }
 
   Widget _startAddingHabit() => Row(children: <Widget>[

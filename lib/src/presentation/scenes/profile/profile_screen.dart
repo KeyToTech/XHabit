@@ -16,18 +16,24 @@ import 'package:xhabits/src/presentation/widgets/xh_divider.dart';
 import 'package:xhabits/src/presentation/widgets/xh_icon_button.dart';
 
 class ProfileScreen extends StatefulWidget {
+  bool notificationsOn;
+
+  ProfileScreen(this.notificationsOn);
+
   @override
   _ProfileScreenState createState() => _ProfileScreenState(
       SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
+      notificationsOn,
       SimpleGlobalNotificationsUpdateUseCase(AppConfig.database));
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileScreenBloc _profileScreenBloc;
 
-  _ProfileScreenState(SimpleLogoutUseCase logoutUseCase,
-      GlobalNotificationsUpdateUseCase useCase) {
-    _profileScreenBloc = ProfileScreenBloc(logoutUseCase, useCase);
+  _ProfileScreenState(SimpleLogoutUseCase logoutUseCase, bool notificationsOn,
+      GlobalNotificationsUpdateUseCase notificationsUseCase) {
+    _profileScreenBloc =
+        ProfileScreenBloc(logoutUseCase, notificationsOn, notificationsUseCase);
   }
 
   @override

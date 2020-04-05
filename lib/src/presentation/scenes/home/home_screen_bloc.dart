@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
+import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
 import 'package:xhabits/src/domain/remove_habit_use_case.dart';
@@ -10,6 +11,7 @@ import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 import 'home_screen_state.dart';
 
 class HomeScreenBloc {
+  bool globalNotificationsStatus;
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
   BehaviorSubject<AppBarState> _appBarStateSubject;
@@ -23,6 +25,7 @@ class HomeScreenBloc {
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
+
   Stream<AppBarState> get appBarStateObservable => _appBarStateSubject.stream;
 
   Stream<bool> get habitDeletedState => _habitDeletedSubject.stream;
@@ -31,19 +34,23 @@ class HomeScreenBloc {
   LogoutUseCase _logoutUseCase;
   RemoveHabitUseCase _removeUseCase;
   RemoveHabitsUseCase _removeHabitsUseCase;
+  GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
 
   HomeScreenBloc(
       HomeScreenUseCase useCase,
       LogoutUseCase logoutUseCase,
       RemoveHabitUseCase removeUseCase,
       RemoveHabitsUseCase removeHabitsUseCase,
+      GlobalNotificationsUpdateUseCase globalNotificationsUpdateUseCase,
       bool notificationOn,
       BuildContext context) {
+    globalNotificationsStatus = true;
     _useCase = useCase;
     if (notificationOn) {
       _notificationsService = PushNotificationsService(context);
     }
     _logoutUseCase = logoutUseCase;
+    _globalNotificationsUpdateUseCase = globalNotificationsUpdateUseCase;
     _removeUseCase = removeUseCase;
     _removeHabitsUseCase = removeHabitsUseCase;
     _homeStateSubject = BehaviorSubject<HomeScreenResource>();
@@ -52,10 +59,19 @@ class HomeScreenBloc {
         BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
     _habitDeletedSubject = BehaviorSubject<bool>.seeded(false);
     _habitEditedSubject = BehaviorSubject<bool>.seeded(false);
+    getGlobalNotificationStatus();
   }
 
   void getHomeData() {
     _useCase.getHabits().listen(handleHomeData);
+  }
+
+  void getGlobalNotificationStatus() {
+    _globalNotificationsUpdateUseCase.getGlobalNotificationsStatus().listen(handleGlobalNotificationsData);
+  }
+
+  void handleGlobalNotificationsData(bool status){
+    globalNotificationsStatus = status;
   }
 
   void handleHomeData(List<Habit> habits) {
@@ -64,7 +80,12 @@ class HomeScreenBloc {
   }
 
   void logout() {
-    _logoutUseCase.logout().listen(onLogout);
+    onLogout(true);
+//    _logoutUseCase.logout().listen(onLogout);
+//    _notificationsService.cancelAllNotifications();
+  }
+
+  void cancelAllNotification() {
     _notificationsService.cancelAllNotifications();
   }
 

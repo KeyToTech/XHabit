@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
+import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 
@@ -21,9 +22,7 @@ class SaveHabitBloc {
   BehaviorSubject<String> _notificationTimeSubject;
 
   bool get dataEntered =>
-      title != null ||
-      notificationTime != null ||
-      endDate != null;
+      title != null || notificationTime != null || endDate != null;
 
   Stream<bool> get saveHabitObservable => _saveHabitSubject.stream;
 
@@ -37,8 +36,10 @@ class SaveHabitBloc {
       _enableNotificationSubject.stream;
 
   CreateHabitUseCase _useCase;
+  GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
 
-  SaveHabitBloc(this._hint, Habit selectedHabit, CreateHabitUseCase useCase) {
+  SaveHabitBloc(this._hint, Habit selectedHabit, CreateHabitUseCase useCase,
+      GlobalNotificationsUpdateUseCase globalNotificationsUpdateUseCase) {
     habitId = selectedHabit?.habitId;
     title = selectedHabit?.title;
     if (selectedHabit?.enableNotification != null) {
@@ -57,6 +58,7 @@ class SaveHabitBloc {
         SelectedDates(_dateString(startDate), _dateString(endDate)));
     _notificationTimeSubject = BehaviorSubject<String>.seeded(notificationTime);
     _useCase = useCase;
+    _globalNotificationsUpdateUseCase = globalNotificationsUpdateUseCase;
   }
 
   String saveHabit(String title) {
@@ -113,6 +115,14 @@ class SaveHabitBloc {
       message = 'Please, select start date.';
     }
     return message;
+  }
+
+  void getGlobalNotificationStatus(){
+    _globalNotificationsUpdateUseCase.getGlobalNotificationsStatus().listen(handleGlobalNotificationsData);
+  }
+
+  void handleGlobalNotificationsData(bool status){
+
   }
 
   void _onSaveHabit(bool onSaveHabit) {

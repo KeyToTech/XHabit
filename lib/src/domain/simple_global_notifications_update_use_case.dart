@@ -10,4 +10,7 @@ class SimpleGlobalNotificationsUpdateUseCase implements GlobalNotificationsUpdat
   @override
   Stream<bool> updateGlobalNotifications(bool notificationsOn) => _service.updateGlobalNotifications(notificationsOn);
 
+  @override
+  Stream<bool> getGlobalNotificationsStatus() => _service.getGlobalNotificationsStatus();
+
 }

@@ -44,6 +44,9 @@ class MockHabitData implements DatabaseService {
   Stream<bool> updateGlobalNotifications(bool notificationsOn) {}
 
   @override
+  Stream<bool> getGlobalNotificationsStatus() {}
+
+  @override
   void removeHabit(String habitId) {}
 
   @override

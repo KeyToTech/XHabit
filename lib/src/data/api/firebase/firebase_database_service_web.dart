@@ -77,6 +77,22 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
   }
 
   @override
+  Stream<bool> getGlobalNotificationsStatus(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      bool result = ((await _database
+          .ref(userId)
+          .child('notificationsOn')
+          .once('value'))
+          .snapshot
+          .val() as bool);
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
+
+  @override
   void removeHabit(String habitId) async {
     FirebaseUser user = await _auth.currentUser();
     await _database.ref(user.uid).child('habits').child(habitId).remove();

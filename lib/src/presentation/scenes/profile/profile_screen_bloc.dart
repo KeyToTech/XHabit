@@ -7,10 +7,10 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
-
-  GlobalNotificationsUpdateUseCase _useCase;
   bool globalEnableNotifications;
+
   BehaviorSubject<ProfileScreenResourse> _profileScreenStateSubject;
+
   BehaviorSubject<bool> _logoutStateSubject;
 
   Stream<ProfileScreenResourse> get ProfileScreenStateObservable =>
@@ -19,12 +19,14 @@ class ProfileScreenBloc {
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
   LogoutUseCase _logoutUseCase;
+  GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
 
-  ProfileScreenBloc(LogoutUseCase logoutUseCase, GlobalNotificationsUpdateUseCase useCase) {
-    _useCase = useCase;
-    globalEnableNotifications = true;
+  ProfileScreenBloc(LogoutUseCase logoutUseCase, bool notificationsOn, GlobalNotificationsUpdateUseCase notificationsUseCase) {
+    _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutUseCase = logoutUseCase;
+    globalEnableNotifications = notificationsOn;
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
+
     _logoutStateSubject = BehaviorSubject<bool>();
   }
 
@@ -43,9 +45,9 @@ class ProfileScreenBloc {
     }
   }
 
-  void onNotificationsSwitcher(){
+  void onNotificationsSwitcher() {
     globalEnableNotifications = !globalEnableNotifications;
-    _useCase.updateGlobalNotifications(globalEnableNotifications);
+    _globalNotificationsUpdateUseCase.updateGlobalNotifications(globalEnableNotifications);
   }
 
   void logout() {
@@ -60,7 +62,6 @@ class ProfileScreenBloc {
   void doSomth() {
     print('e!');
   }
-
 
   void dispose() {
     _logoutStateSubject.close();
