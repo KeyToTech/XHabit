@@ -3,13 +3,10 @@ import 'package:xhabits/src/presentation/styles/size_config.dart';
 
 class XHDivider {
 
-  XHDivider();
-
-  Divider drowPickersDivider() => Divider(
+  Divider drawPickersDivider() => Divider(
     color: Colors.black,
     thickness: SizeConfig.pickersDividerThickness,
     height: SizeConfig.pickersDividerHeight,
   );
-
 
 }

@@ -125,15 +125,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   _profileScreenBloc.onNotificationsSwitcher)
                           .IconButton(),
                     ),
-                    XHDivider().drowPickersDivider(),
+                    XHDivider().drawPickersDivider(),
                     XHIconButton('Rate this application', Icons.star,
                             Colors.amber, false, _profileScreenBloc.onRateApp)
                         .IconButton(),
-                    XHDivider().drowPickersDivider(),
+                    XHDivider().drawPickersDivider(),
                     XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
                             false, _profileScreenBloc.onSendFeedback)
                         .IconButton(),
-                    XHDivider().drowPickersDivider(),
+                    XHDivider().drawPickersDivider(),
                     XHIconButton('Logout', null, null, false, () {
                       ConfirmDialog.show(
                         context,

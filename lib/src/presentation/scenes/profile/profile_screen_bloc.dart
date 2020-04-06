@@ -60,7 +60,6 @@ class ProfileScreenBloc {
   }
 
   void logout() {
-    onLogout(true);
     _logoutUseCase.logout().listen(onLogout);
     _notificationsService.cancelAllNotifications();
   }

@@ -44,12 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
       DatabaseHomeScreenUseCase databaseUseCase,
       SimpleRemoveHabitUseCase removeHabitUseCase,
       SimpleRemoveHabitsUseCase removeHabitsUseCase,
-      SimpleGlobalNotificationsUpdateUseCase GlobalNotificationsUpdateUseCase) {
+      SimpleGlobalNotificationsUpdateUseCase globalNotificationsUpdateUseCase) {
     _homeScreenBloc = HomeScreenBloc(
         databaseUseCase,
         removeHabitUseCase,
         removeHabitsUseCase,
-        GlobalNotificationsUpdateUseCase,
+        globalNotificationsUpdateUseCase,
         !kIsWeb,
         context);
   }
@@ -305,22 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView.builder(
             itemCount: habits.length,
             itemBuilder: (BuildContext context, int index) {
-              if (!kIsWeb) {
-                if (_homeScreenBloc.globalNotificationsStatus) {
-                  if (habits[index].notificationTime != null) {
-                    _homeScreenBloc.showDailyNotification(
-                      index,
-                      habits[index].title,
-                      _homeScreenBloc
-                          .parseTimeString(habits[index].notificationTime),
-                    );
-                  } else {
-                    _homeScreenBloc.cancelNotification(index);
-                  }
-                } else {
-                  _homeScreenBloc.cancelAllNotification();
-                }
-              }
+              _homeScreenBloc.showNotifications(index, habits);
               return Container(
                 decoration: _habitRowDecoration(habits[index]),
                 child: ListTile(

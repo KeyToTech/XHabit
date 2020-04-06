@@ -151,7 +151,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.enableNotificationObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            XHDivider().drowPickersDivider(),
+            XHDivider().drawPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -188,7 +188,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.selectedDatesObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            XHDivider().drowPickersDivider(),
+            XHDivider().drawPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -253,7 +253,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.notificationTimeObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            XHDivider().drowPickersDivider(),
+            XHDivider().drawPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -278,7 +278,7 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
               ],
             ),
-            XHDivider().drowPickersDivider(),
+            XHDivider().drawPickersDivider(),
           ],
         ),
       );
