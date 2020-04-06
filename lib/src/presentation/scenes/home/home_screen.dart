@@ -17,7 +17,6 @@ import 'package:xhabits/src/domain/simple_remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
-import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
 import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
@@ -31,7 +30,6 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState(
         DatabaseHomeScreenUseCase(
             HomeRepository(AppConfig.database, RealWeekDays())),
-        SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
         SimpleRemoveHabitUseCase(AppConfig.database),
         SimpleRemoveHabitsUseCase(AppConfig.database),
     SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
@@ -47,17 +45,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _HomeScreenState(
       DatabaseHomeScreenUseCase databaseUseCase,
-      SimpleLogoutUseCase logoutUseCase,
       SimpleRemoveHabitUseCase removeHabitUseCase,
       SimpleRemoveHabitsUseCase removeHabitsUseCase, SimpleGlobalNotificationsUpdateUseCase GlobalNotificationsUpdateUseCase) {
-    _homeScreenBloc = HomeScreenBloc(databaseUseCase, logoutUseCase,
+    _homeScreenBloc = HomeScreenBloc(databaseUseCase,
         removeHabitUseCase, removeHabitsUseCase, GlobalNotificationsUpdateUseCase, !kIsWeb, context);
   }
 
   @override
   void initState() {
     _homeScreenBloc.getHomeData();
-    _homeScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
     _dateScroll = TrackingScrollController();
     _habitScroll = TrackingScrollController();
     _refreshController = RefreshController(initialRefresh: false);
@@ -120,13 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
             minWidth: 0,
           ),
           MaterialButton(
-            child: Icon(Icons.exit_to_app, color: XHColors.pink),
+            child: Icon(Icons.person, color: XHColors.pink),
             onPressed: () {
-              ConfirmDialog.show(
+              Navigator.push(
                 context,
-                'Logout',
-                'Are you sure you want to logout?',
-                _homeScreenBloc.logout,
+                MaterialPageRoute(builder: (context) => ProfileScreen(_homeScreenBloc.globalNotificationsStatus)),
               );
             },
             shape: CircleBorder(),
@@ -354,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
-  
+
   Future<void> onHabitAdd() async {
     bool habitSaved = await Navigator.push(
       context,
@@ -373,20 +367,11 @@ class _HomeScreenState extends State<HomeScreen> {
 //      MaterialPageRoute(builder: (context) => ProfileScreen()),
 //    );
 //  }
-  
+
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;
     _habitScroll.jumpTo(jumpTo > 0 ? jumpTo : _dateScroll.offset);
     return true;
-  }
-
-  void _handleLogoutRedirect(bool wasLoggedOut) {
-//    Navigator.pushReplacement(
-//        context, MaterialPageRoute(builder: (context) => LoginScreen()));
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ProfileScreen(_homeScreenBloc.globalNotificationsStatus)),
-    );
   }
 
   Widget _startAddingHabit() => Row(children: <Widget>[

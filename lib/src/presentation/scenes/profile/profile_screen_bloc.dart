@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
@@ -51,16 +50,13 @@ class ProfileScreenBloc {
   }
 
   void logout() {
+    onLogout(true);
     _logoutUseCase.logout().listen(onLogout);
 //    _notificationsService.cancelAllNotifications();
   }
 
   void onLogout(bool result) {
     _logoutStateSubject.sink.add(result);
-  }
-
-  void doSomth() {
-    print('e!');
   }
 
   void dispose() {

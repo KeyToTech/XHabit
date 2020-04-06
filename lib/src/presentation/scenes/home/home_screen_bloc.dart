@@ -3,7 +3,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
-import 'package:xhabits/src/domain/logout_use_case.dart';
 import 'package:xhabits/src/domain/remove_habit_use_case.dart';
 import 'package:xhabits/src/domain/remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
@@ -25,20 +24,17 @@ class HomeScreenBloc {
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
-
   Stream<AppBarState> get appBarStateObservable => _appBarStateSubject.stream;
 
   Stream<bool> get habitDeletedState => _habitDeletedSubject.stream;
 
   HomeScreenUseCase _useCase;
-  LogoutUseCase _logoutUseCase;
   RemoveHabitUseCase _removeUseCase;
   RemoveHabitsUseCase _removeHabitsUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
 
   HomeScreenBloc(
       HomeScreenUseCase useCase,
-      LogoutUseCase logoutUseCase,
       RemoveHabitUseCase removeUseCase,
       RemoveHabitsUseCase removeHabitsUseCase,
       GlobalNotificationsUpdateUseCase globalNotificationsUpdateUseCase,
@@ -49,7 +45,6 @@ class HomeScreenBloc {
     if (notificationOn) {
       _notificationsService = PushNotificationsService(context);
     }
-    _logoutUseCase = logoutUseCase;
     _globalNotificationsUpdateUseCase = globalNotificationsUpdateUseCase;
     _removeUseCase = removeUseCase;
     _removeHabitsUseCase = removeHabitsUseCase;
@@ -67,10 +62,12 @@ class HomeScreenBloc {
   }
 
   void getGlobalNotificationStatus() {
-    _globalNotificationsUpdateUseCase.getGlobalNotificationsStatus().listen(handleGlobalNotificationsData);
+    _globalNotificationsUpdateUseCase
+        .getGlobalNotificationsStatus()
+        .listen(handleGlobalNotificationsData);
   }
 
-  void handleGlobalNotificationsData(bool status){
+  void handleGlobalNotificationsData(bool status) {
     globalNotificationsStatus = status;
   }
 
