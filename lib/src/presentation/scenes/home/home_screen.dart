@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/data/real_week_days.dart';
-import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/database_home_screen_data_use_case.dart';
 import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
-import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
@@ -32,7 +29,7 @@ class HomeScreen extends StatefulWidget {
             HomeRepository(AppConfig.database, RealWeekDays())),
         SimpleRemoveHabitUseCase(AppConfig.database),
         SimpleRemoveHabitsUseCase(AppConfig.database),
-    SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
+        SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
       );
 }
 
@@ -46,9 +43,15 @@ class _HomeScreenState extends State<HomeScreen> {
   _HomeScreenState(
       DatabaseHomeScreenUseCase databaseUseCase,
       SimpleRemoveHabitUseCase removeHabitUseCase,
-      SimpleRemoveHabitsUseCase removeHabitsUseCase, SimpleGlobalNotificationsUpdateUseCase GlobalNotificationsUpdateUseCase) {
-    _homeScreenBloc = HomeScreenBloc(databaseUseCase,
-        removeHabitUseCase, removeHabitsUseCase, GlobalNotificationsUpdateUseCase, !kIsWeb, context);
+      SimpleRemoveHabitsUseCase removeHabitsUseCase,
+      SimpleGlobalNotificationsUpdateUseCase GlobalNotificationsUpdateUseCase) {
+    _homeScreenBloc = HomeScreenBloc(
+        databaseUseCase,
+        removeHabitUseCase,
+        removeHabitsUseCase,
+        GlobalNotificationsUpdateUseCase,
+        !kIsWeb,
+        context);
   }
 
   @override
@@ -120,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ProfileScreen(_homeScreenBloc.globalNotificationsStatus)),
+                MaterialPageRoute(
+                    builder: (context) => ProfileScreen(
+                        _homeScreenBloc.globalNotificationsStatus)),
               );
             },
             shape: CircleBorder(),
@@ -129,9 +134,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       );
 
-  Widget editHabitButton(Habit selectedHabit, bool globalNotificationsStatus){
+  Widget editHabitButton(Habit selectedHabit, bool globalNotificationsStatus) {
     Widget editButton;
-    if(_homeScreenBloc.selectedHabits.length == 1){
+    if (_homeScreenBloc.selectedHabits.length == 1) {
       editButton = MaterialButton(
         child: Icon(Icons.edit, color: XHColors.pink),
         onPressed: () async {
@@ -149,8 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: CircleBorder(),
         minWidth: 0,
       );
-    }
-    else {
+    } else {
       editButton = SizedBox(width: _screenSize.width * 0.11);
     }
     return editButton;
@@ -170,7 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: Text('Edit / remove habit'),
         actions: <Widget>[
-          editHabitButton(selectedHabit, _homeScreenBloc.globalNotificationsStatus),
+          editHabitButton(
+              selectedHabit, _homeScreenBloc.globalNotificationsStatus),
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
             onPressed: () {
@@ -312,8 +317,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   } else {
                     _homeScreenBloc.cancelNotification(index);
                   }
-                }
-                else{
+                } else {
                   _homeScreenBloc.cancelAllNotification();
                 }
               }
@@ -337,8 +341,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onLongPress: () {
                     _homeScreenBloc.toggleHabit(habits[index]);
                   },
-                  onTap: (){
-                    if(_homeScreenBloc.selectedHabits.isNotEmpty){
+                  onTap: () {
+                    if (_homeScreenBloc.selectedHabits.isNotEmpty) {
                       _homeScreenBloc.toggleHabit(habits[index]);
                     }
                   },
@@ -351,22 +355,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> onHabitAdd() async {
     bool habitSaved = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SaveHabit.create()),
-    ) ??
+          context,
+          MaterialPageRoute(builder: (context) => SaveHabit.create()),
+        ) ??
         false;
     if (habitSaved) {
-      MessageDialog.show(context, "New habit created!",
-          "Your new habit has been created!");
+      MessageDialog.show(
+          context, "New habit created!", "Your new habit has been created!");
       _homeScreenBloc.selectedHabits.clear();
     }
   }
-//  Future<void> onHabitAdd() async {
-//    await Navigator.push(
-//      context,
-//      MaterialPageRoute(builder: (context) => ProfileScreen()),
-//    );
-//  }
 
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;
@@ -386,24 +384,24 @@ class _HomeScreenState extends State<HomeScreen> {
       ]);
 
   BoxDecoration _habitRowDecoration(Habit selectedHabit) => BoxDecoration(
-    border: _homeScreenBloc.isHabitSelected(selectedHabit)
-        ? Border(
-      bottom: BorderSide(
-        color: XHColors.lightGrey,
-        width: _screenSize.shortestSide * 0.003,
-      ),
-      top: BorderSide(
-        color: XHColors.lightGrey,
-        width: _screenSize.shortestSide * 0.003,
-      ),
-    )
-        : Border(
-      bottom: BorderSide(
-        color: Colors.black,
-        width: _screenSize.shortestSide * 0.0015,
-      ),
-    ),
-  );
+        border: _homeScreenBloc.isHabitSelected(selectedHabit)
+            ? Border(
+                bottom: BorderSide(
+                  color: XHColors.lightGrey,
+                  width: _screenSize.shortestSide * 0.003,
+                ),
+                top: BorderSide(
+                  color: XHColors.lightGrey,
+                  width: _screenSize.shortestSide * 0.003,
+                ),
+              )
+            : Border(
+                bottom: BorderSide(
+                  color: Colors.black,
+                  width: _screenSize.shortestSide * 0.0015,
+                ),
+              ),
+      );
 
   @override
   void dispose() {

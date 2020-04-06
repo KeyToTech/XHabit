@@ -31,8 +31,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   _ProfileScreenState(SimpleLogoutUseCase logoutUseCase, bool notificationsOn,
       GlobalNotificationsUpdateUseCase notificationsUseCase) {
-    _profileScreenBloc =
-        ProfileScreenBloc(logoutUseCase, notificationsOn, notificationsUseCase);
+    _profileScreenBloc = ProfileScreenBloc(
+        logoutUseCase, notificationsOn, notificationsUseCase, context);
   }
 
   @override
