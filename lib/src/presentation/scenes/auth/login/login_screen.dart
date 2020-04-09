@@ -57,12 +57,6 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-//  void _handleRedirect(Resource<LoginState> loginState) {
-//    if (loginState.status == Status.SUCCESS) {
-//      Navigator.pushReplacement(
-//          context, MaterialPageRoute(builder: (context) => HomeScreen()));
-//    }
-//  }
   void _handleRedirect(Resource<LoginState> loginState) {
     if (loginState.status == Status.SUCCESS) {
       Navigator.pushReplacement(

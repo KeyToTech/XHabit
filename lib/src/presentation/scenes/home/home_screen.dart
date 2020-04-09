@@ -97,15 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 : mainAppBar(),
             body:
                 body(habits, selectedHabit, weekDays, daysWords, habitDeleted),
-            bottomNavigationBar: XHBottomBar(0).buildBottomBar(),
           );
         },
       );
-
-  int onBarTapped(int index){
-    int currentIndex = 0;
-    return currentIndex = index;
-  }
 
   PreferredSizeWidget mainAppBar() => AppBar(
         title: Text(

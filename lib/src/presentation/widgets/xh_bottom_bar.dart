@@ -6,12 +6,13 @@ class XHBottomBar {
 
   XHBottomBarBloc _xhBottomBarBloc;
 
+  int getCurrentIndex() => _xhBottomBarBloc.currentIndex;
 
-  XHBottomBar(int index){
-    _xhBottomBarBloc = XHBottomBarBloc(index);
+  XHBottomBar(XHBottomBarBloc bloc){
+    _xhBottomBarBloc = bloc;
   }
 
-  Widget buildBottomBar() => StreamBuilder<Object>(
+  Widget buildBottomBar() => StreamBuilder<int>(
     stream: _xhBottomBarBloc.currentIndexObservable,
     builder: (context, snapshot) => BottomNavigationBar(
         backgroundColor: XHColors.darkGrey,

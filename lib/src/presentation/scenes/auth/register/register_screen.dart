@@ -65,15 +65,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
-//  void _handleRedirect(Resource<RegisterState> registerState) {
-//    if (registerState.status == Status.SUCCESS) {
-//      Navigator.pushAndRemoveUntil(
-//        context,
-//        MaterialPageRoute(builder: (context) => HomeScreen()),
-//        (Route<dynamic> route) => false,
-//      );
-//    }
-//  }
   void _handleRedirect(Resource<RegisterState> registerState) {
     if (registerState.status == Status.SUCCESS) {
       Navigator.pushAndRemoveUntil(

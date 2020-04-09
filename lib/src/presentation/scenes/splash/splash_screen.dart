@@ -42,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen> {
     print('showHome: ${splashState.showHome}');
     StatefulWidget nextScreen;
     if (splashState.showHome == true && splashState.showLogin == false) {
-//      nextScreen = HomeScreen();
       nextScreen = BaseScreen();
     } else {
       nextScreen = LoginScreen();
