@@ -23,6 +23,7 @@ import 'package:xhabits/src/presentation/scenes/home/home_screen_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
 import 'package:xhabits/src/presentation/styles/screen_type.dart';
 import 'package:xhabits/src/presentation/scenes/message_dialog.dart';
+import 'package:xhabits/src/presentation/widgets/xh_bottom_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -96,9 +97,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 : mainAppBar(),
             body:
                 body(habits, selectedHabit, weekDays, daysWords, habitDeleted),
+            bottomNavigationBar: XHBottomBar(0).buildBottomBar(),
           );
         },
       );
+
+  int onBarTapped(int index){
+    int currentIndex = 0;
+    return currentIndex = index;
+  }
 
   PreferredSizeWidget mainAppBar() => AppBar(
         title: Text(
@@ -132,9 +139,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       );
 
-  Widget editHabitButton(Habit selectedHabit){
+  Widget editHabitButton(Habit selectedHabit) {
     Widget editButton;
-    if(_homeScreenBloc.selectedHabits.length == 1){
+    if (_homeScreenBloc.selectedHabits.length == 1) {
       editButton = MaterialButton(
         child: Icon(Icons.edit, color: XHColors.pink),
         onPressed: () async {
@@ -152,8 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
         shape: CircleBorder(),
         minWidth: 0,
       );
-    }
-    else {
+    } else {
       editButton = SizedBox(width: _screenSize.width * 0.11);
     }
     return editButton;
@@ -335,8 +341,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   onLongPress: () {
                     _homeScreenBloc.toggleHabit(habits[index]);
                   },
-                  onTap: (){
-                    if(_homeScreenBloc.selectedHabits.isNotEmpty){
+                  onTap: () {
+                    if (_homeScreenBloc.selectedHabits.isNotEmpty) {
                       _homeScreenBloc.toggleHabit(habits[index]);
                     }
                   },
@@ -346,20 +352,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       );
-  
+
   Future<void> onHabitAdd() async {
     bool habitSaved = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => SaveHabit.create()),
-    ) ??
+          context,
+          MaterialPageRoute(builder: (context) => SaveHabit.create()),
+        ) ??
         false;
     if (habitSaved) {
-      MessageDialog.show(context, "New habit created!",
-          "Your new habit has been created!");
+      MessageDialog.show(
+          context, "New habit created!", "Your new habit has been created!");
       _homeScreenBloc.selectedHabits.clear();
     }
   }
-  
+
   bool _onScrollNotification(ScrollNotification scrollInfo) {
     double jumpTo = _dateScroll.offset - 0.0001;
     _habitScroll.jumpTo(jumpTo > 0 ? jumpTo : _dateScroll.offset);
@@ -382,11 +388,14 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ]);
 
-  BoxDecoration _habitRowDecoration(Habit selectedHabit) =>
-      BoxDecoration(
+  BoxDecoration _habitRowDecoration(Habit selectedHabit) => BoxDecoration(
         border: _homeScreenBloc.isHabitSelected(selectedHabit)
-            ? Border.symmetric(
-                vertical: BorderSide(
+            ? Border(
+                bottom: BorderSide(
+                  color: XHColors.lightGrey,
+                  width: _screenSize.shortestSide * 0.003,
+                ),
+                top: BorderSide(
                   color: XHColors.lightGrey,
                   width: _screenSize.shortestSide * 0.003,
                 ),
