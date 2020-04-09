@@ -5,6 +5,7 @@ import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_button.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
+import 'package:xhabits/src/presentation/scenes/home/base_screen.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
@@ -64,12 +65,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailTextEditingController.text, _passwordTextEditingController.text);
   }
 
+//  void _handleRedirect(Resource<RegisterState> registerState) {
+//    if (registerState.status == Status.SUCCESS) {
+//      Navigator.pushAndRemoveUntil(
+//        context,
+//        MaterialPageRoute(builder: (context) => HomeScreen()),
+//        (Route<dynamic> route) => false,
+//      );
+//    }
+//  }
   void _handleRedirect(Resource<RegisterState> registerState) {
     if (registerState.status == Status.SUCCESS) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-        (Route<dynamic> route) => false,
+        MaterialPageRoute(builder: (context) => BaseScreen()),
+            (Route<dynamic> route) => false,
       );
     }
   }
