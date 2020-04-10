@@ -37,7 +37,9 @@ class _BaseScreenState extends State<BaseScreen> {
       stream: _baseScreenBloc.selectedIndexObservable,
       builder: (context, snapshot) => WillPopScope(
             onWillPop: () async =>
-                !await _navigatorKeys[_bottomBar.getCurrentIndex()].currentState.maybePop(),
+                !await _navigatorKeys[_bottomBar.getCurrentIndex()]
+                    .currentState
+                    .maybePop(),
             child: Scaffold(
               body: Stack(
                 children: <Widget>[
@@ -54,11 +56,12 @@ class _BaseScreenState extends State<BaseScreen> {
       child: HomeTabNavigator(_navigatorKeys[0]));
 
   Widget _progress() => Offstage(
-      offstage: 1 != _bottomBar.getCurrentIndex(),
-      child: HomeTabNavigator(_navigatorKeys[1])
-  );
+        offstage: 1 != _bottomBar.getCurrentIndex(),
+        //child: ProgressTabNavigator(_navigatorKeys[1])
+      );
 
   Widget _profile() => Offstage(
-    offstage: 2 != _bottomBar.getCurrentIndex(),
-  );
+        offstage: 2 != _bottomBar.getCurrentIndex(),
+        //child: ProfileTabNavigator(_navigatorKeys[2])
+      );
 }
