@@ -6,7 +6,6 @@ import 'package:xhabits/src/domain/login/facebook_login_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/base/base_screen.dart';
-import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 
 class FacebookLoginButton extends StatefulWidget {
   @override

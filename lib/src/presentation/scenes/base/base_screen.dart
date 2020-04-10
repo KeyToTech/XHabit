@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/scenes/base/base_screen_bloc.dart';
-import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/home/tab_navigator/home_tab_navigator.dart';
-import 'package:xhabits/src/presentation/scenes/save_habit/save_habit.dart';
 import 'package:xhabits/src/presentation/widgets/xh_bottom_bar.dart';
-import 'package:xhabits/src/presentation/widgets/xh_bottom_bar_bloc.dart';
 
 class BaseScreen extends StatefulWidget {
   @override
@@ -57,10 +54,11 @@ class _BaseScreenState extends State<BaseScreen> {
       child: HomeTabNavigator(_navigatorKeys[0]));
 
   Widget _progress() => Offstage(
-        offstage: 1 != _bottomBar.getCurrentIndex()
-      );
+      offstage: 1 != _bottomBar.getCurrentIndex(),
+      child: HomeTabNavigator(_navigatorKeys[1])
+  );
 
   Widget _profile() => Offstage(
-        offstage: 2 != _bottomBar.getCurrentIndex(),
-      );
+    offstage: 2 != _bottomBar.getCurrentIndex(),
+  );
 }

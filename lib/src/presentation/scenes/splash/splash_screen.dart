@@ -5,7 +5,6 @@ import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/simple_check_user_is_signed_in_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/base/base_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
-import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'splash_screen_bloc.dart';

@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/presentation/widgets/xh_bottom_bar_bloc.dart';
 
 class BaseScreenBloc {
