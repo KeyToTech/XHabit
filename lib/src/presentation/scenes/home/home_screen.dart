@@ -26,14 +26,18 @@ import 'package:xhabits/src/presentation/scenes/message_dialog.dart';
 import 'package:xhabits/src/presentation/widgets/xh_bottom_bar.dart';
 
 class HomeScreen extends StatefulWidget {
+  void Function(Habit habit) _onPush;
+
+  HomeScreen(onPush);
+
   @override
   _HomeScreenState createState() => _HomeScreenState(
-        DatabaseHomeScreenUseCase(
-            HomeRepository(AppConfig.database, RealWeekDays())),
-        SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
-        SimpleRemoveHabitUseCase(AppConfig.database),
-        SimpleRemoveHabitsUseCase(AppConfig.database),
-      );
+      DatabaseHomeScreenUseCase(
+          HomeRepository(AppConfig.database, RealWeekDays())),
+      SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
+      SimpleRemoveHabitUseCase(AppConfig.database),
+      SimpleRemoveHabitsUseCase(AppConfig.database),
+      _onPush);
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -42,12 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
   TrackingScrollController _dateScroll;
   TrackingScrollController _habitScroll;
   RefreshController _refreshController;
+  void Function(Habit habit) onPush;
 
   _HomeScreenState(
       DatabaseHomeScreenUseCase databaseUseCase,
       SimpleLogoutUseCase logoutUseCase,
       SimpleRemoveHabitUseCase removeHabitUseCase,
-      SimpleRemoveHabitsUseCase removeHabitsUseCase) {
+      SimpleRemoveHabitsUseCase removeHabitsUseCase,
+      onPush) {
     _homeScreenBloc = HomeScreenBloc(databaseUseCase, logoutUseCase,
         removeHabitUseCase, removeHabitsUseCase, !kIsWeb, context);
   }
