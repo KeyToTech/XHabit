@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 import 'package:xhabits/src/data/home_repository.dart';
 import 'package:xhabits/src/data/real_week_days.dart';
@@ -27,12 +27,11 @@ import 'package:xhabits/src/presentation/scenes/message_dialog.dart';
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState(
-        DatabaseHomeScreenUseCase(
-            HomeRepository(AppConfig.database, RealWeekDays())),
-        SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
-        SimpleRemoveHabitUseCase(AppConfig.database),
-        SimpleRemoveHabitsUseCase(AppConfig.database),
-      );
+      DatabaseHomeScreenUseCase(
+          HomeRepository(AppConfig.database, RealWeekDays())),
+      SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
+      SimpleRemoveHabitUseCase(AppConfig.database),
+      SimpleRemoveHabitsUseCase(AppConfig.database));
 }
 
 class _HomeScreenState extends State<HomeScreen> {

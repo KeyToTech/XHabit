@@ -6,8 +6,8 @@ class InfoDialog {
     await showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text('$title'),
+        content: Text('$message'),
         actions: <Widget>[
           FlatButton(
             child: Text('Close', style: TextStyle(color: XHColors.pink)),
