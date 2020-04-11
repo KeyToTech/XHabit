@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_button.dart';
+import 'package:xhabits/src/presentation/scenes/base/base_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
-import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _handleRedirect(Resource<LoginState> loginState) {
     if (loginState.status == Status.SUCCESS) {
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          context, MaterialPageRoute(builder: (context) => BaseScreen()));
     }
   }
 

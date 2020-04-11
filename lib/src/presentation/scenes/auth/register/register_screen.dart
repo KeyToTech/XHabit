@@ -5,7 +5,7 @@ import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_button.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
-import 'package:xhabits/src/presentation/scenes/home/home_screen.dart';
+import 'package:xhabits/src/presentation/scenes/base/base_screen.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
@@ -68,8 +68,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (registerState.status == Status.SUCCESS) {
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-        (Route<dynamic> route) => false,
+        MaterialPageRoute(builder: (context) => BaseScreen()),
+            (Route<dynamic> route) => false,
       );
     }
   }
