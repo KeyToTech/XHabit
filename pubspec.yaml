@@ -42,7 +42,7 @@ dependencies:
   firebase_analytics: ^5.0.9
 
   # Dependency for the Firebase Authentication
-  firebase_auth: ^0.15.3+1
+  firebase_auth: ^0.15.5+3
 
   # Dependency for the Flutter plugin to use the Firebase Realtime Database
   firebase_database: ^3.1.1

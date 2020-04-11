@@ -44,8 +44,11 @@ class _SaveHabitState extends State<SaveHabit> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(appBar: _appBar(), body: _body());
+  Widget build(BuildContext context) => Scaffold(
+        appBar: _appBar(),
+        body: _body(),
+        resizeToAvoidBottomInset: false,
+      );
 
   PreferredSizeWidget _appBar() => AppBar(
         automaticallyImplyLeading: false,
@@ -139,6 +142,9 @@ class _SaveHabitState extends State<SaveHabit> {
                 _dateRow('Start date'),
                 _dateRow('End date'),
                 _notificationRow(),
+                SizedBox(
+                  height: SizeConfig.handleKeyboardHeight(context),
+                ),
               ],
             ),
           ),
