@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
@@ -6,6 +9,25 @@ import 'package:xhabits/src/data/entities/habit.dart';
 class FirebaseDatabaseServiceMobile implements DatabaseService {
   final _database = FirebaseDatabase.instance.reference();
   final _auth = FirebaseAuth.instance;
+  final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
+
+  FirebaseDatabaseServiceMobile() {
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      _database.reference().child(userId).onChildChanged.listen((event) {
+        print('info that changed: ${event.snapshot.key}: ${event.snapshot.value}');
+        if (event.snapshot.key == 'notificationsOn') {
+          _globalNotificationsSubject.add(event.snapshot.value as bool);
+        }
+      });
+      _globalNotificationsSubject.sink.add((await _database
+          .child(userId)
+          .child('notificationsOn')
+          .once())
+          .value as bool);
+    }
+    getFuture();
+  }
 
   @override
   Stream<List<Habit>> getHabits() {
@@ -28,6 +50,9 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
+  BehaviorSubject<bool> getGlobalNotificationsStatus() => _globalNotificationsSubject;
+
+  @override
   Stream<bool> createHabit(String habitId, String title, bool enableNotification,
       String startDate, {String endDate, String notificationTime}) {
     getFuture() async {
@@ -42,6 +67,17 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
       return true;
     }
 
+    return Stream.fromFuture(getFuture());
+  }
+
+  @override
+  Stream<bool> updateGlobalNotifications(bool notificationsOn){
+    getFuture() async {
+      FirebaseUser user = await _auth.currentUser();
+      await _database.child(user.uid).child('notificationsOn').set(
+        notificationsOn);
+      return true;
+    }
     return Stream.fromFuture(getFuture());
   }
 

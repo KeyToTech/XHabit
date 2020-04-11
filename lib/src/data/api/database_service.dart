@@ -1,3 +1,5 @@
+import 'package:firebase_database/firebase_database.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 
 abstract class DatabaseService {
@@ -16,4 +18,8 @@ abstract class DatabaseService {
   void removeHabits(List<String> habitIds);
 
   void updateCheckedDays(String habitId, List<DateTime> checkedDays);
+
+  Stream<bool> updateGlobalNotifications(bool notificationsOn);
+
+  BehaviorSubject<bool> getGlobalNotificationsStatus();
 }

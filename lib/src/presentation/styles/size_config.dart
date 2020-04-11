@@ -40,7 +40,21 @@ class SizeConfig {
       horizontal: screenSize.width > 1000
           ? screenSize.width * 0.3
           : screenSize.width * 0.15);
-
-  static double handleKeyboardHeight(BuildContext context) =>
-      MediaQuery.of(context).viewInsets.bottom + 16.0;
+  static double handleKeyboardHeight(BuildContext context) => MediaQuery.of(context).viewInsets.bottom + 16.0;
+  static final EdgeInsetsGeometry profileScreenTitlePadding = EdgeInsets.only(
+      top: screenSize.height * 0.08, bottom: screenSize.height * 0.1, left: screenSize.height * 0.03);
+  static final double profileScreenTitle = screenSize.height * 0.05;
+  static final double profileScreenAvatarRadius = screenSize.height * 0.073;
+  static final double profileScreenAvatarBorderRadius = screenSize.height * 0.085;
+  static final double profileScreenUserName = screenSize.height * 0.025;
+  static final double profileScreenUserEmail = screenSize.height * 0.015;
+  static final EdgeInsetsGeometry profileScreenUserTextPadding = EdgeInsets.only(
+      top: screenSize.height * 0.023, bottom: screenSize.height * 0.007);
+  static final EdgeInsetsGeometry profileScreenFirstButtonPadding = EdgeInsets.only(
+      top: screenSize.height * 0.07);
+  static final EdgeInsetsGeometry profileScreenIconOnButtonPadding = EdgeInsets.only(
+      left: screenSize.width * 0.05, right: screenSize.width * 0.05);
+  static final double profileScreenButtonText = screenSize.height * 0.02;
+  static final EdgeInsetsGeometry profileScreenSwitcherPadding = EdgeInsets.only(
+      right: screenSize.width * 0.03);
 }
