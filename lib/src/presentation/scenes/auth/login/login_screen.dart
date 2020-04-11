@@ -12,7 +12,7 @@ import 'package:xhabits/src/presentation/widgets/xh_error_message.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
 import 'package:xhabits/src/domain/login/login_use_case.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 
 import '../../../resource.dart';
 import '../../info_dialog.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
@@ -92,6 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (snapshot.data.status == Status.ERROR) {
               WidgetsBinding.instance.addPostFrameCallback((_) =>
                   InfoDialog().show(context, 'Error', snapshot.data.message));
+              _registerBloc.initialState();
             }
 
             return buildUi(context, registerState);

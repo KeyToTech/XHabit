@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:xhabits/src/data/api/firebase/firebase_auth_service.dart';
+import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/login/facebook_login_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
