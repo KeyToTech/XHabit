@@ -4,6 +4,8 @@ class SizeConfig {
   static Size screenSize;
   static final double appBarButtonText = screenSize.height * 0.023;
   static final double appBarTitle = screenSize.height * 0.027;
+  static final double bottomBarIconSize = screenSize.height * 0.045;
+  static final double bottomBarTitlesSize = screenSize.height * 0.015;
   static final EdgeInsetsGeometry saveScreenPadding = EdgeInsets.symmetric(
     vertical: screenSize.height * 0.02,
     horizontal: screenSize.width * 0.035,
@@ -39,6 +41,6 @@ class SizeConfig {
           ? screenSize.width * 0.3
           : screenSize.width * 0.15);
 
-  static double authHandleKeyboardHeight(BuildContext context) =>
+  static double handleKeyboardHeight(BuildContext context) =>
       MediaQuery.of(context).viewInsets.bottom + 16.0;
 }

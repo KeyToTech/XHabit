@@ -1,6 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:xhabits/src/data/entities/user.dart';
+import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/username_validation.dart';
@@ -75,33 +74,24 @@ class RegisterBloc {
 
   void register(String email, String password) {
     _registerStateSubject.sink.add(Resource.loading(_initialState));
-    _registerUseCase.register(email, password).listen(handleRegister,
-        onDone: () {
-      print('DONE');
-    }, onError: (error) {
-      if (error.runtimeType == PlatformException) {
-        handleError(error as PlatformException);
-      } else {
-        handleError(PlatformException(code: '400'));
-      }
-    });
+    _registerUseCase.register(email, password).listen(handleRegister);
   }
 
-  void handleRegister(User user) {
-    if (user != null) {
-      _registerStateSubject.sink.add(Resource.success(RegisterState(
-          RegisterValidationsState(_defaultTextInputState,
-              _defaultTextInputState, _defaultTextInputState),
-          false,
-          false)));
+  void handleRegister(XHAuthResult authResult) {
+    if (authResult.user != null) {
+      _registerStateSubject.sink.add(Resource.success(_initialState));
     } else {
-      handleError(PlatformException(code: '400'));
+      handleError(authResult.message);
     }
   }
 
-  void handleError(PlatformException error) {
-    print('ERR ${error.toString()}');
-    _registerStateSubject.sink
-        .add(Resource.errorWithData(error.message, _initialState));
+  void initialState() {
+    _registerStateSubject.sink.add(Resource.initial(_initialState));
   }
+
+  void handleError(String errorMessage) {
+    _registerStateSubject.sink
+        .add(Resource.errorWithData(errorMessage, _initialState));
+  }
+
 }

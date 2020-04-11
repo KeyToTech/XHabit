@@ -1,4 +1,4 @@
-import 'package:xhabits/src/data/entities/user.dart';
+import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 
 class LoginUseCase {
@@ -6,6 +6,6 @@ class LoginUseCase {
 
   LoginUseCase(this._repository);
 
-  Stream<User> login(String email, String password) =>
+  Stream<XHAuthResult> login(String email, String password) =>
       _repository.signIn(email, password);
 }
