@@ -39,6 +39,6 @@ class SizeConfig {
           ? screenSize.width * 0.3
           : screenSize.width * 0.15);
 
-  static double authHandleKeyboardHeight(BuildContext context) =>
+  static double handleKeyboardHeight(BuildContext context) =>
       MediaQuery.of(context).viewInsets.bottom + 16.0;
 }

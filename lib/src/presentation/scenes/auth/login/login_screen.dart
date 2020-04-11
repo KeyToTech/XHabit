@@ -168,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   FacebookLoginButton(),
                   SizedBox(
-                    height: SizeConfig.authHandleKeyboardHeight(context),
+                    height: SizeConfig.handleKeyboardHeight(context),
                   ),
                 ],
               ),

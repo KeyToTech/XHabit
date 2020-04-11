@@ -191,7 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   FacebookLoginButton(),
                   SizedBox(
-                    height: SizeConfig.authHandleKeyboardHeight(context),
+                    height: SizeConfig.handleKeyboardHeight(context),
                   ),
                 ],
               ),
