@@ -272,38 +272,40 @@ class _SaveHabitState extends State<SaveHabit> {
   }
 
   Widget _notificationRow() => StreamBuilder<String>(
-        stream: _saveHabitBloc.notificationTimeObservable,
-        builder: (context, snapshot) => Column(
-          children: <Widget>[
-            XHDivider().drawPickersDivider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                XHStatefulButton(
-                        'Reminder time',
-                        SizeConfig.pickerText,
-                        SizeConfig.pickerPadding,
-                        _saveHabitBloc.enableNotification,
-                        Colors.white,
-                        XHColors.grey,
-                        _onTimePicker)
-                    .statefulButton(),
-                Container(
-                  padding: SizeConfig.pickedTextPadding,
-                  child: Text(
-                    snapshot.data ?? '',
-                    style: TextStyle(
-                      fontSize: SizeConfig.saveScreenSmallText,
-                      color: Colors.white,
+      stream: _saveHabitBloc.notificationTimeObservable,
+      builder: (context, snapshot) => Column(
+            children: <Widget>[
+              XHDivider().drawPickersDivider(),
+              InkWell(
+                onTap: _saveHabitBloc.enableNotification ? _onTimePicker : null,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    XHStatefulButton(
+                            'Reminder time',
+                            SizeConfig.pickerText,
+                            SizeConfig.pickerPadding,
+                            _saveHabitBloc.enableNotification,
+                            Colors.white,
+                            XHColors.grey,
+                            _onTimePicker)
+                        .statefulButton(),
+                    Container(
+                      padding: SizeConfig.pickedTextPadding,
+                      child: Text(
+                        snapshot.data ?? '',
+                        style: TextStyle(
+                          fontSize: SizeConfig.saveScreenSmallText,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-            XHDivider().drawPickersDivider(),
-          ],
-        ),
-      );
+              ),
+              XHDivider().drawPickersDivider(),
+            ],
+          ));
 
   TimeOfDay _selectedTime() {
     List<String> timeStrings = _saveHabitBloc.notificationTime?.split(':');
