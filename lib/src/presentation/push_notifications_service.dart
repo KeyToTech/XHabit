@@ -28,8 +28,6 @@ class PushNotificationsService {
       'xh_channel_id',
       'xh_channel_name',
       'xh_channel_description',
-//      style: AndroidNotificationStyle.BigText, ---- cause an error on Bitrise
-//      styleInformation: BigTextStyleInformation('Check your HABIT'), ---- alternative to 'style' property in case we need it
       importance: Importance.Max,
       priority: Priority.High,
     );
