@@ -1,9 +1,10 @@
 import 'package:xhabits/src/data/entities/user.dart';
+import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 
 abstract class AuthService {
-  Stream<User> signUp(String email, String password);
+  Stream<XHAuthResult> signUp(String email, String password);
 
-  Stream<User> signIn(String email, String password);
+  Stream<XHAuthResult> signIn(String email, String password);
 
   Stream<User> loginWithFacebook();
 

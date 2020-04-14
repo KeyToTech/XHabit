@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/rounded_picker.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
+import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_save_habit_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/info_dialog.dart';
@@ -10,6 +11,7 @@ import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/save_habit_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/save_habit/selected_dates.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
+import 'package:xhabits/src/presentation/widgets/xh_divider.dart';
 import 'package:xhabits/src/presentation/widgets/xh_stateful_button.dart';
 
 class SaveHabit extends StatefulWidget {
@@ -22,12 +24,16 @@ class SaveHabit extends StatefulWidget {
 
   @override
   _SaveHabitState createState() => _SaveHabitState(SaveHabitBloc(
-      _hint, _selectedHabit, SimpleCreateHabitUseCase(AppConfig.database)));
+      _hint,
+      _selectedHabit,
+      SimpleCreateHabitUseCase(AppConfig.database),
+      SimpleGlobalNotificationsUpdateUseCase(AppConfig.database)));
 }
 
 class _SaveHabitState extends State<SaveHabit> {
   TextEditingController _titleController;
 
+  bool globalNotificationsStatus;
   final SaveHabitBloc _saveHabitBloc;
 
   _SaveHabitState(this._saveHabitBloc) {
@@ -41,8 +47,11 @@ class _SaveHabitState extends State<SaveHabit> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      Scaffold(appBar: _appBar(), body: _body());
+  Widget build(BuildContext context) => Scaffold(
+        appBar: _appBar(),
+        body: _body(),
+        resizeToAvoidBottomInset: false,
+      );
 
   PreferredSizeWidget _appBar() => AppBar(
         automaticallyImplyLeading: false,
@@ -136,25 +145,24 @@ class _SaveHabitState extends State<SaveHabit> {
                 _dateRow('Start date'),
                 _dateRow('End date'),
                 _notificationRow(),
+                SizedBox(
+                  height: SizeConfig.handleKeyboardHeight(context),
+                ),
               ],
             ),
           ),
         ),
       );
 
-  Divider _pickersDivider() => Divider(
-        color: Colors.black,
-        thickness: SizeConfig.pickersDividerThickness,
-        height: SizeConfig.pickersDividerHeight,
-      );
-
   Widget _reminderRow() => StreamBuilder<bool>(
         stream: _saveHabitBloc.enableNotificationObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            _pickersDivider(),
+            XHDivider().drawPickersDivider(),
             InkWell(
-              onTap: (){ _reminderSwitcherPressed(!_saveHabitBloc.enableNotification);},
+              onTap: () {
+                _reminderSwitcherPressed(!_saveHabitBloc.enableNotification);
+              },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -193,7 +201,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.selectedDatesObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            _pickersDivider(),
+            XHDivider().drawPickersDivider(),
             InkWell(
               onTap: () {
                 selectDateOnPicker(dateHint);
@@ -267,7 +275,7 @@ class _SaveHabitState extends State<SaveHabit> {
         stream: _saveHabitBloc.notificationTimeObservable,
         builder: (context, snapshot) => Column(
           children: <Widget>[
-            _pickersDivider(),
+            XHDivider().drawPickersDivider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -292,7 +300,7 @@ class _SaveHabitState extends State<SaveHabit> {
                 ),
               ],
             ),
-            _pickersDivider(),
+            XHDivider().drawPickersDivider(),
           ],
         ),
       );

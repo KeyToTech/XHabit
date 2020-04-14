@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
+import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/home_screen_use_case.dart';
-import 'package:xhabits/src/domain/logout_use_case.dart';
 import 'package:xhabits/src/domain/remove_habit_use_case.dart';
 import 'package:xhabits/src/domain/remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
@@ -10,7 +11,7 @@ import 'package:xhabits/src/presentation/scenes/home/app_bar_state.dart';
 import 'home_screen_state.dart';
 
 class HomeScreenBloc {
-  BehaviorSubject<bool> _logoutStateSubject;
+  bool globalNotificationsStatus;
   BehaviorSubject<HomeScreenResource> _homeStateSubject;
   BehaviorSubject<AppBarState> _appBarStateSubject;
   BehaviorSubject<bool> _habitDeletedSubject;
@@ -21,41 +22,50 @@ class HomeScreenBloc {
   Stream<HomeScreenResource> get homeScreenStateObservable =>
       _homeStateSubject.stream;
 
-  Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
-
   Stream<AppBarState> get appBarStateObservable => _appBarStateSubject.stream;
 
   Stream<bool> get habitDeletedState => _habitDeletedSubject.stream;
 
   HomeScreenUseCase _useCase;
-  LogoutUseCase _logoutUseCase;
   RemoveHabitUseCase _removeUseCase;
   RemoveHabitsUseCase _removeHabitsUseCase;
+  GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
 
   HomeScreenBloc(
       HomeScreenUseCase useCase,
-      LogoutUseCase logoutUseCase,
       RemoveHabitUseCase removeUseCase,
       RemoveHabitsUseCase removeHabitsUseCase,
+      GlobalNotificationsUpdateUseCase globalNotificationsUpdateUseCase,
       bool notificationOn,
       BuildContext context) {
+    globalNotificationsStatus = true;
     _useCase = useCase;
     if (notificationOn) {
       _notificationsService = PushNotificationsService(context);
     }
-    _logoutUseCase = logoutUseCase;
+    _globalNotificationsUpdateUseCase = globalNotificationsUpdateUseCase;
     _removeUseCase = removeUseCase;
     _removeHabitsUseCase = removeHabitsUseCase;
     _homeStateSubject = BehaviorSubject<HomeScreenResource>();
-    _logoutStateSubject = BehaviorSubject<bool>();
     _appBarStateSubject =
         BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
     _habitDeletedSubject = BehaviorSubject<bool>.seeded(false);
     _habitEditedSubject = BehaviorSubject<bool>.seeded(false);
+    getGlobalNotificationStatus();
   }
 
   void getHomeData() {
     _useCase.getHabits().listen(handleHomeData);
+  }
+
+  void getGlobalNotificationStatus() {
+    _globalNotificationsUpdateUseCase
+        .getGlobalNotificationsStatus()
+        .listen(handleGlobalNotificationsData);
+  }
+
+  void handleGlobalNotificationsData(bool status) {
+    globalNotificationsStatus = status;
   }
 
   void handleHomeData(List<Habit> habits) {
@@ -63,13 +73,8 @@ class HomeScreenBloc {
         habits, _useCase.weekDays(habits), _useCase.daysWords(), false));
   }
 
-  void logout() {
-    _logoutUseCase.logout().listen(onLogout);
+  void cancelAllNotification() {
     _notificationsService.cancelAllNotifications();
-  }
-
-  void onLogout(bool result) {
-    _logoutStateSubject.sink.add(result);
   }
 
   void onEdit() => _habitEditedSubject.sink.add(true);
@@ -127,6 +132,28 @@ class HomeScreenBloc {
     _appBarStateSubject.sink.add(AppBarState(false, null));
   }
 
+  void showNotifications(int index, List<Habit> habits){
+    if (!kIsWeb) {
+      if (globalNotificationsStatus) {
+        trySendNotification(index, habits);
+      } else {
+        cancelAllNotification();
+      }
+    }
+  }
+
+  void trySendNotification(int index, List<Habit> habits){
+    if (habits[index].notificationTime != null) {
+      showDailyNotification(
+        index,
+        habits[index].title,
+        parseTimeString(habits[index].notificationTime),
+      );
+    } else {
+     cancelNotification(index);
+    }
+  }
+
   Future<bool> onWillPop() async {
     selectedHabits.clear();
     if (_appBarStateSubject.stream.value.showEditingAppBar) {
@@ -152,6 +179,5 @@ class HomeScreenBloc {
 
   void dispose() {
     _homeStateSubject.close();
-    _logoutStateSubject.close();
   }
 }

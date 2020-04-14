@@ -1,3 +1,4 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
@@ -6,6 +7,8 @@ import 'package:firebase/firebase.dart';
 class FirebaseDatabaseServiceWeb implements DatabaseService {
   final _database = database();
   final _auth = FirebaseAuth.instance;
+
+  final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
 
   @override
   Stream<List<Habit>> getHabits() {
@@ -64,6 +67,33 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
 
     return Stream.fromFuture(getFuture());
   }
+
+  @override
+  Stream<bool> updateGlobalNotifications(bool notificationsOn){
+    getFuture() async {
+      FirebaseUser user = await _auth.currentUser();
+      await _database.ref(user.uid).child('notificationsOn').set(
+          notificationsOn);
+      return true;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
+  @override
+  BehaviorSubject<bool> getGlobalNotificationsStatus(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      bool result = ((await _database
+          .ref(userId)
+          .child('notificationsOn')
+          .once('value'))
+          .snapshot
+          .val() as bool);
+      _globalNotificationsSubject.sink.add(result);
+    }
+    return _globalNotificationsSubject;
+  }
+
 
   @override
   void removeHabit(String habitId) async {
