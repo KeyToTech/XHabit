@@ -149,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
 
   void _handleLogoutRedirect(bool wasLoggedOut) {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+        MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 }
