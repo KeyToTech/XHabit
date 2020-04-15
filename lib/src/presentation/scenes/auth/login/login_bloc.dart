@@ -1,12 +1,11 @@
-import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
 import 'package:xhabits/src/domain/validation/password_validation.dart';
 import 'package:xhabits/src/domain/login/login_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_state.dart';
-import 'package:xhabits/src/data/entities/user.dart';
 
 class LoginBloc {
 
@@ -62,23 +61,14 @@ class LoginBloc {
 
   void login(String email, String password) {
     _loginStateSubject.sink.add(Resource.loading(_initialState));
-
-    _loginUseCase.login(email, password).listen(handleLogin, onDone: () {
-      print('DONE');
-    }, onError: (error) {
-      if (error.runtimeType == PlatformException) {
-        handleError(error as PlatformException);
-      } else {
-        handleError(PlatformException(code: '400'));
-      }
-    });
+    _loginUseCase.login(email, password).listen(handleLogin);
   }
 
-  void handleLogin(User user) {
-    if (user != null) {
+  void handleLogin(XHAuthResult authResult) {
+    if (authResult.user != null) {
       _loginStateSubject.sink.add(Resource.success(_initialState));
     } else {
-      _loginStateSubject.sink.add(Resource.error('Could not login'));
+      handleError(authResult.message);
     }
   }
 
@@ -86,9 +76,8 @@ class LoginBloc {
     _loginStateSubject.sink.add(Resource.initial(_initialState));
   }
 
-  void handleError(PlatformException error) {
-    print('ERR ${error.toString()}');
+  void handleError(String errorMessage) {
     _loginStateSubject.sink
-        .add(Resource.errorWithData(error.message, _initialState));
+        .add(Resource.errorWithData(errorMessage, _initialState));
   }
 }
