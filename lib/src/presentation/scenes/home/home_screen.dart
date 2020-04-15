@@ -173,9 +173,9 @@ class _HomeScreenState extends State<HomeScreen> {
           editHabitButton(selectedHabit),
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
-            onPressed: () {
+            onPressed: () async {
               if (_homeScreenBloc.selectedHabits.length == 1) {
-                ConfirmDialog.show(
+                await ConfirmDialog.show(
                   context,
                   'Delete habit',
                   'Are you sure you want to delete habit \'${selectedHabit.title}\' ?',
@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 List<String> habitIds = _homeScreenBloc.selectedHabits.keys
                     .map((f) => f.habitId)
                     .toList();
-                ConfirmDialog.show(
+                await ConfirmDialog.show(
                     context,
                     'Delete habits',
                     'Are you sure you want to delete these habits?',
@@ -300,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: ListView.builder(
             itemCount: habits.length,
             itemBuilder: (BuildContext context, int index) {
-              if (!kIsWeb) {
+              if (!kIsWeb && !habitDeleted) {
                 if (habits[index].notificationTime != null) {
                   _homeScreenBloc.showDailyNotification(
                     index,

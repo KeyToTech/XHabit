@@ -97,21 +97,22 @@ class HomeScreenBloc {
     }
   }
 
-  void removeHabit(String habitId) {
-    _cancelDeletedNotifications();
-    _removeUseCase.removeHabit(habitId);
-    _habitDeletedSubject.sink.add(true);
-    getHomeData();
-    showMainAppBar();
-  }
-
   bool isHabitSelected(selectedHabit) =>
       selectedHabits.containsKey(selectedHabit);
 
+  void removeHabit(String habitId) {
+    _removeUseCase.removeHabit(habitId);
+    _onRemove();
+  }
+
   void removeHabits(List<String> habitIds) {
-    _cancelDeletedNotifications();
     _removeHabitsUseCase.removeHabits(habitIds);
+    _onRemove();
+  }
+
+  void _onRemove() {
     _habitDeletedSubject.sink.add(true);
+    _cancelDeletedNotifications();
     getHomeData();
     showMainAppBar();
   }
