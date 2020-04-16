@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 
 class ConfirmDialog {
-  static void show(
+  static Future<void> show(
     BuildContext context,
     String title,
     String message,

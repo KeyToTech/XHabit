@@ -94,7 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
           final Habit selectedHabit = appBarState.selectedHabit;
           return Scaffold(
             appBar: appBarState.showEditingAppBar
-                ? editingAppBar(_homeScreenBloc.selectedHabits.first, habits)
+                ? editingAppBar(
+                    _homeScreenBloc.selectedHabits.keys.first, habits)
                 : mainAppBar(),
             body:
                 body(habits, selectedHabit, weekDays, daysWords, habitDeleted),
@@ -134,9 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
           _homeScreenBloc.onEdit();
-          _homeScreenBloc.selectedHabits.clear();
-          _homeScreenBloc.getHomeData();
-          _homeScreenBloc.showMainAppBar();
         },
         shape: CircleBorder(),
         minWidth: 0,
@@ -165,9 +163,9 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedHabit, _homeScreenBloc.globalNotificationsStatus),
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
-            onPressed: () {
+            onPressed: () async {
               if (_homeScreenBloc.selectedHabits.length == 1) {
-                ConfirmDialog.show(
+                await ConfirmDialog.show(
                   context,
                   'Delete habit',
                   'Are you sure you want to delete habit \'${selectedHabit.title}\' ?',
@@ -175,10 +173,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
                 _homeScreenBloc.selectedHabits.clear();
               } else {
-                List<String> habitIds = _homeScreenBloc.selectedHabits
+                List<String> habitIds = _homeScreenBloc.selectedHabits.keys
                     .map((f) => f.habitId)
                     .toList();
-                ConfirmDialog.show(
+                await ConfirmDialog.show(
                     context,
                     'Delete habits',
                     'Are you sure you want to delete these habits?',
@@ -284,48 +282,48 @@ class _HomeScreenState extends State<HomeScreen> {
       StreamBuilder<Object>(
         stream: _homeScreenBloc.notificationsSwitchedObservable,
         builder: (context, snapshot) => Expanded(
-            child: SmartRefresher(
-              controller: _refreshController,
-              header: MaterialClassicHeader(),
-              onRefresh: () {
-                _homeScreenBloc.getHomeData();
-                _refreshController.refreshCompleted();
-              },
-              child: ListView.builder(
-                itemCount: habits.length,
-                itemBuilder: (BuildContext context, int index) {
-                  _homeScreenBloc.showNotifications(index, habits);
-                  return Container(
-                    decoration: _habitRowDecoration(habits[index]),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(0.0),
-                      title: HabitRow(
-                        habits[index].habitId,
-                        habits[index].title,
-                        habits[index].checkedDays,
-                        habits[index].startDate,
-                        _homeScreenBloc.isHabitSelected(habits[index]),
-                        weekDays,
-                        key: _homeScreenBloc.rebuildHabitTile(habits[index])
-                            ? UniqueKey()
-                            : ValueKey(index),
-                        endDate: habits[index].endDate,
-                        scrollController: _habitScroll,
-                      ),
-                      onLongPress: () {
-                        _homeScreenBloc.toggleHabit(habits[index]);
-                      },
-                      onTap: () {
-                        if (_homeScreenBloc.selectedHabits.isNotEmpty) {
-                          _homeScreenBloc.toggleHabit(habits[index]);
-                        }
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
-          )
+        child: SmartRefresher(
+          controller: _refreshController,
+          header: MaterialClassicHeader(),
+          onRefresh: () {
+            _homeScreenBloc.getHomeData();
+            _refreshController.refreshCompleted();
+          },
+          child: ListView.builder(
+            itemCount: habits.length,
+            itemBuilder: (BuildContext context, int index) {
+              _homeScreenBloc.showNotifications(index, habits);
+              return Container(
+                decoration: _habitRowDecoration(habits[index]),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(0.0),
+                  title: HabitRow(
+                    habits[index].habitId,
+                    habits[index].title,
+                    habits[index].checkedDays,
+                    habits[index].startDate,
+                    _homeScreenBloc.isHabitSelected(habits[index]),
+                    weekDays,
+                    key: _homeScreenBloc.rebuildHabitTile(habits[index])
+                        ? UniqueKey()
+                        : ValueKey(index),
+                    endDate: habits[index].endDate,
+                    scrollController: _habitScroll,
+                  ),
+                  onLongPress: () {
+                    _homeScreenBloc.toggleHabit(habits[index], index);
+                  },
+                  onTap: () {
+                    if (_homeScreenBloc.selectedHabits.isNotEmpty) {
+                      _homeScreenBloc.toggleHabit(habits[index], index);
+                    }
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+      ),
       );
 
   Future<void> onHabitAdd() async {
