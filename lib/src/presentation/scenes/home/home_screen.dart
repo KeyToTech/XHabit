@@ -118,19 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: CircleBorder(),
             minWidth: 0,
           ),
-          MaterialButton(
-            child: Icon(Icons.person, color: XHColors.pink),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProfileScreen(
-                        _homeScreenBloc.globalNotificationsStatus)),
-              );
-            },
-            shape: CircleBorder(),
-            minWidth: 0,
-          ),
         ],
       );
 
