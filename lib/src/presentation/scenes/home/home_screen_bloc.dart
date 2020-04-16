@@ -16,7 +16,7 @@ class HomeScreenBloc {
   BehaviorSubject<AppBarState> _appBarStateSubject;
   BehaviorSubject<bool> _habitDeletedSubject;
   BehaviorSubject<bool> _habitEditedSubject;
-  List<Habit> selectedHabits = <Habit>[];
+  Map<Habit, int> selectedHabits = <Habit, int>{};
   PushNotificationsService _notificationsService;
 
   Stream<HomeScreenResource> get homeScreenStateObservable =>
@@ -77,10 +77,15 @@ class HomeScreenBloc {
     _notificationsService.cancelAllNotifications();
   }
 
-  void onEdit() => _habitEditedSubject.sink.add(true);
+  void onEdit() {
+    _habitEditedSubject.sink.add(true);
+    selectedHabits.clear();
+    getHomeData();
+    showMainAppBar();
+  }
 
-  void toggleHabit(Habit selectedHabit) {
-    updateHabitSelectedList(selectedHabit);
+  void toggleHabit(Habit selectedHabit, int index) {
+    updateHabitSelectedList(selectedHabit, index);
     selectionChanged();
     if (selectedHabits.isNotEmpty) {
       _appBarStateSubject.sink.add(AppBarState(true, selectedHabit));
@@ -89,34 +94,36 @@ class HomeScreenBloc {
     }
   }
 
-  void updateHabitSelectedList(Habit selectedHabit) {
-    if (!selectedHabits.contains(selectedHabit)) {
-      selectedHabits.add(selectedHabit);
+  void updateHabitSelectedList(Habit selectedHabit, int index) {
+    if (!selectedHabits.containsKey(selectedHabit)) {
+      selectedHabits[selectedHabit] = index;
     } else {
       selectedHabits.remove(selectedHabit);
     }
   }
 
+  bool isHabitSelected(selectedHabit) =>
+      selectedHabits.containsKey(selectedHabit);
+
   void removeHabit(String habitId) {
     _removeUseCase.removeHabit(habitId);
-    _habitDeletedSubject.sink.add(true);
-    getHomeData();
-    showMainAppBar();
+    _onRemove();
   }
-
-  bool isHabitSelected(selectedHabit) => selectedHabits.contains(selectedHabit);
 
   void removeHabits(List<String> habitIds) {
     _removeHabitsUseCase.removeHabits(habitIds);
+    _onRemove();
+  }
+
+  void _onRemove() {
     _habitDeletedSubject.sink.add(true);
+    _cancelDeletedNotifications();
     getHomeData();
     showMainAppBar();
   }
 
   bool rebuildHabitTile(Habit currentHabit) =>
-      selectedHabits
-          .where((element) => element.habitId == currentHabit.habitId)
-          .isNotEmpty ||
+      selectedHabits.containsKey(currentHabit) ||
       _habitDeletedSubject.stream.value ||
       _habitEditedSubject.stream.value;
 
@@ -128,12 +135,16 @@ class HomeScreenBloc {
     _notificationsService.cancelNotification(index);
   }
 
+  void _cancelDeletedNotifications() {
+    selectedHabits.values.forEach(cancelNotification);
+  }
+
   void showMainAppBar() {
     _appBarStateSubject.sink.add(AppBarState(false, null));
   }
 
-  void showNotifications(int index, List<Habit> habits){
-    if (!kIsWeb) {
+  void showNotifications(int index, List<Habit> habits) {
+    if (!kIsWeb && !_habitDeletedSubject.value) {
       if (globalNotificationsStatus) {
         trySendNotification(index, habits);
       } else {
@@ -142,7 +153,7 @@ class HomeScreenBloc {
     }
   }
 
-  void trySendNotification(int index, List<Habit> habits){
+  void trySendNotification(int index, List<Habit> habits) {
     if (habits[index].notificationTime != null) {
       showDailyNotification(
         index,
@@ -150,7 +161,7 @@ class HomeScreenBloc {
         parseTimeString(habits[index].notificationTime),
       );
     } else {
-     cancelNotification(index);
+      cancelNotification(index);
     }
   }
 

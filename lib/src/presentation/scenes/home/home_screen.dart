@@ -94,7 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
           final Habit selectedHabit = appBarState.selectedHabit;
           return Scaffold(
             appBar: appBarState.showEditingAppBar
-                ? editingAppBar(_homeScreenBloc.selectedHabits.first, habits)
+                ? editingAppBar(
+                    _homeScreenBloc.selectedHabits.keys.first, habits)
                 : mainAppBar(),
             body:
                 body(habits, selectedHabit, weekDays, daysWords, habitDeleted),
@@ -147,9 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
           _homeScreenBloc.onEdit();
-          _homeScreenBloc.selectedHabits.clear();
-          _homeScreenBloc.getHomeData();
-          _homeScreenBloc.showMainAppBar();
         },
         shape: CircleBorder(),
         minWidth: 0,
@@ -178,9 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
               selectedHabit, _homeScreenBloc.globalNotificationsStatus),
           MaterialButton(
             child: Icon(Icons.delete, color: XHColors.pink),
-            onPressed: () {
+            onPressed: () async {
               if (_homeScreenBloc.selectedHabits.length == 1) {
-                ConfirmDialog.show(
+                await ConfirmDialog.show(
                   context,
                   'Delete habit',
                   'Are you sure you want to delete habit \'${selectedHabit.title}\' ?',
@@ -188,10 +186,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
                 _homeScreenBloc.selectedHabits.clear();
               } else {
-                List<String> habitIds = _homeScreenBloc.selectedHabits
+                List<String> habitIds = _homeScreenBloc.selectedHabits.keys
                     .map((f) => f.habitId)
                     .toList();
-                ConfirmDialog.show(
+                await ConfirmDialog.show(
                     context,
                     'Delete habits',
                     'Are you sure you want to delete these habits?',
@@ -324,11 +322,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     scrollController: _habitScroll,
                   ),
                   onLongPress: () {
-                    _homeScreenBloc.toggleHabit(habits[index]);
+                    _homeScreenBloc.toggleHabit(habits[index], index);
                   },
                   onTap: () {
                     if (_homeScreenBloc.selectedHabits.isNotEmpty) {
-                      _homeScreenBloc.toggleHabit(habits[index]);
+                      _homeScreenBloc.toggleHabit(habits[index], index);
                     }
                   },
                 ),
