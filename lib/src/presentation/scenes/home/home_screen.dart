@@ -119,19 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: CircleBorder(),
             minWidth: 0,
           ),
-          MaterialButton(
-            child: Icon(Icons.person, color: XHColors.pink),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ProfileScreen(
-                        _homeScreenBloc.globalNotificationsStatus)),
-              );
-            },
-            shape: CircleBorder(),
-            minWidth: 0,
-          ),
         ],
       );
 
@@ -292,7 +279,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _habitsList(List<Habit> habits, Habit selectedHabit,
           List<DateTime> weekDays, bool habitDeleted) =>
-      Expanded(
+      StreamBuilder<Object>(
+        stream: _homeScreenBloc.notificationsSwitchedObservable,
+        builder: (context, snapshot) => Expanded(
         child: SmartRefresher(
           controller: _refreshController,
           header: MaterialClassicHeader(),
@@ -334,6 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
         ),
+      ),
       );
 
   Future<void> onHabitAdd() async {

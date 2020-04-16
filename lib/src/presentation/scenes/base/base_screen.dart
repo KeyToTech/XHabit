@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:xhabits/src/presentation/scenes/base/base_screen_bloc.dart';
 import 'package:xhabits/src/presentation/scenes/home/tab_navigator/home_tab_navigator.dart';
+import 'package:xhabits/src/presentation/scenes/profile/tab_navigator/profile_tab_navigator.dart';
 import 'package:xhabits/src/presentation/widgets/xh_bottom_bar.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -23,6 +24,7 @@ class _BaseScreenState extends State<BaseScreen> {
   _BaseScreenState() {
     _baseScreenBloc = BaseScreenBloc();
     _bottomBar = XHBottomBar(_baseScreenBloc.bottomBarBloc);
+
   }
 
   @override
@@ -62,6 +64,6 @@ class _BaseScreenState extends State<BaseScreen> {
 
   Widget _profile() => Offstage(
         offstage: 2 != _bottomBar.getCurrentIndex(),
-        //child: ProfileTabNavigator(_navigatorKeys[2])
+        child: ProfileTabNavigator(_navigatorKeys[2])
       );
 }

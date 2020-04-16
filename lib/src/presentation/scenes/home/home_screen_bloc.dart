@@ -16,6 +16,7 @@ class HomeScreenBloc {
   BehaviorSubject<AppBarState> _appBarStateSubject;
   BehaviorSubject<bool> _habitDeletedSubject;
   BehaviorSubject<bool> _habitEditedSubject;
+  BehaviorSubject<bool> _notificationsSwitchedSubject;
   Map<Habit, int> selectedHabits = <Habit, int>{};
   PushNotificationsService _notificationsService;
 
@@ -25,6 +26,7 @@ class HomeScreenBloc {
   Stream<AppBarState> get appBarStateObservable => _appBarStateSubject.stream;
 
   Stream<bool> get habitDeletedState => _habitDeletedSubject.stream;
+  Stream<bool> get notificationsSwitchedObservable => _notificationsSwitchedSubject.stream;
 
   HomeScreenUseCase _useCase;
   RemoveHabitUseCase _removeUseCase;
@@ -51,6 +53,7 @@ class HomeScreenBloc {
         BehaviorSubject<AppBarState>.seeded(AppBarState(false, null));
     _habitDeletedSubject = BehaviorSubject<bool>.seeded(false);
     _habitEditedSubject = BehaviorSubject<bool>.seeded(false);
+    _notificationsSwitchedSubject = BehaviorSubject<bool>.seeded(false);
     getGlobalNotificationStatus();
   }
 
@@ -66,6 +69,7 @@ class HomeScreenBloc {
 
   void handleGlobalNotificationsData(bool status) {
     globalNotificationsStatus = status;
+    notificationsSwitched();
   }
 
   void handleHomeData(List<Habit> habits) {
@@ -82,6 +86,10 @@ class HomeScreenBloc {
     selectedHabits.clear();
     getHomeData();
     showMainAppBar();
+  }
+
+  void notificationsSwitched(){
+    _notificationsSwitchedSubject.sink.add(globalNotificationsStatus);
   }
 
   void toggleHabit(Habit selectedHabit, int index) {

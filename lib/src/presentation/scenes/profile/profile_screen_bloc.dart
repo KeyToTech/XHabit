@@ -25,17 +25,26 @@ class ProfileScreenBloc {
 
   ProfileScreenBloc(
       LogoutUseCase logoutUseCase,
-      bool notificationsOn,
       GlobalNotificationsUpdateUseCase notificationsUseCase,
       BuildContext context) {
     _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutUseCase = logoutUseCase;
-    globalEnableNotifications = notificationsOn;
+    globalEnableNotifications = true;
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     if (globalEnableNotifications) {
       _notificationsService = PushNotificationsService(context);
     }
     _logoutStateSubject = BehaviorSubject<bool>();
+  }
+
+  void getGlobalNotificationStatus() {
+    _globalNotificationsUpdateUseCase
+        .getGlobalNotificationsStatus()
+        .listen(handleGlobalNotificationsData);
+  }
+
+  void handleGlobalNotificationsData(bool status) {
+    globalEnableNotifications = status;
   }
 
   void onRateApp() {
