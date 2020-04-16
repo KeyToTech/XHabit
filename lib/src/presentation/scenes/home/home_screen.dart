@@ -281,48 +281,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _habitsList(List<Habit> habits, Habit selectedHabit,
           List<DateTime> weekDays, bool habitDeleted) =>
-      Expanded(
-        child: SmartRefresher(
-          controller: _refreshController,
-          header: MaterialClassicHeader(),
-          onRefresh: () {
-            _homeScreenBloc.getHomeData();
-            _refreshController.refreshCompleted();
-          },
-          child: ListView.builder(
-            itemCount: habits.length,
-            itemBuilder: (BuildContext context, int index) {
-              _homeScreenBloc.showNotifications(index, habits);
-              return Container(
-                decoration: _habitRowDecoration(habits[index]),
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(0.0),
-                  title: HabitRow(
-                    habits[index].habitId,
-                    habits[index].title,
-                    habits[index].checkedDays,
-                    habits[index].startDate,
-                    _homeScreenBloc.isHabitSelected(habits[index]),
-                    weekDays,
-                    key: _homeScreenBloc.rebuildHabitTile(habits[index])
-                        ? UniqueKey()
-                        : ValueKey(index),
-                    endDate: habits[index].endDate,
-                    scrollController: _habitScroll,
-                  ),
-                  onLongPress: () {
-                    _homeScreenBloc.toggleHabit(habits[index]);
-                  },
-                  onTap: () {
-                    if (_homeScreenBloc.selectedHabits.isNotEmpty) {
-                      _homeScreenBloc.toggleHabit(habits[index]);
-                    }
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+      StreamBuilder<Object>(
+        stream: _homeScreenBloc.notificationsSwitchedObservable,
+        builder: (context, snapshot) => Expanded(
+            child: SmartRefresher(
+              controller: _refreshController,
+              header: MaterialClassicHeader(),
+              onRefresh: () {
+                _homeScreenBloc.getHomeData();
+                _refreshController.refreshCompleted();
+              },
+              child: ListView.builder(
+                itemCount: habits.length,
+                itemBuilder: (BuildContext context, int index) {
+                  _homeScreenBloc.showNotifications(index, habits);
+                  return Container(
+                    decoration: _habitRowDecoration(habits[index]),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.all(0.0),
+                      title: HabitRow(
+                        habits[index].habitId,
+                        habits[index].title,
+                        habits[index].checkedDays,
+                        habits[index].startDate,
+                        _homeScreenBloc.isHabitSelected(habits[index]),
+                        weekDays,
+                        key: _homeScreenBloc.rebuildHabitTile(habits[index])
+                            ? UniqueKey()
+                            : ValueKey(index),
+                        endDate: habits[index].endDate,
+                        scrollController: _habitScroll,
+                      ),
+                      onLongPress: () {
+                        _homeScreenBloc.toggleHabit(habits[index]);
+                      },
+                      onTap: () {
+                        if (_homeScreenBloc.selectedHabits.isNotEmpty) {
+                          _homeScreenBloc.toggleHabit(habits[index]);
+                        }
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          )
       );
 
   Future<void> onHabitAdd() async {
