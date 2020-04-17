@@ -11,8 +11,7 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   final _auth = FirebaseAuth.instance;
   final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
 
-  FirebaseDatabaseServiceMobile() {
-    getFuture() async {
+  void _initGlobalNotifications() async {
       String userId = (await _auth.currentUser()).uid;
       _database.reference().child(userId).onChildChanged.listen((event) {
         print('info that changed: ${event.snapshot.key}: ${event.snapshot.value}');
@@ -25,8 +24,6 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
           .child('notificationsOn')
           .once())
           .value as bool);
-    }
-    getFuture();
   }
 
   @override
@@ -50,7 +47,10 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   }
 
   @override
-  BehaviorSubject<bool> getGlobalNotificationsStatus() => _globalNotificationsSubject;
+  BehaviorSubject<bool> getGlobalNotificationsStatus() {
+    _initGlobalNotifications();
+    return _globalNotificationsSubject;
+  }
 
   @override
   Stream<bool> createHabit(String habitId, String title, bool enableNotification,
