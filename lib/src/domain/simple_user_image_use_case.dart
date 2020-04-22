@@ -10,4 +10,7 @@ class SimpleUserImageUseCase implements UserImageUseCase {
   @override
   void uploadProfilePic(File image) =>
       _service.uploadProfilePic(image);
+
+  @override
+  Stream<String> getProfilePic() => _service.getProfilePic();
 }

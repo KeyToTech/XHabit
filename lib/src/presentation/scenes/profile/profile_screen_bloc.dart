@@ -55,8 +55,16 @@ class ProfileScreenBloc {
 
   void handleProfileScreenData({String userImage, File chosenProfileImage}) {
     _profileScreenStateSubject.sink.add(ProfileScreenResourse(
-        'KEK', 'Hello', 'World', 'helloworld@hello.hey', false,
+        'Profile', 'Hello', 'World', 'helloworld@hello.hey', false,
         profileImageURL: userImage, chosenProfileImage: chosenProfileImage));
+  }
+
+  void getUserProfileImage(){
+    _userImageUseCase.getProfilePic().listen(handleUserProfileImage);
+  }
+
+  void handleUserProfileImage(String image){
+    handleProfileScreenData(userImage: image);
   }
 
   void getGlobalNotificationStatus() {

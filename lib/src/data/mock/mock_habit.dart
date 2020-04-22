@@ -46,6 +46,9 @@ class MockHabitData implements DatabaseService {
   void uploadProfilePic(File image) {}
 
   @override
+  Stream<String>getProfilePic() {}
+
+  @override
   Stream<bool> updateGlobalNotifications(bool notificationsOn) {}
 
   @override

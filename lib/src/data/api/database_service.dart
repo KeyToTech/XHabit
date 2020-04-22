@@ -17,6 +17,8 @@ abstract class DatabaseService {
 
   void uploadProfilePic(File image);
 
+  Stream<String> getProfilePic();
+
   void removeHabit(String habitId);
 
   void removeHabits(List<String> habitIds);

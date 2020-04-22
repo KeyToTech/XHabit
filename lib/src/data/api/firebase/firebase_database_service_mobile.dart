@@ -41,7 +41,7 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
       print('File uploaded');
       var imageURL = await storageReference.getDownloadURL();
       var stringURL = imageURL.toString();
-      await _database.child(userId).child('images').set({
+      await _database.child(userId).child('image').set({
         'url': stringURL
       });
   }
@@ -49,9 +49,14 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
   Stream<String> getProfilePic(){
     getFuture() async {
       String userId = (await _auth.currentUser()).uid;
-
-
+      String result = ((await _database.child(userId)
+          .child('image')
+          .child('url')
+          .once())
+          .value as String);
+      return result;
     }
+    return Stream.fromFuture(getFuture());
   }
 
   @override

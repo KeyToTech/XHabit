@@ -26,6 +26,19 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
       var imageURL = await storageReference.getDownloadURL();
   }
 
+  Stream<String> getProfilePic(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      String result = ((await _database.ref(userId)
+          .child('image')
+          .once('value'))
+          .snapshot
+          .val() as String);
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
   @override
   Stream<List<Habit>> getHabits() {
     getFuture() async {

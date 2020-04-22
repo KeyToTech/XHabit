@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:xhabits/config/app_config.dart';
@@ -40,6 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         logoutUseCase, notificationsUseCase, userImageUseCase, context);
     _profileScreenBloc.getGlobalNotificationStatus();
     _profileScreenBloc.handleProfileScreenData();
+    _profileScreenBloc.getUserProfileImage();
   }
 
   @override
@@ -56,28 +58,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, snapshot) {
         ProfileScreenResourse resourse;
         if (snapshot.data == null) {
-          resourse = ProfileScreenResourse(
-            'NULL',
-            'Hello',
-            'World',
-            'helloworld@hello.hey',
-            false,
+          return Container(
+            color: XHColors.darkGrey,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         } else {
           resourse = snapshot.data;
         }
         ImageProvider image;
-        if(resourse.profileImageURL == null) {
+        if (resourse.profileImageURL == null) {
           if (resourse.chosenProfileImage == null) {
             image = AssetImage("assets/images/blank_avatar.png");
-          }
-          else{
+          } else {
             Uint8List bytes = resourse.chosenProfileImage.readAsBytesSync();
             image = MemoryImage(bytes);
           }
-        }
-        else {
-          image = NetworkImage(resourse.profileImageURL);
+        } else {
+//          image = NetworkImage(resourse.profileImageURL);
+          image = CachedNetworkImageProvider(resourse.profileImageURL);
         }
         return Container(
             color: XHColors.darkGrey,
