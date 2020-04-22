@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
+import 'package:xhabits/src/domain/simple_user_image_use_case.dart';
+import 'package:xhabits/src/domain/user_image_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_bloc.dart';
@@ -15,23 +20,26 @@ import 'package:xhabits/src/presentation/widgets/xh_divider.dart';
 import 'package:xhabits/src/presentation/widgets/xh_icon_button.dart';
 
 class ProfileScreen extends StatefulWidget {
-
   ProfileScreen();
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState(
       SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
-      SimpleGlobalNotificationsUpdateUseCase(AppConfig.database));
+      SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
+      SimpleUserImageUseCase(AppConfig.database));
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   ProfileScreenBloc _profileScreenBloc;
 
-  _ProfileScreenState(SimpleLogoutUseCase logoutUseCase,
-      GlobalNotificationsUpdateUseCase notificationsUseCase) {
+  _ProfileScreenState(
+      SimpleLogoutUseCase logoutUseCase,
+      GlobalNotificationsUpdateUseCase notificationsUseCase,
+      UserImageUseCase userImageUseCase) {
     _profileScreenBloc = ProfileScreenBloc(
-        logoutUseCase, notificationsUseCase, context);
+        logoutUseCase, notificationsUseCase, userImageUseCase, context);
     _profileScreenBloc.getGlobalNotificationStatus();
+    _profileScreenBloc.handleProfileScreenData();
   }
 
   @override
@@ -49,14 +57,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ProfileScreenResourse resourse;
         if (snapshot.data == null) {
           resourse = ProfileScreenResourse(
-              'Profile',
-              'https://picsum.photos/250?image=9',
-              'Hello',
-              'World',
-              'helloworld@hello.hey',
-              false);
+            'NULL',
+            'Hello',
+            'World',
+            'helloworld@hello.hey',
+            false,
+          );
         } else {
           resourse = snapshot.data;
+        }
+        ImageProvider image;
+        if(resourse.profileImageURL == null) {
+          if (resourse.chosenProfileImage == null) {
+            image = AssetImage("assets/images/blank_avatar.png");
+          }
+          else{
+            Uint8List bytes = resourse.chosenProfileImage.readAsBytesSync();
+            image = MemoryImage(bytes);
+          }
+        }
+        else {
+          image = NetworkImage(resourse.profileImageURL);
         }
         return Container(
             color: XHColors.darkGrey,
@@ -80,12 +101,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: <Widget>[
                     Column(
                       children: <Widget>[
-                        CircleAvatar(
-                          radius: SizeConfig.profileScreenAvatarBorderRadius,
-                          backgroundColor: Color.fromRGBO(42, 43, 47, 1),
+                        InkWell(
+                          onTap: _profileScreenBloc.chooseFile,
                           child: CircleAvatar(
-                            backgroundImage: NetworkImage(resourse.imageUrl),
-                            radius: SizeConfig.profileScreenAvatarRadius,
+                            radius: SizeConfig.profileScreenAvatarBorderRadius,
+                            backgroundColor: Color.fromRGBO(42, 43, 47, 1),
+                            child: CircleAvatar(
+                              backgroundImage: image,
+                              radius: SizeConfig.profileScreenAvatarRadius,
+                            ),
                           ),
                         ),
                         Padding(

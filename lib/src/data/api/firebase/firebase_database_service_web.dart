@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,8 +9,22 @@ import 'package:firebase/firebase.dart';
 class FirebaseDatabaseServiceWeb implements DatabaseService {
   final _database = database();
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseStorage.instance;
 
   final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
+
+  @override
+  void uploadProfilePic(File image) async {
+      String userId = (await _auth.currentUser()).uid;
+      var storageReference = _firestore
+          .ref()
+          .child(userId)
+          .child('images');
+      StorageUploadTask uploadTask = storageReference.putFile(image);
+      await uploadTask.onComplete;
+      print('File uploaded');
+      var imageURL = await storageReference.getDownloadURL();
+  }
 
   @override
   Stream<List<Habit>> getHabits() {

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
@@ -12,6 +14,8 @@ abstract class DatabaseService {
   Stream<bool> updateHabit(String habitId, String title,
       bool enableNotification, String startDate, List<DateTime> checkedDays,
       {String endDate, String notificationTime});
+
+  void uploadProfilePic(File image);
 
   void removeHabit(String habitId);
 

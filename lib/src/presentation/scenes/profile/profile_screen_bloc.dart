@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
+import 'package:xhabits/src/domain/user_image_use_case.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
 import 'package:store_redirect/store_redirect.dart';
@@ -22,19 +26,37 @@ class ProfileScreenBloc {
 
   LogoutUseCase _logoutUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
+  UserImageUseCase _userImageUseCase;
 
   ProfileScreenBloc(
       LogoutUseCase logoutUseCase,
       GlobalNotificationsUpdateUseCase notificationsUseCase,
+      UserImageUseCase userImageUseCase,
       BuildContext context) {
     _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutUseCase = logoutUseCase;
+    _userImageUseCase = userImageUseCase;
     globalEnableNotifications = true;
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     if (globalEnableNotifications) {
       _notificationsService = PushNotificationsService(context);
     }
     _logoutStateSubject = BehaviorSubject<bool>();
+  }
+
+  Future chooseFile() async {
+    await ImagePicker.pickImage(source: ImageSource.gallery).then(uploadImage);
+  }
+
+  void uploadImage(File avatar) {
+    _userImageUseCase.uploadProfilePic(avatar);
+    handleProfileScreenData(chosenProfileImage: avatar);
+  }
+
+  void handleProfileScreenData({String userImage, File chosenProfileImage}) {
+    _profileScreenStateSubject.sink.add(ProfileScreenResourse(
+        'KEK', 'Hello', 'World', 'helloworld@hello.hey', false,
+        profileImageURL: userImage, chosenProfileImage: chosenProfileImage));
   }
 
   void getGlobalNotificationStatus() {
