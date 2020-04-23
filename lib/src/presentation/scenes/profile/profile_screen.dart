@@ -1,8 +1,5 @@
 import 'dart:typed_data';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
