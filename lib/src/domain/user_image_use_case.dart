@@ -1,8 +1,9 @@
 import 'dart:io';
+import 'package:rxdart/rxdart.dart';
 
 abstract class UserImageUseCase {
 
-  void uploadProfilePic(File image);
+  BehaviorSubject<bool> uploadProfilePic(File image);
 
   Stream<String> getProfilePic();
 

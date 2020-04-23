@@ -12,15 +12,19 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
+
   bool globalEnableNotifications;
   PushNotificationsService _notificationsService;
 
   BehaviorSubject<ProfileScreenResourse> _profileScreenStateSubject;
 
   BehaviorSubject<bool> _logoutStateSubject;
+  BehaviorSubject<bool> _imageUploadStatusSubject;
 
-  Stream<ProfileScreenResourse> get ProfileScreenStateObservable =>
+  Stream<ProfileScreenResourse> get profileScreenStateObservable =>
       _profileScreenStateSubject.stream;
+  Stream<bool> get imageUploadObservable =>
+      _imageUploadStatusSubject.stream;
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
@@ -42,6 +46,8 @@ class ProfileScreenBloc {
       _notificationsService = PushNotificationsService(context);
     }
     _logoutStateSubject = BehaviorSubject<bool>();
+    _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
+    handleProfileScreenData();
   }
 
   Future chooseFile() async {
@@ -49,8 +55,12 @@ class ProfileScreenBloc {
   }
 
   void uploadImage(File avatar) {
-    _userImageUseCase.uploadProfilePic(avatar);
+    _userImageUseCase.uploadProfilePic(avatar).listen(handleUploadImageStatus);
     handleProfileScreenData(chosenProfileImage: avatar);
+  }
+
+  void handleUploadImageStatus(bool status) {
+    _imageUploadStatusSubject.sink.add(status);
   }
 
   void handleProfileScreenData({String userImage, File chosenProfileImage}) {

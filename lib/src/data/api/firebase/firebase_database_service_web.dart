@@ -12,18 +12,30 @@ class FirebaseDatabaseServiceWeb implements DatabaseService {
   final _firestore = FirebaseStorage.instance;
 
   final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
+  final BehaviorSubject<bool> _imageUploadStatusSubject = BehaviorSubject<bool>();
+
+  void _uploadProfilePic(File image) async{
+    _imageUploadStatusSubject.sink.add(true);
+    String userId = (await _auth.currentUser()).uid;
+    var storageReference = _firestore
+        .ref()
+        .child(userId)
+        .child('pic');
+    StorageUploadTask uploadTask = storageReference.putFile(image);
+    await uploadTask.onComplete;
+    print('File uploaded');
+    _imageUploadStatusSubject.sink.add(false);
+    var imageURL = await storageReference.getDownloadURL();
+    var stringURL = imageURL.toString();
+    await _database.ref(userId).child('image').set({
+      'url': stringURL
+    });
+  }
 
   @override
-  void uploadProfilePic(File image) async {
-      String userId = (await _auth.currentUser()).uid;
-      var storageReference = _firestore
-          .ref()
-          .child(userId)
-          .child('images');
-      StorageUploadTask uploadTask = storageReference.putFile(image);
-      await uploadTask.onComplete;
-      print('File uploaded');
-      var imageURL = await storageReference.getDownloadURL();
+  BehaviorSubject<bool> uploadProfilePic(File image) {
+    _uploadProfilePic(image);
+    return _imageUploadStatusSubject;
   }
 
   Stream<String> getProfilePic(){

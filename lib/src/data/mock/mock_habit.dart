@@ -43,7 +43,7 @@ class MockHabitData implements DatabaseService {
       ]);
 
   @override
-  void uploadProfilePic(File image) {}
+  BehaviorSubject<bool> uploadProfilePic(File image) {}
 
   @override
   Stream<String>getProfilePic() {}
