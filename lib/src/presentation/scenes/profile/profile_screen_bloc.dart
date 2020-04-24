@@ -55,8 +55,11 @@ class ProfileScreenBloc {
   }
 
   void uploadImage(File avatar) {
-    _userImageUseCase.uploadProfilePic(avatar).listen(handleUploadImageStatus);
-    handleProfileScreenData(chosenProfileImage: avatar);
+    if(avatar != null) {
+      _userImageUseCase.uploadProfilePic(avatar).listen(
+          handleUploadImageStatus);
+      handleProfileScreenData(chosenProfileImage: avatar);
+    }
   }
 
   void handleUploadImageStatus(bool status) {
