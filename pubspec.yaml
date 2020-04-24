@@ -23,6 +23,10 @@ dependencies:
 
   pull_to_refresh: ^1.5.8
 
+  image_picker: ^0.6.5+2
+
+  firebase_storage: ^3.1.5
+
   store_redirect: ^1.0.2
 
   url_launcher: ^5.4.2
@@ -80,6 +84,7 @@ flutter:
     - assets/Background_image.png
     - assets/images/Logo.png
     - assets/images/icon.png
+    - assets/images/blank_avatar.png
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
 

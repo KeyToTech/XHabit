@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,8 +9,47 @@ import 'package:firebase/firebase.dart';
 class FirebaseDatabaseServiceWeb implements DatabaseService {
   final _database = database();
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseStorage.instance;
 
   final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
+  final BehaviorSubject<bool> _imageUploadStatusSubject = BehaviorSubject<bool>();
+
+  void _uploadProfilePic(File image) async{
+    _imageUploadStatusSubject.sink.add(true);
+    String userId = (await _auth.currentUser()).uid;
+    var storageReference = _firestore
+        .ref()
+        .child(userId)
+        .child('pic');
+    StorageUploadTask uploadTask = storageReference.putFile(image);
+    await uploadTask.onComplete;
+    print('File uploaded');
+    _imageUploadStatusSubject.sink.add(false);
+    var imageURL = await storageReference.getDownloadURL();
+    var stringURL = imageURL.toString();
+    await _database.ref(userId).child('image').set({
+      'url': stringURL
+    });
+  }
+
+  @override
+  BehaviorSubject<bool> uploadProfilePic(File image) {
+    _uploadProfilePic(image);
+    return _imageUploadStatusSubject;
+  }
+
+  Stream<String> getProfilePic(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      String result = ((await _database.ref(userId)
+          .child('image')
+          .once('value'))
+          .snapshot
+          .val() as String);
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
+  }
 
   @override
   Stream<List<Habit>> getHabits() {

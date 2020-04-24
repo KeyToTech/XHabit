@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
@@ -40,6 +41,12 @@ class MockHabitData implements DatabaseService {
           'notification_time': '17:25'
         })
       ]);
+
+  @override
+  BehaviorSubject<bool> uploadProfilePic(File image) {}
+
+  @override
+  Stream<String>getProfilePic() {}
 
   @override
   Stream<bool> updateGlobalNotifications(bool notificationsOn) {}

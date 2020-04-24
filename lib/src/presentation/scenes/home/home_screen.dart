@@ -12,7 +12,6 @@ import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.d
 import 'package:xhabits/src/domain/simple_remove_habit_use_case.dart';
 import 'package:xhabits/src/domain/simple_remove_habits_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
-import 'package:xhabits/src/presentation/scenes/profile/profile_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/scenes/habit/habit_row.dart';
 import 'package:xhabits/src/presentation/scenes/home/home_screen_state.dart';
