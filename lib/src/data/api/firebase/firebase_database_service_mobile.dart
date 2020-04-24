@@ -13,15 +13,25 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
 
   void _initGlobalNotifications() async {
       String userId = (await _auth.currentUser()).uid;
+      String notificationPath = _database.child(userId).child('notificationsOn').path;
+      await _database
+          .child(notificationPath)
+          .once()
+          .then((snapshot) {
+         if (snapshot.value == null) {
+           _database.child(notificationPath).set(true);
+         }
+      });
+
       _database.reference().child(userId).onChildChanged.listen((event) {
         print('info that changed: ${event.snapshot.key}: ${event.snapshot.value}');
         if (event.snapshot.key == 'notificationsOn') {
           _globalNotificationsSubject.add(event.snapshot.value as bool);
         }
       });
+      
       _globalNotificationsSubject.sink.add((await _database
-          .child(userId)
-          .child('notificationsOn')
+          .child(notificationPath)
           .once())
           .value as bool);
   }
