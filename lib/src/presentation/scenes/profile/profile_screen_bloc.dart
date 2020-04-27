@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
+import 'package:xhabits/src/domain/update_username_use_case.dart';
 import 'package:xhabits/src/domain/user_image_use_case.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
@@ -13,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
 
+  String _username;
   bool globalEnableNotifications;
   PushNotificationsService _notificationsService;
 
@@ -31,15 +33,18 @@ class ProfileScreenBloc {
   LogoutUseCase _logoutUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
   UserImageUseCase _userImageUseCase;
+  UpdateUsernameUseCase _usernameUseCase;
 
   ProfileScreenBloc(
       LogoutUseCase logoutUseCase,
       GlobalNotificationsUpdateUseCase notificationsUseCase,
       UserImageUseCase userImageUseCase,
+      UpdateUsernameUseCase usernameUseCase,
       BuildContext context) {
     _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutUseCase = logoutUseCase;
     _userImageUseCase = userImageUseCase;
+    _usernameUseCase = usernameUseCase;
     globalEnableNotifications = true;
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     if (globalEnableNotifications) {
@@ -48,6 +53,7 @@ class ProfileScreenBloc {
     _logoutStateSubject = BehaviorSubject<bool>();
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
     handleProfileScreenData();
+    getUserName();
   }
 
   Future chooseFile() async {
@@ -68,7 +74,7 @@ class ProfileScreenBloc {
 
   void handleProfileScreenData({String userImage, File chosenProfileImage}) {
     _profileScreenStateSubject.sink.add(ProfileScreenResourse(
-        'Profile', 'Hello', 'World', 'helloworld@hello.hey', false,
+        'Profile', _username, 'helloworld@hello.hey', false,
         profileImageURL: userImage, chosenProfileImage: chosenProfileImage));
   }
 
@@ -79,6 +85,15 @@ class ProfileScreenBloc {
   void handleUserProfileImage(String image){
     handleProfileScreenData(userImage: image);
   }
+
+  void getUserName(){
+    _usernameUseCase.getUsername().listen(handleUsernameData);
+  }
+
+  void handleUsernameData(String un){
+    _username = un;
+  }
+
 
   void getGlobalNotificationStatus() {
     _globalNotificationsUpdateUseCase

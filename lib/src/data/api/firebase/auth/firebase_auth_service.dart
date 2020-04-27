@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
@@ -7,6 +9,8 @@ import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _database = FirebaseDatabase.instance.reference();
+  final BehaviorSubject<bool> _updateUsernameSubject = BehaviorSubject<bool>();
 
   @override
   Stream<XHAuthResult> signUp(String email, String password) {
@@ -44,6 +48,34 @@ class FirebaseAuthService implements AuthService {
     }
 
     return Stream.fromFuture(getSignedInUser());
+  }
+
+  void _updateUsername(String username) async {
+    FirebaseUser user = await _auth.currentUser();
+    await _database.child(user.uid).child('username').set(
+        username);
+    print('username has been changed: $username');
+    _updateUsernameSubject.sink.add(true);
+  }
+
+  @override
+  BehaviorSubject<bool> updateUsername(String username) {
+    _updateUsername(username);
+//    return _updateUsernameSubject;
+  }
+
+  @override
+  Stream<String> getUsername(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      String result = ((await _database.child(userId)
+          .child('username')
+          .once())
+          .value as String);
+      result ??= 'empty';
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
   }
 
   @override

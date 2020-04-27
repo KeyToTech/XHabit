@@ -7,7 +7,9 @@ import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
+import 'package:xhabits/src/domain/simple_update_username_use_case.dart';
 import 'package:xhabits/src/domain/simple_user_image_use_case.dart';
+import 'package:xhabits/src/domain/update_username_use_case.dart';
 import 'package:xhabits/src/domain/user_image_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
@@ -25,7 +27,8 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState(
       SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
       SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
-      SimpleUserImageUseCase(AppConfig.database));
+      SimpleUserImageUseCase(AppConfig.database),
+      SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())));
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -34,9 +37,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _ProfileScreenState(
       SimpleLogoutUseCase logoutUseCase,
       GlobalNotificationsUpdateUseCase notificationsUseCase,
-      UserImageUseCase userImageUseCase) {
-    _profileScreenBloc = ProfileScreenBloc(
-        logoutUseCase, notificationsUseCase, userImageUseCase, context);
+      UserImageUseCase userImageUseCase,
+      UpdateUsernameUseCase usernameUseCase) {
+    _profileScreenBloc = ProfileScreenBloc(logoutUseCase, notificationsUseCase,
+        userImageUseCase, usernameUseCase, context);
     _profileScreenBloc.getGlobalNotificationStatus();
     _profileScreenBloc.handleProfileScreenData();
     _profileScreenBloc.getUserProfileImage();
@@ -108,10 +112,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     Container(
-                      padding: SizeConfig.profileImageUploadStatusIndicatorPadding,
-                      child: imageStatus
-                          ? CircularProgressIndicator()
-                          : null,
+                      padding:
+                          SizeConfig.profileImageUploadStatusIndicatorPadding,
+                      child: imageStatus ? CircularProgressIndicator() : null,
                     ),
                   ],
                 ),
@@ -146,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       Padding(
                         padding: SizeConfig.profileScreenUserTextPadding,
                         child: Text(
-                          resourse.userName + ' ' + resourse.userSurname,
+                          resourse.userName ?? '',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: SizeConfig.profileScreenUserName,

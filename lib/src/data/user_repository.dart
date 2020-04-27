@@ -1,3 +1,4 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
@@ -12,6 +13,10 @@ class UserRepository {
 
   Stream<XHAuthResult> signIn(String email, String password) =>
       _authService.signIn(email, password);
+
+  BehaviorSubject<bool> updateUsername(String username) => _authService.updateUsername(username);
+
+  Stream<String> getUsername() => _authService.getUsername();
 
   Stream<User> loginWithFacebook() => _authService.loginWithFacebook();
 
