@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
