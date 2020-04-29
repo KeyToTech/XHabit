@@ -14,7 +14,11 @@ class UserRepository {
   Stream<XHAuthResult> signIn(String email, String password) =>
       _authService.signIn(email, password);
 
-  BehaviorSubject<bool> updateUsername(String username) => _authService.updateUsername(username);
+  void updateUsername(String username) => _authService.updateUsername(username);
+
+  void updateUserEmail(String email) => _authService.updateUserEmail(email);
+
+  Stream<String> getUserEmail() => _authService.getUserEmail();
 
   Stream<String> getUsername() => _authService.getUsername();
 

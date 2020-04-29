@@ -3,6 +3,8 @@ import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/domain/simple_update_username_use_case.dart';
+import 'package:xhabits/src/domain/simple_user_email_use_case.dart';
+import 'package:xhabits/src/domain/user_email_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_button.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
@@ -27,7 +29,8 @@ class RegisterScreen extends StatefulWidget {
   @override
   _RegisterScreenState createState() => _RegisterScreenState(
       RegisterUseCase(UserRepository(FirebaseAuthService())),
-      SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())));
+      SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())),
+      SimpleUserEmailUseCase(UserRepository(FirebaseAuthService())));
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -41,8 +44,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
-  _RegisterScreenState(RegisterUseCase registerUseCase, SimpleUpdateUsernameUseCase usernameUseCase){
-    _registerBloc = RegisterBloc(registerUseCase, usernameUseCase);
+  _RegisterScreenState(
+      RegisterUseCase registerUseCase,
+      SimpleUpdateUsernameUseCase usernameUseCase,
+      UserEmailUseCase emailUseCase) {
+    _registerBloc =
+        RegisterBloc(registerUseCase, usernameUseCase, emailUseCase);
   }
 
   @override
@@ -64,7 +71,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onSubmit() {
     _registerBloc.registerStateObservable.listen(_handleRedirect);
     _registerBloc.register(
-        _emailTextEditingController.text, _passwordTextEditingController.text, _usernameTextEditingController.text);
+        _emailTextEditingController.text,
+        _passwordTextEditingController.text,
+        _usernameTextEditingController.text);
   }
 
   void _handleRedirect(Resource<RegisterState> registerState) {

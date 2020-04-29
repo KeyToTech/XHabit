@@ -8,8 +8,10 @@ import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/simple_logout_use_case.dart';
 import 'package:xhabits/src/domain/simple_update_username_use_case.dart';
+import 'package:xhabits/src/domain/simple_user_email_use_case.dart';
 import 'package:xhabits/src/domain/simple_user_image_use_case.dart';
 import 'package:xhabits/src/domain/update_username_use_case.dart';
+import 'package:xhabits/src/domain/user_email_use_case.dart';
 import 'package:xhabits/src/domain/user_image_use_case.dart';
 import 'package:xhabits/src/presentation/scenes/auth/login/login_screen.dart';
 import 'package:xhabits/src/presentation/scenes/confirm_dialog.dart';
@@ -28,7 +30,8 @@ class ProfileScreen extends StatefulWidget {
       SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
       SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
       SimpleUserImageUseCase(AppConfig.database),
-      SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())));
+      SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())),
+      SimpleUserEmailUseCase(UserRepository(FirebaseAuthService())));
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
@@ -39,9 +42,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       SimpleLogoutUseCase logoutUseCase,
       GlobalNotificationsUpdateUseCase notificationsUseCase,
       UserImageUseCase userImageUseCase,
-      UpdateUsernameUseCase usernameUseCase) {
+      UpdateUsernameUseCase usernameUseCase,
+      UserEmailUseCase emailUseCase) {
     _profileScreenBloc = ProfileScreenBloc(logoutUseCase, notificationsUseCase,
-        userImageUseCase, usernameUseCase, context);
+        userImageUseCase, usernameUseCase, emailUseCase, context);
     _usernameController = TextEditingController(text: null);
   }
 
@@ -78,15 +82,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   ImageProvider getImage(ProfileScreenResourse resourse) {
     ImageProvider image;
-    if (resourse.profileImageURL == null) {
-      if (resourse.chosenProfileImage == null) {
+    if (resourse.chosenProfileImage == null) {
+      if (resourse.profileImageURL == null) {
         image = AssetImage("assets/images/blank_avatar.png");
       } else {
-        Uint8List bytes = resourse.chosenProfileImage.readAsBytesSync();
-        image = MemoryImage(bytes);
+        image = NetworkImage(resourse.profileImageURL);
       }
     } else {
-      image = NetworkImage(resourse.profileImageURL);
+      Uint8List bytes = resourse.chosenProfileImage.readAsBytesSync();
+      image = MemoryImage(bytes);
     }
     return image;
   }
@@ -165,7 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           textAlign: TextAlign.center,
                           controller: _usernameController,
                           onSubmitted: (value) {
-                                _profileScreenBloc.onUsernameChange(value);
+                            _profileScreenBloc.onUsernameChange(value);
                           },
                           decoration: InputDecoration(
                             fillColor: XHColors.darkGrey,
@@ -192,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: SizeConfig.profileScreenListViewPadding,
                   children: <Widget>[
                     Padding(
                       padding: SizeConfig.profileScreenFirstButtonPadding,

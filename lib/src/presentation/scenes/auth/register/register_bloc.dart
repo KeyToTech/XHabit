@@ -2,6 +2,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/domain/update_username_use_case.dart';
+import 'package:xhabits/src/domain/user_email_use_case.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/username_validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
@@ -10,8 +11,8 @@ import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 
 class RegisterBloc {
-
   String _username;
+  String _email;
 
   BehaviorSubject<Resource<RegisterState>> _registerStateSubject;
 
@@ -22,6 +23,7 @@ class RegisterBloc {
 
   RegisterUseCase _registerUseCase;
   UpdateUsernameUseCase _usernameUseCase;
+  UserEmailUseCase _emailUseCase;
 
   UserNameValidation _userNameValidation;
   EmailValidation _emailValidation;
@@ -30,9 +32,11 @@ class RegisterBloc {
   final _defaultTextInputState = ValidationResult(true, null);
   RegisterState _initialState;
 
-  RegisterBloc(RegisterUseCase registerUseCase, UpdateUsernameUseCase usernameUseCase) {
+  RegisterBloc(RegisterUseCase registerUseCase,
+      UpdateUsernameUseCase usernameUseCase, UserEmailUseCase emailUseCase) {
     this._registerUseCase = registerUseCase;
     this._usernameUseCase = usernameUseCase;
+    this._emailUseCase = emailUseCase;
     _initialState = RegisterState(
         RegisterValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
@@ -83,6 +87,7 @@ class RegisterBloc {
     _registerStateSubject.sink.add(Resource.loading(_initialState));
     _registerUseCase.register(email, password).listen(handleRegister);
     _username = username;
+    _email = email;
   }
 
   void updateUsername(String un) {
@@ -92,6 +97,7 @@ class RegisterBloc {
   void handleRegister(XHAuthResult authResult) {
     if (authResult.user != null) {
       _usernameUseCase.updateUsername(_username);
+      _emailUseCase.updateUserEmail(_email);
       _registerStateSubject.sink.add(Resource.success(_initialState));
     } else {
       handleError(authResult.message);
@@ -106,5 +112,4 @@ class RegisterBloc {
     _registerStateSubject.sink
         .add(Resource.errorWithData(errorMessage, _initialState));
   }
-
 }

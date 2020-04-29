@@ -1,8 +1,6 @@
-import 'package:rxdart/rxdart.dart';
-
 abstract class UpdateUsernameUseCase {
 
-  BehaviorSubject<bool> updateUsername(String userName);
+  void updateUsername(String userName);
 
   Stream<String> getUsername();
 

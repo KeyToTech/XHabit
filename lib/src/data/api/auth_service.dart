@@ -7,7 +7,11 @@ abstract class AuthService {
 
   Stream<XHAuthResult> signIn(String email, String password);
 
-  BehaviorSubject<bool> updateUsername(String username);
+  void updateUsername(String username);
+
+  void updateUserEmail(String email);
+
+  Stream<String> getUserEmail();
 
   Stream<String> getUsername();
 

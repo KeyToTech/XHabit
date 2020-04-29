@@ -10,7 +10,6 @@ import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _database = FirebaseDatabase.instance.reference();
-  final BehaviorSubject<bool> _updateUsernameSubject = BehaviorSubject<bool>();
 
   @override
   Stream<XHAuthResult> signUp(String email, String password) {
@@ -50,18 +49,12 @@ class FirebaseAuthService implements AuthService {
     return Stream.fromFuture(getSignedInUser());
   }
 
-  void _updateUsername(String username) async {
+  @override
+  void updateUsername(String username) async {
     FirebaseUser user = await _auth.currentUser();
     await _database.child(user.uid).child('username').set(
         username);
     print('username has been changed: $username');
-    _updateUsernameSubject.sink.add(true);
-  }
-
-  @override
-  BehaviorSubject<bool> updateUsername(String username) {
-    _updateUsername(username);
-//    return _updateUsernameSubject;
   }
 
   @override
@@ -70,6 +63,28 @@ class FirebaseAuthService implements AuthService {
       String userId = (await _auth.currentUser()).uid;
       String result = ((await _database.child(userId)
           .child('username')
+          .once())
+          .value as String);
+      result ??= 'empty';
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
+  @override
+  void updateUserEmail(String email) async{
+    FirebaseUser user = await _auth.currentUser();
+    await _database.child(user.uid).child('email').set(
+        email);
+    print('email has been changed: $email');
+  }
+
+  @override
+  Stream<String> getUserEmail(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      String result = ((await _database.child(userId)
+          .child('email')
           .once())
           .value as String);
       result ??= 'empty';

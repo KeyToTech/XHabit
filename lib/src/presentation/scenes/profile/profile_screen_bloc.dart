@@ -1,11 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/domain/global_notifications_update_use_case.dart';
 import 'package:xhabits/src/domain/logout_use_case.dart';
 import 'package:xhabits/src/domain/update_username_use_case.dart';
+import 'package:xhabits/src/domain/user_email_use_case.dart';
 import 'package:xhabits/src/domain/user_image_use_case.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
@@ -13,7 +13,6 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
-
   PushNotificationsService _notificationsService;
 
   BehaviorSubject<ProfileScreenResourse> _profileScreenStateSubject;
@@ -23,8 +22,8 @@ class ProfileScreenBloc {
 
   Stream<ProfileScreenResourse> get profileScreenStateObservable =>
       _profileScreenStateSubject.stream;
-  Stream<bool> get imageUploadObservable =>
-      _imageUploadStatusSubject.stream;
+
+  Stream<bool> get imageUploadObservable => _imageUploadStatusSubject.stream;
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
@@ -32,13 +31,16 @@ class ProfileScreenBloc {
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
   UserImageUseCase _userImageUseCase;
   UpdateUsernameUseCase _usernameUseCase;
+  UserEmailUseCase _emailUseCase;
 
   ProfileScreenBloc(
       LogoutUseCase logoutUseCase,
       GlobalNotificationsUpdateUseCase notificationsUseCase,
       UserImageUseCase userImageUseCase,
       UpdateUsernameUseCase usernameUseCase,
+      UserEmailUseCase emailUseCase,
       BuildContext context) {
+    _emailUseCase = emailUseCase;
     _logoutUseCase = logoutUseCase;
     _usernameUseCase = usernameUseCase;
     _userImageUseCase = userImageUseCase;
@@ -48,6 +50,7 @@ class ProfileScreenBloc {
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     getUserName();
+    getUserEmail();
     getUserProfileImage();
     handleProfileScreenData();
     listenGlobalNotificationStatus();
@@ -58,20 +61,30 @@ class ProfileScreenBloc {
   }
 
   void uploadImage(File avatar) {
-    if(avatar != null) {
-      _userImageUseCase.uploadProfilePic(avatar).listen(
-          handleUploadImageStatus);
+    if (avatar != null) {
+      _profileScreenStateSubject.value.profileImageURL = null;
+      _userImageUseCase
+          .uploadProfilePic(avatar)
+          .listen(handleUploadImageStatus);
       handleProfileScreenData(chosenProfileImage: avatar);
     }
   }
 
   void handleUploadImageStatus(bool status) {
+    if (!status) {
+      getUserProfileImage();
+    }
     _imageUploadStatusSubject.sink.add(status);
   }
 
-  void handleProfileScreenData({String userImage, bool isNotificationsOn, String username, File chosenProfileImage}) {
+  void handleProfileScreenData(
+      {String userImage,
+      bool isNotificationsOn,
+      String username,
+      File chosenProfileImage,
+      String userEmail}) {
     var existingResource = _profileScreenStateSubject.value ??
-        ProfileScreenResourse(screenTitle: 'Profile', userEmail: 'helloworld@hello.hey');
+        ProfileScreenResourse(screenTitle: 'Profile');
     if (username != null) {
       existingResource.userName = username;
     }
@@ -84,28 +97,39 @@ class ProfileScreenBloc {
     if (isNotificationsOn != null) {
       existingResource.isNotificationsOn = isNotificationsOn;
     }
+    if(userEmail != null){
+      existingResource.userEmail = userEmail;
+    }
     _profileScreenStateSubject.sink.add(existingResource);
   }
 
-  void onUsernameChange(String value){
+  void onUsernameChange(String value) {
     _usernameUseCase.updateUsername(value);
     handleProfileScreenData(username: value);
   }
 
-  void getUserProfileImage(){
+  void getUserProfileImage() {
     _userImageUseCase.getProfilePic().listen(handleUserProfileImage);
   }
 
-  void handleUserProfileImage(String image){
+  void handleUserProfileImage(String image) {
     handleProfileScreenData(userImage: image);
   }
 
-  void getUserName(){
+  void getUserName() {
     _usernameUseCase.getUsername().listen(handleUsernameData);
   }
 
-  void handleUsernameData(String un){
+  void handleUsernameData(String un) {
     handleProfileScreenData(username: un);
+  }
+
+  void getUserEmail() {
+    _emailUseCase.getUserEmail().listen(handleEmailData);
+  }
+
+  void handleEmailData(String email) {
+    handleProfileScreenData(userEmail: email);
   }
 
   void listenGlobalNotificationStatus() {
@@ -134,10 +158,10 @@ class ProfileScreenBloc {
   }
 
   void onNotificationsSwitcher() {
-    var newValue = !(_profileScreenStateSubject.value.isNotificationsOn ?? true);
+    var newValue =
+        !(_profileScreenStateSubject.value.isNotificationsOn ?? true);
     handleProfileScreenData(isNotificationsOn: newValue);
-    _globalNotificationsUpdateUseCase
-        .updateGlobalNotifications(newValue);
+    _globalNotificationsUpdateUseCase.updateGlobalNotifications(newValue);
   }
 
   void logout() {
