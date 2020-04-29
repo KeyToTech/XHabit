@@ -91,7 +91,7 @@ class RegisterBloc {
 
   void handleRegister(XHAuthResult authResult) {
     if (authResult.user != null) {
-      _usernameUseCase.updateUsername(_username);
+      updateUsername(_username);
       _registerStateSubject.sink.add(Resource.success(_initialState));
     } else {
       handleError(authResult.message);
