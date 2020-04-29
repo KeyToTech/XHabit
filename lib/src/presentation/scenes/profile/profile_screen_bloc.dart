@@ -14,8 +14,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
 
-  String _username;
-  bool globalEnableNotifications;
   PushNotificationsService _notificationsService;
 
   BehaviorSubject<ProfileScreenResourse> _profileScreenStateSubject;
@@ -41,19 +39,18 @@ class ProfileScreenBloc {
       UserImageUseCase userImageUseCase,
       UpdateUsernameUseCase usernameUseCase,
       BuildContext context) {
-    _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutUseCase = logoutUseCase;
-    _userImageUseCase = userImageUseCase;
     _usernameUseCase = usernameUseCase;
-    globalEnableNotifications = true;
-    _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
-    if (globalEnableNotifications) {
-      _notificationsService = PushNotificationsService(context);
-    }
+    _userImageUseCase = userImageUseCase;
+    _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutStateSubject = BehaviorSubject<bool>();
+    _notificationsService = PushNotificationsService(context);
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
-    handleProfileScreenData();
+    _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     getUserName();
+    getUserProfileImage();
+    handleProfileScreenData();
+    listenGlobalNotificationStatus();
   }
 
   Future chooseFile() async {
@@ -72,10 +69,27 @@ class ProfileScreenBloc {
     _imageUploadStatusSubject.sink.add(status);
   }
 
-  void handleProfileScreenData({String userImage, File chosenProfileImage}) {
-    _profileScreenStateSubject.sink.add(ProfileScreenResourse(
-        'Profile', _username, 'helloworld@hello.hey', false,
-        profileImageURL: userImage, chosenProfileImage: chosenProfileImage));
+  void handleProfileScreenData({String userImage, bool isNotificationsOn, String username, File chosenProfileImage}) {
+    var existingResource = _profileScreenStateSubject.value ??
+        ProfileScreenResourse(screenTitle: 'Profile', userEmail: 'helloworld@hello.hey');
+    if (username != null) {
+      existingResource.userName = username;
+    }
+    if (userImage != null) {
+      existingResource.profileImageURL = userImage;
+    }
+    if (chosenProfileImage != null) {
+      existingResource.chosenProfileImage = chosenProfileImage;
+    }
+    if (isNotificationsOn != null) {
+      existingResource.isNotificationsOn = isNotificationsOn;
+    }
+    _profileScreenStateSubject.sink.add(existingResource);
+  }
+
+  void onUsernameChange(String value){
+    _usernameUseCase.updateUsername(value);
+    handleProfileScreenData(username: value);
   }
 
   void getUserProfileImage(){
@@ -91,18 +105,17 @@ class ProfileScreenBloc {
   }
 
   void handleUsernameData(String un){
-    _username = un;
+    handleProfileScreenData(username: un);
   }
 
-
-  void getGlobalNotificationStatus() {
+  void listenGlobalNotificationStatus() {
     _globalNotificationsUpdateUseCase
         .getGlobalNotificationsStatus()
         .listen(handleGlobalNotificationsData);
   }
 
   void handleGlobalNotificationsData(bool status) {
-    globalEnableNotifications = status;
+    handleProfileScreenData(isNotificationsOn: status);
   }
 
   void onRateApp() {
@@ -121,9 +134,10 @@ class ProfileScreenBloc {
   }
 
   void onNotificationsSwitcher() {
-    globalEnableNotifications = !globalEnableNotifications;
+    var newValue = !(_profileScreenStateSubject.value.isNotificationsOn ?? true);
+    handleProfileScreenData(isNotificationsOn: newValue);
     _globalNotificationsUpdateUseCase
-        .updateGlobalNotifications(globalEnableNotifications);
+        .updateGlobalNotifications(newValue);
   }
 
   void logout() {

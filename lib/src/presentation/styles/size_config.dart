@@ -53,9 +53,10 @@ class SizeConfig {
   static final double profileScreenAvatarSize = screenSize.height * 0.18;
   static final double profileScreenUserName = screenSize.height * 0.025;
   static final double profileScreenUserEmail = screenSize.height * 0.015;
+  static final double profileScreenUserNameTextFieldWidth = screenSize.width * 0.3;
   static final EdgeInsetsGeometry profileScreenUserTextPadding =
       EdgeInsets.only(
-          top: screenSize.height * 0.023, bottom: screenSize.height * 0.007);
+          top: screenSize.height * 0.02, bottom: screenSize.height * 0.007);
   static final EdgeInsetsGeometry profileImageUploadStatusIndicatorPadding =
       EdgeInsets.only(right: screenSize.width * 0.06);
   static final EdgeInsetsGeometry profileScreenFirstButtonPadding =

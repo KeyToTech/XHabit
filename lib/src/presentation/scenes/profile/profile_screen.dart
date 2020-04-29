@@ -32,6 +32,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  TextEditingController _usernameController;
   ProfileScreenBloc _profileScreenBloc;
 
   _ProfileScreenState(
@@ -41,9 +42,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       UpdateUsernameUseCase usernameUseCase) {
     _profileScreenBloc = ProfileScreenBloc(logoutUseCase, notificationsUseCase,
         userImageUseCase, usernameUseCase, context);
-    _profileScreenBloc.getGlobalNotificationStatus();
-    _profileScreenBloc.handleProfileScreenData();
-    _profileScreenBloc.getUserProfileImage();
+    _usernameController = TextEditingController(text: null);
   }
 
   @override
@@ -70,7 +69,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ProfileScreenResourse resourse =
             snapshot.data[0] as ProfileScreenResourse;
         bool imageStatus = snapshot.data[1] as bool;
-
+        _usernameController.text = resourse.userName;
+        _usernameController.selection = TextSelection.fromPosition(
+            TextPosition(offset: _usernameController.text.length));
         return Scaffold(
             body: _body(context, resourse, imageStatus, getImage(resourse)));
       });
@@ -92,7 +93,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _body(BuildContext context, ProfileScreenResourse resourse,
           bool imageStatus, ImageProvider image) =>
-      Container(
+      GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: Container(
           color: XHColors.darkGrey,
           alignment: Alignment.center,
           child: Column(
@@ -146,14 +155,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   image: image)),
                         ),
                       ),
-                      Padding(
+                      Container(
+                        width: SizeConfig.profileScreenUserNameTextFieldWidth,
                         padding: SizeConfig.profileScreenUserTextPadding,
-                        child: Text(
-                          resourse.userName ?? '',
+                        child: TextField(
                           style: TextStyle(
-                            color: Colors.white,
                             fontSize: SizeConfig.profileScreenUserName,
-                            fontFamily: 'Montserrat',
+                          ),
+                          textAlign: TextAlign.center,
+                          controller: _usernameController,
+                          onSubmitted: (value) {
+                                _profileScreenBloc.onUsernameChange(value);
+                          },
+                          decoration: InputDecoration(
+                            fillColor: XHColors.darkGrey,
+                            filled: true,
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
                           ),
                         ),
                       ),
@@ -169,40 +190,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Padding(
-                    padding: SizeConfig.profileScreenFirstButtonPadding,
-                    child: XHIconButton('Allow notifications', Icons.cached,
-                            Colors.deepPurple, true, null,
-                            switcherValue:
-                                _profileScreenBloc.globalEnableNotifications,
-                            onSwitcherAction:
-                                _profileScreenBloc.onNotificationsSwitcher)
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.only(bottom: 20),
+                  children: <Widget>[
+                    Padding(
+                      padding: SizeConfig.profileScreenFirstButtonPadding,
+                      child: XHIconButton('Allow notifications', Icons.cached,
+                              Colors.deepPurple, true, null,
+                              switcherValue: resourse.isNotificationsOn,
+                              onSwitcherAction:
+                                  _profileScreenBloc.onNotificationsSwitcher)
+                          .IconButton(),
+                    ),
+                    XHDivider().drawPickersDivider(),
+                    XHIconButton('Rate this application', Icons.star,
+                            Colors.amber, false, _profileScreenBloc.onRateApp)
                         .IconButton(),
-                  ),
-                  XHDivider().drawPickersDivider(),
-                  XHIconButton('Rate this application', Icons.star,
-                          Colors.amber, false, _profileScreenBloc.onRateApp)
-                      .IconButton(),
-                  XHDivider().drawPickersDivider(),
-                  XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
-                          false, _profileScreenBloc.onSendFeedback)
-                      .IconButton(),
-                  XHDivider().drawPickersDivider(),
-                  XHIconButton('Logout', null, null, false, () {
-                    ConfirmDialog.show(
-                      context,
-                      'Logout',
-                      'Are you sure you want to logout?',
-                      _profileScreenBloc.logout,
-                    );
-                  }).IconButton(),
-                ],
+                    XHDivider().drawPickersDivider(),
+                    XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
+                            false, _profileScreenBloc.onSendFeedback)
+                        .IconButton(),
+                    XHDivider().drawPickersDivider(),
+                    XHIconButton('Logout', null, null, false, () {
+                      ConfirmDialog.show(
+                        context,
+                        'Logout',
+                        'Are you sure you want to logout?',
+                        _profileScreenBloc.logout,
+                      );
+                    }).IconButton(),
+                  ],
+                ),
               ),
             ],
-          ));
+          ),
+        ),
+      );
 
   void _handleLogoutRedirect(bool wasLoggedOut) {
     Navigator.of(context, rootNavigator: true).pushReplacement(
