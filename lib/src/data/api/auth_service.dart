@@ -8,8 +8,6 @@ abstract class AuthService {
 
   void updateUsername(String username);
 
-  void updateUserEmail(String email);
-
   Stream<String> getUserEmail();
 
   Stream<String> getUsername();

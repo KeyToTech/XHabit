@@ -8,8 +8,5 @@ class SimpleUserEmailUseCase implements UserEmailUseCase {
   SimpleUserEmailUseCase(this._repository);
 
   @override
-  void updateUserEmail(String email) => _repository.updateUserEmail(email);
-
-  @override
   Stream<String> getUserEmail() => _repository.getUserEmail();
 }

@@ -12,7 +12,6 @@ import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dar
 
 class RegisterBloc {
   String _username;
-  String _email;
 
   BehaviorSubject<Resource<RegisterState>> _registerStateSubject;
 
@@ -23,7 +22,6 @@ class RegisterBloc {
 
   RegisterUseCase _registerUseCase;
   UpdateUsernameUseCase _usernameUseCase;
-  UserEmailUseCase _emailUseCase;
 
   UserNameValidation _userNameValidation;
   EmailValidation _emailValidation;
@@ -36,7 +34,6 @@ class RegisterBloc {
       UpdateUsernameUseCase usernameUseCase, UserEmailUseCase emailUseCase) {
     this._registerUseCase = registerUseCase;
     this._usernameUseCase = usernameUseCase;
-    this._emailUseCase = emailUseCase;
     _initialState = RegisterState(
         RegisterValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
@@ -87,7 +84,6 @@ class RegisterBloc {
     _registerStateSubject.sink.add(Resource.loading(_initialState));
     _registerUseCase.register(email, password).listen(handleRegister);
     _username = username;
-    _email = email;
   }
 
   void updateUsername(String un) {
@@ -97,7 +93,6 @@ class RegisterBloc {
   void handleRegister(XHAuthResult authResult) {
     if (authResult.user != null) {
       _usernameUseCase.updateUsername(_username);
-      _emailUseCase.updateUserEmail(_email);
       _registerStateSubject.sink.add(Resource.success(_initialState));
     } else {
       handleError(authResult.message);

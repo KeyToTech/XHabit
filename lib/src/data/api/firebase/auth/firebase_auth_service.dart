@@ -71,23 +71,10 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
-  void updateUserEmail(String email) async{
-    FirebaseUser user = await _auth.currentUser();
-    await _database.child(user.uid).child('email').set(
-        email);
-    print('email has been changed: $email');
-  }
-
-  @override
   Stream<String> getUserEmail(){
     getFuture() async {
-      String userId = (await _auth.currentUser()).uid;
-      String result = ((await _database.child(userId)
-          .child('email')
-          .once())
-          .value as String);
-      result ??= 'empty';
-      return result;
+      String email = (await _auth.currentUser()).email;
+      return email;
     }
     return Stream.fromFuture(getFuture());
   }

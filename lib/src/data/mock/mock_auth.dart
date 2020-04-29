@@ -16,9 +16,6 @@ class MockAuth implements AuthService {
   Stream<String> getUsername() => null;
 
   @override
-  void updateUserEmail(String email) => null;
-
-  @override
   Stream<String> getUserEmail() => null;
 
   @override
