@@ -2,7 +2,6 @@ import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
 import 'package:xhabits/src/domain/update_username_use_case.dart';
-import 'package:xhabits/src/domain/user_email_use_case.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/username_validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
@@ -31,7 +30,7 @@ class RegisterBloc {
   RegisterState _initialState;
 
   RegisterBloc(RegisterUseCase registerUseCase,
-      UpdateUsernameUseCase usernameUseCase, UserEmailUseCase emailUseCase) {
+      UpdateUsernameUseCase usernameUseCase) {
     this._registerUseCase = registerUseCase;
     this._usernameUseCase = usernameUseCase;
     _initialState = RegisterState(
