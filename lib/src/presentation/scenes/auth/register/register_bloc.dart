@@ -1,6 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
+import 'package:xhabits/src/domain/update_username_use_case.dart';
 import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/domain/validation/username_validation.dart';
 import 'package:xhabits/src/domain/validation/email_validation.dart';
@@ -9,6 +10,8 @@ import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
 
 class RegisterBloc {
+  String _username;
+
   BehaviorSubject<Resource<RegisterState>> _registerStateSubject;
 
   Stream<Resource<RegisterState>> get registerStateObservable =>
@@ -16,7 +19,8 @@ class RegisterBloc {
 
   Future<dynamic> get closeStream => _registerStateSubject.close();
 
-  final RegisterUseCase _registerUseCase;
+  RegisterUseCase _registerUseCase;
+  UpdateUsernameUseCase _usernameUseCase;
 
   UserNameValidation _userNameValidation;
   EmailValidation _emailValidation;
@@ -25,7 +29,10 @@ class RegisterBloc {
   final _defaultTextInputState = ValidationResult(true, null);
   RegisterState _initialState;
 
-  RegisterBloc(this._registerUseCase) {
+  RegisterBloc(RegisterUseCase registerUseCase,
+      UpdateUsernameUseCase usernameUseCase) {
+    this._registerUseCase = registerUseCase;
+    this._usernameUseCase = usernameUseCase;
     _initialState = RegisterState(
         RegisterValidationsState(_defaultTextInputState, _defaultTextInputState,
             _defaultTextInputState),
@@ -72,13 +79,19 @@ class RegisterBloc {
         null));
   }
 
-  void register(String email, String password) {
+  void register(String email, String password, String username) {
     _registerStateSubject.sink.add(Resource.loading(_initialState));
     _registerUseCase.register(email, password).listen(handleRegister);
+    _username = username;
+  }
+
+  void updateUsername(String un) {
+    _usernameUseCase.updateUsername(un);
   }
 
   void handleRegister(XHAuthResult authResult) {
     if (authResult.user != null) {
+      updateUsername(_username);
       _registerStateSubject.sink.add(Resource.success(_initialState));
     } else {
       handleError(authResult.message);
@@ -93,5 +106,4 @@ class RegisterBloc {
     _registerStateSubject.sink
         .add(Resource.errorWithData(errorMessage, _initialState));
   }
-
 }

@@ -13,6 +13,12 @@ class UserRepository {
   Stream<XHAuthResult> signIn(String email, String password) =>
       _authService.signIn(email, password);
 
+  void updateUsername(String username) => _authService.updateUsername(username);
+
+  Stream<String> getUserEmail() => _authService.getUserEmail();
+
+  Stream<String> getUsername() => _authService.getUsername();
+
   Stream<User> loginWithFacebook() => _authService.loginWithFacebook();
 
   Stream<bool> isSignedIn() => _authService.isSignedIn();

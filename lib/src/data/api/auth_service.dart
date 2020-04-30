@@ -6,6 +6,12 @@ abstract class AuthService {
 
   Stream<XHAuthResult> signIn(String email, String password);
 
+  void updateUsername(String username);
+
+  Stream<String> getUserEmail();
+
+  Stream<String> getUsername();
+
   Stream<User> loginWithFacebook();
 
   Stream<bool> isSignedIn();

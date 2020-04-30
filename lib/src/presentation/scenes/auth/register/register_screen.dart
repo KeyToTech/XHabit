@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
 import 'package:xhabits/src/data/user_repository.dart';
 import 'package:xhabits/src/domain/register/register_use_case.dart';
+import 'package:xhabits/src/domain/simple_update_username_use_case.dart';
 import 'package:xhabits/src/presentation/resource.dart';
 import 'package:xhabits/src/presentation/scenes/auth/facebook_login/facebook_login_button.dart';
 import 'package:xhabits/src/presentation/scenes/auth/register/register_state.dart';
@@ -25,11 +26,12 @@ class RegisterScreen extends StatefulWidget {
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState(
-      RegisterBloc(RegisterUseCase(UserRepository(FirebaseAuthService()))));
+      RegisterUseCase(UserRepository(FirebaseAuthService())),
+      SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())));
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final RegisterBloc _registerBloc;
+  RegisterBloc _registerBloc;
   XHPasswordTextField _xhPasswordTextField;
 
   final _emailTextEditingController = TextEditingController();
@@ -39,7 +41,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
 
-  _RegisterScreenState(this._registerBloc);
+  _RegisterScreenState(
+      RegisterUseCase registerUseCase,
+      SimpleUpdateUsernameUseCase usernameUseCase) {
+    _registerBloc =
+        RegisterBloc(registerUseCase, usernameUseCase);
+  }
 
   @override
   void initState() {
@@ -47,9 +54,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _usernameTextEditingController.addListener(_textChange);
     _emailTextEditingController.addListener(_textChange);
     _passwordTextEditingController.addListener(_textChange);
-    _xhPasswordTextField = XHPasswordTextField('Password',
-        _passwordTextEditingController,
-        true,
+    _xhPasswordTextField = XHPasswordTextField(
+        'Password', _passwordTextEditingController, true,
         focusNode: _passwordFocus);
   }
 
@@ -61,7 +67,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onSubmit() {
     _registerBloc.registerStateObservable.listen(_handleRedirect);
     _registerBloc.register(
-        _emailTextEditingController.text, _passwordTextEditingController.text);
+        _emailTextEditingController.text,
+        _passwordTextEditingController.text,
+        _usernameTextEditingController.text);
   }
 
   void _handleRedirect(Resource<RegisterState> registerState) {
@@ -69,7 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => BaseScreen()),
-            (Route<dynamic> route) => false,
+        (Route<dynamic> route) => false,
       );
     }
   }
