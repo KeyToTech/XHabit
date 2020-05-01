@@ -10,6 +10,15 @@ class MockAuth implements AuthService {
   Stream<XHAuthResult> signIn(String email, String password) => null;
 
   @override
+  void updateUsername(String name) => null;
+
+  @override
+  Stream<String> getUsername() => null;
+
+  @override
+  Stream<String> getUserEmail() => null;
+
+  @override
   Stream<bool> isSignedIn() => Stream.value(true);
 
   @override

@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
@@ -7,6 +8,7 @@ import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _database = FirebaseDatabase.instance.reference();
 
   @override
   Stream<XHAuthResult> signUp(String email, String password) {
@@ -44,6 +46,37 @@ class FirebaseAuthService implements AuthService {
     }
 
     return Stream.fromFuture(getSignedInUser());
+  }
+
+  @override
+  void updateUsername(String username) async {
+    FirebaseUser user = await _auth.currentUser();
+    await _database.child(user.uid).child('username').set(
+        username);
+    print('username has been changed: $username');
+  }
+
+  @override
+  Stream<String> getUsername(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      String result = ((await _database.child(userId)
+          .child('username')
+          .once())
+          .value as String);
+      result ??= 'empty';
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
+  @override
+  Stream<String> getUserEmail(){
+    getFuture() async {
+      String email = (await _auth.currentUser()).email;
+      return email;
+    }
+    return Stream.fromFuture(getFuture());
   }
 
   @override
