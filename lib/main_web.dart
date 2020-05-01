@@ -6,6 +6,7 @@ import 'config/firebase_config.dart';
 import 'src/presentation/XHApp.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   firebaseWebConfig();
   AppConfig.database = FirebaseDatabaseServiceWeb();
   AppConfig.authExceptionHandler = FirebaseAuthExceptionHandlerWeb();
