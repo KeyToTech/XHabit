@@ -5,6 +5,7 @@ import 'package:xhabits/src/presentation/scenes/base/base_screen.dart';
 import 'package:xhabits/src/presentation/styles/XHColors.dart';
 import 'package:xhabits/src/presentation/styles/size_config.dart';
 import 'package:xhabits/src/presentation/widgets/auth_inkwell.dart';
+import 'package:xhabits/src/presentation/widgets/privacy_policy.dart';
 import 'package:xhabits/src/presentation/widgets/xh_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_password_text_field.dart';
 import 'package:xhabits/src/presentation/widgets/xh_button.dart';
@@ -167,6 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     navigateToRegister: true,
                   ),
                   FacebookLoginButton(),
+                  PrivacyPolicy.link(),
                   SizedBox(
                     height: SizeConfig.handleKeyboardHeight(context),
                   ),
