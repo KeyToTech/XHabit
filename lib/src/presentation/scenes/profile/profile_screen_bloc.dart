@@ -147,7 +147,7 @@ class ProfileScreenBloc {
   }
 
   void onSendFeedback() async {
-    String feedbackEmail = "test@gmail.com";
+    String feedbackEmail = "xhabits@keytotech.com";
     String mailUrl = 'mailto:$feedbackEmail?subject=Feedback';
 
     if (await canLaunch(mailUrl)) {
