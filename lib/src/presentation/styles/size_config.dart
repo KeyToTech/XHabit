@@ -45,7 +45,7 @@ class SizeConfig {
       MediaQuery.of(context).viewInsets.bottom + 16.0;
   static final EdgeInsetsGeometry profileScreenTitlePadding = EdgeInsets.only(
       top: screenSize.height * 0.08,
-      bottom: screenSize.height * 0.1,
+      bottom: screenSize.height * 0.07,
       left: screenSize.height * 0.03);
   static final double profileScreenTitle = screenSize.height * 0.05;
   static final double profileScreenAvatarBorderRadius =
@@ -56,13 +56,13 @@ class SizeConfig {
   static final double profileScreenUserNameTextFieldWidth = screenSize.width * 0.8;
   static final EdgeInsetsGeometry profileScreenUserTextPadding =
       EdgeInsets.only(
-          top: screenSize.height * 0.02, bottom: screenSize.height * 0.002);
+          top: screenSize.height * 0.012, bottom: screenSize.height * 0.0005);
   static final EdgeInsetsGeometry profileScreenListViewPadding =
-  EdgeInsets.only(bottom: screenSize.height * 0.002);
+  EdgeInsets.only(bottom: screenSize.height * 0.01, top: screenSize.height * 0.02);
   static final EdgeInsetsGeometry profileImageUploadStatusIndicatorPadding =
       EdgeInsets.only(right: screenSize.width * 0.06);
   static final EdgeInsetsGeometry profileScreenFirstButtonPadding =
-      EdgeInsets.only(top: screenSize.height * 0.07);
+      EdgeInsets.only(top: screenSize.height * 0.045);
   static final EdgeInsetsGeometry profileScreenIconOnButtonPadding =
       EdgeInsets.only(
           left: screenSize.width * 0.05, right: screenSize.width * 0.05);

@@ -194,19 +194,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ],
               ),
+              Padding(
+                padding: SizeConfig.profileScreenFirstButtonPadding,
+              ),
               Expanded(
                 child: ListView(
                   padding: SizeConfig.profileScreenListViewPadding,
                   children: <Widget>[
-                    Padding(
-                      padding: SizeConfig.profileScreenFirstButtonPadding,
-                      child: XHIconButton('Allow notifications', Icons.cached,
-                              Colors.deepPurple, true, null,
-                              switcherValue: resourse.isNotificationsOn,
-                              onSwitcherAction:
-                                  _profileScreenBloc.onNotificationsSwitcher)
-                          .IconButton(),
-                    ),
+                    XHIconButton('Allow notifications', Icons.cached,
+                            Colors.deepPurple, true, null,
+                            switcherValue: resourse.isNotificationsOn,
+                            onSwitcherAction:
+                                _profileScreenBloc.onNotificationsSwitcher)
+                        .IconButton(),
                     XHDivider().drawPickersDivider(),
                     XHIconButton('Rate this application', Icons.star,
                             Colors.amber, false, _profileScreenBloc.onRateApp)
