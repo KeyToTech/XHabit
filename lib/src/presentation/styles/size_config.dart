@@ -56,7 +56,7 @@ class SizeConfig {
   static final double profileScreenUserNameTextFieldWidth = screenSize.width * 0.8;
   static final EdgeInsetsGeometry profileScreenUserTextPadding =
       EdgeInsets.only(
-          top: screenSize.height * 0.012, bottom: screenSize.height * 0.0005);
+          top: screenSize.height * 0.012, bottom: screenSize.height * 0.002);
   static final EdgeInsetsGeometry profileScreenListViewPadding =
   EdgeInsets.only(bottom: screenSize.height * 0.01, top: screenSize.height * 0.02);
   static final EdgeInsetsGeometry profileImageUploadStatusIndicatorPadding =
