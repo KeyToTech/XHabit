@@ -31,6 +31,7 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget build(BuildContext context) => Scaffold(
         body: _body(context),
         bottomNavigationBar: _bottomBar.buildBottomBar(),
+        resizeToAvoidBottomInset: false,
       );
 
   void changeTab() {}
@@ -42,14 +43,12 @@ class _BaseScreenState extends State<BaseScreen> {
                 !await _navigatorKeys[_bottomBar.getCurrentIndex()]
                     .currentState
                     .maybePop(),
-            child: Scaffold(
-              body: Stack(
+            child: Stack(
                 children: <Widget>[
                   _homeScreen(),
                   _progress(),
                   _profile(),
                 ],
-              ),
             ),
           ));
 
