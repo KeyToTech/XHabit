@@ -44,7 +44,7 @@ class SizeConfig {
   static double handleKeyboardHeight(BuildContext context) =>
       MediaQuery.of(context).viewInsets.bottom + 16.0;
   static final EdgeInsetsGeometry profileScreenTitlePadding = EdgeInsets.only(
-      top: screenSize.height * 0.08,
+      top: screenSize.height * 0.05,
       bottom: screenSize.height * 0.07,
       left: screenSize.height * 0.03);
   static final double profileScreenTitle = screenSize.height * 0.05;

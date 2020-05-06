@@ -82,9 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Size textSize = _textSize(_usernameController.text,
             TextStyle(fontSize: SizeConfig.profileScreenUserName));
 
-        return Scaffold(
-            body: _body(
-                context, resourse, imageStatus, getImage(resourse), textSize));
+        return _body(context, resourse, imageStatus, getImage(resourse), textSize);
       });
 
   ImageProvider getImage(ProfileScreenResourse resourse) {
@@ -115,8 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Container(
           color: XHColors.darkGrey,
           alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: <Widget>[
               Padding(
                 padding: SizeConfig.profileScreenTitlePadding,
@@ -225,9 +222,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Padding(
                 padding: SizeConfig.profileScreenFirstButtonPadding,
               ),
-              Expanded(
-                child: ListView(
-                  padding: SizeConfig.profileScreenListViewPadding,
+              Container(
+                padding: SizeConfig.profileScreenListViewPadding,
+                child: Column(
                   children: <Widget>[
                     XHIconButton('Allow notifications', Icons.cached,
                             Colors.deepPurple, true, null,
@@ -254,6 +251,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }).IconButton(),
                   ],
                 ),
+              ),
+              SizedBox(
+                height: SizeConfig.handleKeyboardHeight(context),
               ),
             ],
           ),
