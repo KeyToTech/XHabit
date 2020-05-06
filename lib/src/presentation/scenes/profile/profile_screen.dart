@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/firebase/auth/firebase_auth_service.dart';
@@ -37,6 +38,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController _usernameController;
   ProfileScreenBloc _profileScreenBloc;
+  FocusNode _usernameFocusNode;
 
   _ProfileScreenState(
       SimpleLogoutUseCase logoutUseCase,
@@ -47,6 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _profileScreenBloc = ProfileScreenBloc(logoutUseCase, notificationsUseCase,
         userImageUseCase, usernameUseCase, emailUseCase, context);
     _usernameController = TextEditingController(text: null);
+    _usernameFocusNode = FocusNode();
   }
 
   @override
@@ -76,8 +79,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _usernameController.text = resourse.userName;
         _usernameController.selection = TextSelection.fromPosition(
             TextPosition(offset: _usernameController.text.length));
+        Size textSize = _textSize(_usernameController.text,
+            TextStyle(fontSize: SizeConfig.profileScreenUserName));
+
         return Scaffold(
-            body: _body(context, resourse, imageStatus, getImage(resourse)));
+            body: _body(
+                context, resourse, imageStatus, getImage(resourse), textSize));
       });
 
   ImageProvider getImage(ProfileScreenResourse resourse) {
@@ -96,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _body(BuildContext context, ProfileScreenResourse resourse,
-          bool imageStatus, ImageProvider image) =>
+          bool imageStatus, ImageProvider image, Size textFieldSize) =>
       GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -159,27 +166,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   image: image)),
                         ),
                       ),
-                      Container(
-                        width: SizeConfig.profileScreenUserNameTextFieldWidth,
+                      Padding(
                         padding: SizeConfig.profileScreenUserTextPadding,
-                        child: TextField(
-                          style: TextStyle(
-                            fontSize: SizeConfig.profileScreenUserName,
-                          ),
-                          textAlign: TextAlign.center,
-                          controller: _usernameController,
-                          onSubmitted: (value) {
-                            _profileScreenBloc.onUsernameChange(value);
-                          },
-                          decoration: InputDecoration(
-                            fillColor: XHColors.darkGrey,
-                            filled: true,
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                          ),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              width: textFieldSize.width + 50,
+                              child: TextField(
+                                focusNode: _usernameFocusNode,
+                                style: TextStyle(
+                                  fontSize: SizeConfig.profileScreenUserName,
+                                ),
+                                textAlign: TextAlign.center,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(20),
+                                ],
+                                controller: _usernameController,
+                                onSubmitted: (value) {
+                                  _profileScreenBloc.onUsernameChange(value);
+                                },
+                                decoration: InputDecoration(
+                                  fillColor: XHColors.darkGrey,
+                                  filled: true,
+                                  border: InputBorder.none,
+                                  focusedBorder: InputBorder.none,
+                                  enabledBorder: InputBorder.none,
+                                  errorBorder: InputBorder.none,
+                                  disabledBorder: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              transform:
+                                  Matrix4.translationValues(-20.0, 0.0, 0.0),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.create,
+                                  color: XHColors.lightGrey,
+                                ),
+                                onPressed: () => _usernameFocusNode.requestFocus(),
+                                iconSize: 20,
+                              ),
+                            )
+                          ],
                         ),
                       ),
                       Text(
@@ -231,6 +260,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       );
+
+  Size _textSize(String text, TextStyle style) {
+    final TextPainter textPainter = TextPainter(
+        text: TextSpan(text: text, style: style),
+        maxLines: 1,
+        textDirection: TextDirection.ltr)
+      ..layout(minWidth: 0, maxWidth: double.infinity);
+    return textPainter.size;
+  }
 
   void _handleLogoutRedirect(bool wasLoggedOut) {
     Navigator.of(context, rootNavigator: true).pushReplacement(
