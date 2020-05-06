@@ -197,15 +197,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Container(
-                              transform:
-                                  Matrix4.translationValues(-20.0, 0.0, 0.0),
+                              transform: SizeConfig.profileScreenUserNameEditIconPadding,
                               child: IconButton(
                                 icon: Icon(
                                   Icons.create,
                                   color: XHColors.lightGrey,
                                 ),
                                 onPressed: () => _usernameFocusNode.requestFocus(),
-                                iconSize: 20,
+                                iconSize: SizeConfig.profileScreenUserNameEditIcon,
                               ),
                             )
                           ],
