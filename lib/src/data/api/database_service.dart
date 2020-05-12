@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/habit.dart';
 
@@ -12,10 +11,6 @@ abstract class DatabaseService {
   Stream<bool> updateHabit(String habitId, String title,
       bool enableNotification, String startDate, List<DateTime> checkedDays,
       {String endDate, String notificationTime});
-
-  BehaviorSubject<bool> uploadProfilePic(File image);
-
-  Stream<String> getProfilePic();
 
   void removeHabit(String habitId);
 

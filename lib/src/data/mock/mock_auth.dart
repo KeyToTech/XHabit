@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
@@ -20,6 +23,12 @@ class MockAuth implements AuthService {
 
   @override
   Stream<bool> isSignedIn() => Stream.value(true);
+
+  @override
+  Stream<String> getProfilePic() => null;
+
+  @override
+  BehaviorSubject<bool> uploadProfilePic(File image) => null;
 
   @override
   Stream<bool> logout() => Stream.value(true);
