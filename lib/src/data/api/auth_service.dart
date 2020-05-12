@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 
@@ -11,6 +14,10 @@ abstract class AuthService {
   Stream<String> getUserEmail();
 
   Stream<String> getUsername();
+
+  BehaviorSubject<bool> uploadProfilePic(File image);
+
+  Stream<String> getProfilePic();
 
   Stream<User> loginWithFacebook();
 

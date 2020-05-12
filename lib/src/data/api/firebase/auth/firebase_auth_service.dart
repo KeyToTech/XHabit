@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/config/app_config.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
@@ -8,7 +11,9 @@ import 'package:xhabits/src/data/entities/xh_auth_result.dart';
 
 class FirebaseAuthService implements AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseStorage.instance;
   final _database = FirebaseDatabase.instance.reference();
+  final BehaviorSubject<bool> _imageUploadStatusSubject = BehaviorSubject<bool>();
 
   @override
   Stream<XHAuthResult> signUp(String email, String password) {
@@ -47,6 +52,46 @@ class FirebaseAuthService implements AuthService {
 
     return Stream.fromFuture(getSignedInUser());
   }
+
+
+  void _uploadProfilePic(File image) async{
+    _imageUploadStatusSubject.sink.add(true);
+    String userId = (await _auth.currentUser()).uid;
+    var storageReference = _firestore
+        .ref()
+        .child(userId)
+        .child('pic');
+    StorageUploadTask uploadTask = storageReference.putFile(image);
+    await uploadTask.onComplete;
+    print('File uploaded');
+    _imageUploadStatusSubject.sink.add(false);
+    var imageURL = await storageReference.getDownloadURL();
+    var stringURL = imageURL.toString();
+    await _database.child(userId).child('image').set({
+      'url': stringURL
+    });
+  }
+
+  @override
+  BehaviorSubject<bool> uploadProfilePic(File image) {
+    _uploadProfilePic(image);
+    return _imageUploadStatusSubject;
+  }
+
+  @override
+  Stream<String> getProfilePic(){
+    getFuture() async {
+      String userId = (await _auth.currentUser()).uid;
+      String result = ((await _database.child(userId)
+          .child('image')
+          .child('url')
+          .once())
+          .value as String);
+      return result;
+    }
+    return Stream.fromFuture(getFuture());
+  }
+
 
   @override
   void updateUsername(String username) async {
@@ -90,6 +135,8 @@ class FirebaseAuthService implements AuthService {
         AuthResult authResult = await _auth.signInWithCredential(credential);
         print('FB signIn ${authResult.user.email}');
         user = User(authResult.user.uid, authResult.user.email);
+        String un = authResult.user.displayName;
+        updateUsername(un);
       }
       return user;
     }

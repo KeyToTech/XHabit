@@ -30,7 +30,7 @@ class ProfileScreen extends StatefulWidget {
   _ProfileScreenState createState() => _ProfileScreenState(
       SimpleLogoutUseCase(UserRepository(FirebaseAuthService())),
       SimpleGlobalNotificationsUpdateUseCase(AppConfig.database),
-      SimpleUserImageUseCase(AppConfig.database),
+      SimpleUserImageUseCase(UserRepository(FirebaseAuthService())),
       SimpleUpdateUsernameUseCase(UserRepository(FirebaseAuthService())),
       SimpleUserEmailUseCase(UserRepository(FirebaseAuthService())));
 }

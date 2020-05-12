@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,10 +7,8 @@ import 'package:xhabits/src/data/entities/habit.dart';
 
 class FirebaseDatabaseServiceMobile implements DatabaseService {
   final _database = FirebaseDatabase.instance.reference();
-  final _firestore = FirebaseStorage.instance;
   final _auth = FirebaseAuth.instance;
   final BehaviorSubject<bool> _globalNotificationsSubject = BehaviorSubject<bool>();
-  final BehaviorSubject<bool> _imageUploadStatusSubject = BehaviorSubject<bool>();
 
   void _initGlobalNotifications() async {
       String userId = (await _auth.currentUser()).uid;
@@ -37,43 +33,6 @@ class FirebaseDatabaseServiceMobile implements DatabaseService {
           .child(notificationPath)
           .once())
           .value as bool);
-  }
-
-  void _uploadProfilePic(File image) async{
-    _imageUploadStatusSubject.sink.add(true);
-    String userId = (await _auth.currentUser()).uid;
-    var storageReference = _firestore
-        .ref()
-        .child(userId)
-        .child('pic');
-    StorageUploadTask uploadTask = storageReference.putFile(image);
-    await uploadTask.onComplete;
-    print('File uploaded');
-    _imageUploadStatusSubject.sink.add(false);
-    var imageURL = await storageReference.getDownloadURL();
-    var stringURL = imageURL.toString();
-    await _database.child(userId).child('image').set({
-      'url': stringURL
-    });
-  }
-
-  @override
-  BehaviorSubject<bool> uploadProfilePic(File image) {
-    _uploadProfilePic(image);
-    return _imageUploadStatusSubject;
-  }
-
-  Stream<String> getProfilePic(){
-    getFuture() async {
-      String userId = (await _auth.currentUser()).uid;
-      String result = ((await _database.child(userId)
-          .child('image')
-          .child('url')
-          .once())
-          .value as String);
-      return result;
-    }
-    return Stream.fromFuture(getFuture());
   }
 
   @override

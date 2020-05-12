@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:rxdart/rxdart.dart';
 import 'package:xhabits/src/data/api/auth_service.dart';
 import 'package:xhabits/src/data/entities/user.dart';
 import 'package:xhabits/src/data/entities/xh_auth_result.dart';
@@ -18,6 +20,10 @@ class UserRepository {
   Stream<String> getUserEmail() => _authService.getUserEmail();
 
   Stream<String> getUsername() => _authService.getUsername();
+
+  Stream<String> getProfilePic() => _authService.getProfilePic();
+
+  BehaviorSubject<bool> uploadProfilePic(File image) => _authService.uploadProfilePic(image);
 
   Stream<User> loginWithFacebook() => _authService.loginWithFacebook();
 

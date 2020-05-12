@@ -13,10 +13,6 @@ abstract class DatabaseService {
       bool enableNotification, String startDate, List<DateTime> checkedDays,
       {String endDate, String notificationTime});
 
-  BehaviorSubject<bool> uploadProfilePic(File image);
-
-  Stream<String> getProfilePic();
-
   void removeHabit(String habitId);
 
   void removeHabits(List<String> habitIds);
