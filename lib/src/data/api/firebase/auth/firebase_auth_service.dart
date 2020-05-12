@@ -104,7 +104,10 @@ class FirebaseAuthService implements AuthService {
   @override
   void updateUsername(String username) async {
     FirebaseUser user = await _auth.currentUser();
-    await _database.child(user.uid).child('username').set(username);
+    await _database
+        .child(user.uid)
+        .child('username')
+        .set(username);
     print('username has been changed: $username');
   }
 
