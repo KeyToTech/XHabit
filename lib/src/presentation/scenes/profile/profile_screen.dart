@@ -82,7 +82,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Size textSize = _textSize(_usernameController.text,
             TextStyle(fontSize: SizeConfig.profileScreenUserName));
 
-        return _body(context, resourse, imageStatus, getImage(resourse), textSize);
+        return _body(
+            context, resourse, imageStatus, getImage(resourse), textSize);
       });
 
   ImageProvider getImage(ProfileScreenResourse resourse) {
@@ -104,11 +105,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           bool imageStatus, ImageProvider image, Size textFieldSize) =>
       GestureDetector(
         onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-
-          if (!currentFocus.hasPrimaryFocus) {
-            currentFocus.unfocus();
-          }
+          _usernameFocusNode.unfocus();
+          _profileScreenBloc.exitEditMode();
         },
         child: Container(
           color: XHColors.darkGrey,
@@ -179,8 +177,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   LengthLimitingTextInputFormatter(20),
                                 ],
                                 controller: _usernameController,
+                                onChanged: (value) {
+                                  _profileScreenBloc.username = value;
+                                },
                                 onSubmitted: (value) {
-                                  _profileScreenBloc.onUsernameChange(value);
+                                  _profileScreenBloc.editButtonPressed();
                                 },
                                 decoration: InputDecoration(
                                   fillColor: XHColors.darkGrey,
@@ -193,17 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
-                            Container(
-                              transform: SizeConfig.profileScreenUserNameEditIconPadding,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.create,
-                                  color: XHColors.lightGrey,
-                                ),
-                                onPressed: () => _usernameFocusNode.requestFocus(),
-                                iconSize: SizeConfig.profileScreenUserNameEditIcon,
-                              ),
-                            )
+                            unEditButton(),
                           ],
                         ),
                       ),
@@ -259,6 +250,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       );
+
+  Widget unEditButton() => StreamBuilder<bool>(
+      stream: _profileScreenBloc.editButtonObservable,
+      builder: (context, snapshot) => Container(
+            transform: SizeConfig.profileScreenUserNameEditIconPadding,
+            child: IconButton(
+              icon: Icon(
+                _profileScreenBloc.isEditMode
+                    ? Icons.check
+                    : Icons.create,
+                color: XHColors.lightGrey,
+              ),
+              onPressed: () {
+                if (!_profileScreenBloc.isEditMode) {
+                  _profileScreenBloc.editButtonPressed();
+                  _usernameFocusNode.requestFocus();
+                } else {
+                  _profileScreenBloc.editButtonPressed();
+
+                  _usernameFocusNode.unfocus();
+                }
+              },
+              iconSize: SizeConfig.profileScreenUserNameEditIcon,
+            ),
+          ));
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(

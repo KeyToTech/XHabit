@@ -13,12 +13,16 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
+
+  bool isEditMode;
+  String username;
   PushNotificationsService _notificationsService;
 
   BehaviorSubject<ProfileScreenResourse> _profileScreenStateSubject;
 
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<bool> _imageUploadStatusSubject;
+  BehaviorSubject<bool> _editButtonSubject;
 
   Stream<ProfileScreenResourse> get profileScreenStateObservable =>
       _profileScreenStateSubject.stream;
@@ -26,6 +30,8 @@ class ProfileScreenBloc {
   Stream<bool> get imageUploadObservable => _imageUploadStatusSubject.stream;
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
+
+  Stream<bool> get editButtonObservable => _editButtonSubject.stream;
 
   LogoutUseCase _logoutUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
@@ -40,6 +46,7 @@ class ProfileScreenBloc {
       UpdateUsernameUseCase usernameUseCase,
       UserEmailUseCase emailUseCase,
       BuildContext context) {
+    isEditMode = false;
     _emailUseCase = emailUseCase;
     _logoutUseCase = logoutUseCase;
     _usernameUseCase = usernameUseCase;
@@ -48,6 +55,7 @@ class ProfileScreenBloc {
     _logoutStateSubject = BehaviorSubject<bool>();
     _notificationsService = PushNotificationsService(context);
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
+    _editButtonSubject = BehaviorSubject<bool>.seeded(false);
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     getUserName();
     getUserEmail();
@@ -106,6 +114,23 @@ class ProfileScreenBloc {
   void onUsernameChange(String value) {
     _usernameUseCase.updateUsername(value);
     handleProfileScreenData(username: value);
+  }
+
+  Future<bool> onWillPop() async {
+    exitEditMode();
+    return false;
+  }
+
+  void exitEditMode(){
+    isEditMode = false;
+    _editButtonSubject.sink.add(isEditMode);
+  }
+  void editButtonPressed(){
+    isEditMode = !isEditMode;
+    if(!isEditMode){
+      onUsernameChange(username);
+    }
+    _editButtonSubject.sink.add(isEditMode);
   }
 
   void getUserProfileImage() {
