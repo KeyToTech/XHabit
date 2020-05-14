@@ -116,15 +116,24 @@ class ProfileScreenBloc {
     handleProfileScreenData(username: value);
   }
 
-  Future<bool> onWillPop() async {
-    exitEditMode();
-    return false;
+  Future<bool> onWillPop(FocusNode currentFocus) {
+    final myFuture = Future(() {
+      unfocus(currentFocus);
+      return false;
+    });
+    return myFuture;
+  }
+
+  void unfocus(FocusNode currentFocus){
+    currentFocus.unfocus();
   }
 
   void exitEditMode(){
     isEditMode = false;
     _editButtonSubject.sink.add(isEditMode);
+    getUserName();
   }
+
   void editButtonPressed(){
     isEditMode = !isEditMode;
     if(!isEditMode){
@@ -146,6 +155,7 @@ class ProfileScreenBloc {
   }
 
   void handleUsernameData(String un) {
+    username = un;
     handleProfileScreenData(username: un);
   }
 

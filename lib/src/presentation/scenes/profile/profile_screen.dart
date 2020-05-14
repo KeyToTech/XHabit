@@ -55,6 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     _profileScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
+    _usernameFocusNode.addListener(_profileScreenBloc.editButtonPressed);
     super.initState();
   }
 
@@ -77,6 +78,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             snapshot.data[0] as ProfileScreenResourse;
         bool imageStatus = snapshot.data[1] as bool;
         _usernameController.text = resourse.userName;
+//        _usernameController.text = _profileScreenBloc.username;
         _usernameController.selection = TextSelection.fromPosition(
             TextPosition(offset: _usernameController.text.length));
         Size textSize = _textSize(_usernameController.text,
@@ -105,171 +107,173 @@ class _ProfileScreenState extends State<ProfileScreen> {
           bool imageStatus, ImageProvider image, Size textFieldSize) =>
       GestureDetector(
         onTap: () {
-          _usernameFocusNode.unfocus();
-          _profileScreenBloc.exitEditMode();
+          _profileScreenBloc.unfocus(_usernameFocusNode);
         },
-        child: Container(
-          color: XHColors.darkGrey,
-          alignment: Alignment.center,
-          child: ListView(
-            children: <Widget>[
-              Padding(
-                padding: SizeConfig.profileScreenTitlePadding,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      resourse.screenTitle,
-                      style: TextStyle(
-                        fontSize: SizeConfig.profileScreenTitle,
-                        fontFamily: 'Montserrat',
-                        color: Colors.white,
-                      ),
-                    ),
-                    Container(
-                      padding:
-                          SizeConfig.profileImageUploadStatusIndicatorPadding,
-                      child: imageStatus ? CircularProgressIndicator() : null,
-                    ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Column(
+        child: WillPopScope(
+          onWillPop: () async =>
+              _profileScreenBloc.onWillPop(_usernameFocusNode),
+          child: Container(
+            color: XHColors.darkGrey,
+            alignment: Alignment.center,
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: SizeConfig.profileScreenTitlePadding,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      InkWell(
-                        onTap: _profileScreenBloc.chooseFile,
-                        child: Container(
-                          width: SizeConfig.profileScreenAvatarSize,
-                          height: SizeConfig.profileScreenAvatarSize,
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(100)),
-                            border: Border.all(
-                                color: XHColors.grey,
-                                width:
-                                    SizeConfig.profileScreenAvatarBorderRadius),
-                          ),
-                          child: ClipOval(
-                              clipBehavior: Clip.hardEdge,
-                              child: FadeInImage(
-                                  fit: BoxFit.cover,
-                                  placeholder: AssetImage(
-                                      "assets/images/blank_avatar.png"),
-                                  image: image)),
-                        ),
-                      ),
-                      Padding(
-                        padding: SizeConfig.profileScreenUserTextPadding,
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              width: textFieldSize.width + 50,
-                              child: TextField(
-                                focusNode: _usernameFocusNode,
-                                style: TextStyle(
-                                  fontSize: SizeConfig.profileScreenUserName,
-                                ),
-                                textAlign: TextAlign.center,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(20),
-                                ],
-                                controller: _usernameController,
-                                onChanged: (value) {
-                                  _profileScreenBloc.username = value;
-                                },
-                                onSubmitted: (value) {
-                                  _profileScreenBloc.editButtonPressed();
-                                },
-                                decoration: InputDecoration(
-                                  fillColor: XHColors.darkGrey,
-                                  filled: true,
-                                  border: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  enabledBorder: InputBorder.none,
-                                  errorBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                            unEditButton(),
-                          ],
-                        ),
-                      ),
                       Text(
-                        resourse.userEmail,
+                        resourse.screenTitle,
                         style: TextStyle(
-                          color: XHColors.lightGrey,
-                          fontSize: SizeConfig.profileScreenUserEmail,
+                          fontSize: SizeConfig.profileScreenTitle,
                           fontFamily: 'Montserrat',
+                          color: Colors.white,
                         ),
+                      ),
+                      Container(
+                        padding:
+                            SizeConfig.profileImageUploadStatusIndicatorPadding,
+                        child: imageStatus ? CircularProgressIndicator() : null,
                       ),
                     ],
                   ),
-                ],
-              ),
-              Padding(
-                padding: SizeConfig.profileScreenFirstButtonPadding,
-              ),
-              Container(
-                padding: SizeConfig.profileScreenListViewPadding,
-                child: Column(
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    XHIconButton('Allow notifications', Icons.cached,
-                            Colors.deepPurple, true, null,
-                            switcherValue: resourse.isNotificationsOn,
-                            onSwitcherAction:
-                                _profileScreenBloc.onNotificationsSwitcher)
-                        .IconButton(),
-                    XHDivider().drawPickersDivider(),
-                    XHIconButton('Rate this application', Icons.star,
-                            Colors.amber, false, _profileScreenBloc.onRateApp)
-                        .IconButton(),
-                    XHDivider().drawPickersDivider(),
-                    XHIconButton('Send feedback', Icons.swap_vert, Colors.green,
-                            false, _profileScreenBloc.onSendFeedback)
-                        .IconButton(),
-                    XHDivider().drawPickersDivider(),
-                    XHIconButton('Logout', null, null, false, () {
-                      ConfirmDialog.show(
-                        context,
-                        'Logout',
-                        'Are you sure you want to logout?',
-                        _profileScreenBloc.logout,
-                      );
-                    }).IconButton(),
+                    Column(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: _profileScreenBloc.chooseFile,
+                          child: Container(
+                            width: SizeConfig.profileScreenAvatarSize,
+                            height: SizeConfig.profileScreenAvatarSize,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              border: Border.all(
+                                  color: XHColors.grey,
+                                  width: SizeConfig
+                                      .profileScreenAvatarBorderRadius),
+                            ),
+                            child: ClipOval(
+                                clipBehavior: Clip.hardEdge,
+                                child: FadeInImage(
+                                    fit: BoxFit.cover,
+                                    placeholder: AssetImage(
+                                        "assets/images/blank_avatar.png"),
+                                    image: image)),
+                          ),
+                        ),
+                        Padding(
+                          padding: SizeConfig.profileScreenUserTextPadding,
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: textFieldSize.width + 50,
+                                child: TextField(
+                                  focusNode: _usernameFocusNode,
+                                  style: TextStyle(
+                                    fontSize: SizeConfig.profileScreenUserName,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(20),
+                                  ],
+                                  controller: _usernameController,
+                                  onChanged: (value) {
+                                    _profileScreenBloc.username = value;
+                                  },
+                                  onSubmitted: (value) {
+                                    _profileScreenBloc.editButtonPressed();
+                                  },
+                                  decoration: InputDecoration(
+                                    fillColor: XHColors.darkGrey,
+                                    filled: true,
+                                    border: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    enabledBorder: InputBorder.none,
+                                    errorBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                              usernameEditButton(),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          resourse.userEmail,
+                          style: TextStyle(
+                            color: XHColors.lightGrey,
+                            fontSize: SizeConfig.profileScreenUserEmail,
+                            fontFamily: 'Montserrat',
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              SizedBox(
-                height: SizeConfig.handleKeyboardHeight(context),
-              ),
-            ],
+                Padding(
+                  padding: SizeConfig.profileScreenFirstButtonPadding,
+                ),
+                Container(
+                  padding: SizeConfig.profileScreenListViewPadding,
+                  child: Column(
+                    children: <Widget>[
+                      XHIconButton('Allow notifications', Icons.cached,
+                              Colors.deepPurple, true, null,
+                              switcherValue: resourse.isNotificationsOn,
+                              onSwitcherAction:
+                                  _profileScreenBloc.onNotificationsSwitcher)
+                          .IconButton(),
+                      XHDivider().drawPickersDivider(),
+                      XHIconButton('Rate this application', Icons.star,
+                              Colors.amber, false, _profileScreenBloc.onRateApp)
+                          .IconButton(),
+                      XHDivider().drawPickersDivider(),
+                      XHIconButton(
+                              'Send feedback',
+                              Icons.swap_vert,
+                              Colors.green,
+                              false,
+                              _profileScreenBloc.onSendFeedback)
+                          .IconButton(),
+                      XHDivider().drawPickersDivider(),
+                      XHIconButton('Logout', null, null, false, () {
+                        ConfirmDialog.show(
+                          context,
+                          'Logout',
+                          'Are you sure you want to logout?',
+                          _profileScreenBloc.logout,
+                        );
+                      }).IconButton(),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: SizeConfig.handleKeyboardHeight(context),
+                ),
+              ],
+            ),
           ),
         ),
       );
 
-  Widget unEditButton() => StreamBuilder<bool>(
+  Widget usernameEditButton() => StreamBuilder<bool>(
       stream: _profileScreenBloc.editButtonObservable,
       builder: (context, snapshot) => Container(
             transform: SizeConfig.profileScreenUserNameEditIconPadding,
             child: IconButton(
               icon: Icon(
-                _profileScreenBloc.isEditMode
-                    ? Icons.check
-                    : Icons.create,
+                _profileScreenBloc.isEditMode ? Icons.check : Icons.create,
                 color: XHColors.lightGrey,
               ),
               onPressed: () {
                 if (!_profileScreenBloc.isEditMode) {
-                  _profileScreenBloc.editButtonPressed();
                   _usernameFocusNode.requestFocus();
                 } else {
-                  _profileScreenBloc.editButtonPressed();
-
-                  _usernameFocusNode.unfocus();
+                  _profileScreenBloc.unfocus(_usernameFocusNode);
                 }
               },
               iconSize: SizeConfig.profileScreenUserNameEditIcon,
