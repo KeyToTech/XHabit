@@ -55,7 +55,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     _profileScreenBloc.logoutStateObservable.listen(_handleLogoutRedirect);
-    _usernameFocusNode.addListener(_profileScreenBloc.editButtonPressed);
+    _usernameFocusNode.addListener(() {
+      if (!_usernameFocusNode.hasFocus) {
+        _profileScreenBloc.removeLocalUsername();
+      }
+      _profileScreenBloc.editButtonPressed();
+    });
     super.initState();
   }
 
@@ -77,8 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ProfileScreenResourse resourse =
             snapshot.data[0] as ProfileScreenResourse;
         bool imageStatus = snapshot.data[1] as bool;
-        _usernameController.text = resourse.userName;
-//        _usernameController.text = _profileScreenBloc.username;
+        _usernameController.text = _profileScreenBloc.username;
         _usernameController.selection = TextSelection.fromPosition(
             TextPosition(offset: _usernameController.text.length));
         Size textSize = _textSize(_usernameController.text,
@@ -185,7 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     _profileScreenBloc.username = value;
                                   },
                                   onSubmitted: (value) {
-                                    _profileScreenBloc.editButtonPressed();
+                                    _profileScreenBloc.submitUsernameChange();
                                   },
                                   decoration: InputDecoration(
                                     fillColor: XHColors.darkGrey,
@@ -261,7 +265,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
   Widget usernameEditButton() => StreamBuilder<bool>(
-      stream: _profileScreenBloc.editButtonObservable,
+      stream: _profileScreenBloc.isEditingObservable,
       builder: (context, snapshot) => Container(
             transform: SizeConfig.profileScreenUserNameEditIconPadding,
             child: IconButton(
@@ -274,6 +278,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   _usernameFocusNode.requestFocus();
                 } else {
                   _profileScreenBloc.unfocus(_usernameFocusNode);
+                  _profileScreenBloc.submitUsernameChange();
                 }
               },
               iconSize: SizeConfig.profileScreenUserNameEditIcon,

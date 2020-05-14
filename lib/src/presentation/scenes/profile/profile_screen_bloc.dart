@@ -22,7 +22,7 @@ class ProfileScreenBloc {
 
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<bool> _imageUploadStatusSubject;
-  BehaviorSubject<bool> _editButtonSubject;
+  BehaviorSubject<bool> _isEditingSubject;
 
   Stream<ProfileScreenResourse> get profileScreenStateObservable =>
       _profileScreenStateSubject.stream;
@@ -31,7 +31,7 @@ class ProfileScreenBloc {
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
-  Stream<bool> get editButtonObservable => _editButtonSubject.stream;
+  Stream<bool> get isEditingObservable => _isEditingSubject.stream;
 
   LogoutUseCase _logoutUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
@@ -55,7 +55,7 @@ class ProfileScreenBloc {
     _logoutStateSubject = BehaviorSubject<bool>();
     _notificationsService = PushNotificationsService(context);
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
-    _editButtonSubject = BehaviorSubject<bool>.seeded(false);
+    _isEditingSubject = BehaviorSubject<bool>.seeded(false);
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     getUserName();
     getUserEmail();
@@ -128,18 +128,18 @@ class ProfileScreenBloc {
     currentFocus.unfocus();
   }
 
-  void exitEditMode(){
-    isEditMode = false;
-    _editButtonSubject.sink.add(isEditMode);
-    getUserName();
+  void submitUsernameChange(){
+    onUsernameChange(username);
+  }
+
+  void removeLocalUsername() {
+    username = _profileScreenStateSubject.value.userName;
+    _profileScreenStateSubject.sink.add(_profileScreenStateSubject.value);
   }
 
   void editButtonPressed(){
     isEditMode = !isEditMode;
-    if(!isEditMode){
-      onUsernameChange(username);
-    }
-    _editButtonSubject.sink.add(isEditMode);
+    _isEditingSubject.sink.add(isEditMode);
   }
 
   void getUserProfileImage() {
