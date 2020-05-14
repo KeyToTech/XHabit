@@ -13,12 +13,16 @@ import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileScreenBloc {
+
+  bool isEditMode;
+  String username;
   PushNotificationsService _notificationsService;
 
   BehaviorSubject<ProfileScreenResourse> _profileScreenStateSubject;
 
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<bool> _imageUploadStatusSubject;
+  BehaviorSubject<bool> _isEditingSubject;
 
   Stream<ProfileScreenResourse> get profileScreenStateObservable =>
       _profileScreenStateSubject.stream;
@@ -26,6 +30,8 @@ class ProfileScreenBloc {
   Stream<bool> get imageUploadObservable => _imageUploadStatusSubject.stream;
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
+
+  Stream<bool> get isEditingObservable => _isEditingSubject.stream;
 
   LogoutUseCase _logoutUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
@@ -40,6 +46,7 @@ class ProfileScreenBloc {
       UpdateUsernameUseCase usernameUseCase,
       UserEmailUseCase emailUseCase,
       BuildContext context) {
+    isEditMode = false;
     _emailUseCase = emailUseCase;
     _logoutUseCase = logoutUseCase;
     _usernameUseCase = usernameUseCase;
@@ -48,6 +55,7 @@ class ProfileScreenBloc {
     _logoutStateSubject = BehaviorSubject<bool>();
     _notificationsService = PushNotificationsService(context);
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
+    _isEditingSubject = BehaviorSubject<bool>.seeded(false);
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     getUserName();
     getUserEmail();
@@ -108,6 +116,32 @@ class ProfileScreenBloc {
     handleProfileScreenData(username: value);
   }
 
+  Future<bool> onWillPop(FocusNode currentFocus) {
+    final myFuture = Future(() {
+      unfocus(currentFocus);
+      return false;
+    });
+    return myFuture;
+  }
+
+  void unfocus(FocusNode currentFocus){
+    currentFocus.unfocus();
+  }
+
+  void submitUsernameChange(){
+    onUsernameChange(username);
+  }
+
+  void removeLocalUsername() {
+    username = _profileScreenStateSubject.value.userName;
+    _profileScreenStateSubject.sink.add(_profileScreenStateSubject.value);
+  }
+
+  void editButtonPressed(){
+    isEditMode = !isEditMode;
+    _isEditingSubject.sink.add(isEditMode);
+  }
+
   void getUserProfileImage() {
     _userImageUseCase.getProfilePic().listen(handleUserProfileImage);
   }
@@ -121,6 +155,7 @@ class ProfileScreenBloc {
   }
 
   void handleUsernameData(String un) {
+    username = un;
     handleProfileScreenData(username: un);
   }
 
