@@ -52,7 +52,7 @@ class SizeConfig {
       screenSize.height * 0.009;
   static final double profileScreenAvatarSize = screenSize.height * 0.18;
   static final double profileScreenUserName = screenSize.height * 0.025;
-  static final Matrix4 profileScreenUserNameEditIconPadding = Matrix4.translationValues(-screenSize.width * 0.06, 0.0, 0.0);
+  static final Matrix4 profileScreenUserNameEditIconPadding = Matrix4.translationValues(-screenSize.width * 0.06, -screenSize.width * 0.027, 0.0);
   static final double profileScreenUserNameEditIcon = screenSize.height * 0.026;
   static final double profileScreenUserEmail = screenSize.height * 0.015;
   static final double profileScreenUserNameTextFieldWidth = screenSize.width * 0.8;

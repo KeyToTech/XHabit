@@ -7,14 +7,17 @@ import 'package:xhabits/src/domain/logout_use_case.dart';
 import 'package:xhabits/src/domain/update_username_use_case.dart';
 import 'package:xhabits/src/domain/user_email_use_case.dart';
 import 'package:xhabits/src/domain/user_image_use_case.dart';
+import 'package:xhabits/src/domain/validation/username_validation.dart';
+import 'package:xhabits/src/domain/validation/validation.dart';
 import 'package:xhabits/src/presentation/push_notifications_service.dart';
 import 'package:xhabits/src/presentation/scenes/profile/profile_screen_state.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ProfileScreenBloc {
+enum UsernameState { editing, notEditing }
 
-  bool isEditMode;
+class ProfileScreenBloc {
+  UsernameState currentState;
   String username;
   PushNotificationsService _notificationsService;
 
@@ -22,7 +25,7 @@ class ProfileScreenBloc {
 
   BehaviorSubject<bool> _logoutStateSubject;
   BehaviorSubject<bool> _imageUploadStatusSubject;
-  BehaviorSubject<bool> _isEditingSubject;
+  BehaviorSubject<UsernameState> _isEditingSubject;
 
   Stream<ProfileScreenResourse> get profileScreenStateObservable =>
       _profileScreenStateSubject.stream;
@@ -31,8 +34,10 @@ class ProfileScreenBloc {
 
   Stream<bool> get logoutStateObservable => _logoutStateSubject.stream;
 
-  Stream<bool> get isEditingObservable => _isEditingSubject.stream;
+  Stream<UsernameState> get isEditingObservable => _isEditingSubject.stream;
 
+  UserNameValidation _userNameValidation;
+  final _defaultTextInputState = ValidationResult(true, null);
   LogoutUseCase _logoutUseCase;
   GlobalNotificationsUpdateUseCase _globalNotificationsUpdateUseCase;
   UserImageUseCase _userImageUseCase;
@@ -46,22 +51,32 @@ class ProfileScreenBloc {
       UpdateUsernameUseCase usernameUseCase,
       UserEmailUseCase emailUseCase,
       BuildContext context) {
-    isEditMode = false;
+    currentState = UsernameState.notEditing;
     _emailUseCase = emailUseCase;
     _logoutUseCase = logoutUseCase;
     _usernameUseCase = usernameUseCase;
     _userImageUseCase = userImageUseCase;
+    _userNameValidation = UserNameValidation();
     _globalNotificationsUpdateUseCase = notificationsUseCase;
     _logoutStateSubject = BehaviorSubject<bool>();
     _notificationsService = PushNotificationsService(context);
     _imageUploadStatusSubject = BehaviorSubject<bool>.seeded(false);
-    _isEditingSubject = BehaviorSubject<bool>.seeded(false);
+    _isEditingSubject = BehaviorSubject<UsernameState>.seeded(UsernameState.notEditing);
     _profileScreenStateSubject = BehaviorSubject<ProfileScreenResourse>();
     getUserName();
     getUserEmail();
     getUserProfileImage();
     handleProfileScreenData();
     listenGlobalNotificationStatus();
+  }
+
+  bool isValid() {
+    ValidationResult usernameValid = _defaultTextInputState;
+    bool isNotEmptyUsername = username.isNotEmpty;
+    if (isNotEmptyUsername) {
+      usernameValid = _userNameValidation.validate(username);
+    }
+    return usernameValid.isValid;
   }
 
   Future chooseFile() async {
@@ -116,18 +131,6 @@ class ProfileScreenBloc {
     handleProfileScreenData(username: value);
   }
 
-  Future<bool> onWillPop(FocusNode currentFocus) {
-    final myFuture = Future(() {
-      unfocus(currentFocus);
-      return false;
-    });
-    return myFuture;
-  }
-
-  void unfocus(FocusNode currentFocus){
-    currentFocus.unfocus();
-  }
-
   void submitUsernameChange(){
     onUsernameChange(username);
   }
@@ -138,8 +141,13 @@ class ProfileScreenBloc {
   }
 
   void editButtonPressed(){
-    isEditMode = !isEditMode;
-    _isEditingSubject.sink.add(isEditMode);
+    currentState = UsernameState.editing;
+    _isEditingSubject.sink.add(currentState);
+  }
+
+  void submitButtonPressed(){
+    currentState = UsernameState.notEditing;
+    _isEditingSubject.sink.add(currentState);
   }
 
   void getUserProfileImage() {
