@@ -14,7 +14,6 @@ class _BaseScreenState extends State<BaseScreen> {
   final Map<int, GlobalKey<NavigatorState>> _navigatorKeys = {
     0: GlobalKey<NavigatorState>(),
     1: GlobalKey<NavigatorState>(),
-    2: GlobalKey<NavigatorState>(),
   };
 
   BaseScreenBloc _baseScreenBloc;
@@ -46,7 +45,6 @@ class _BaseScreenState extends State<BaseScreen> {
             child: Stack(
                 children: <Widget>[
                   _homeScreen(),
-                  _progress(),
                   _profile(),
                 ],
             ),
@@ -56,13 +54,8 @@ class _BaseScreenState extends State<BaseScreen> {
       offstage: 0 != _bottomBar.getCurrentIndex(),
       child: HomeTabNavigator(_navigatorKeys[0]));
 
-  Widget _progress() => Offstage(
-        offstage: 1 != _bottomBar.getCurrentIndex(),
-        //child: ProgressTabNavigator(_navigatorKeys[1])
-      );
-
   Widget _profile() => Offstage(
-        offstage: 2 != _bottomBar.getCurrentIndex(),
+        offstage: 1 != _bottomBar.getCurrentIndex(),
         child: ProfileTabNavigator(_navigatorKeys[2])
       );
 }

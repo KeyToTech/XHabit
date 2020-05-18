@@ -29,10 +29,6 @@ class XHBottomBar {
             title: Text('Habits'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.data_usage),
-            title: Text('Progress'),
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
             title: Text('Profile'),
           )
